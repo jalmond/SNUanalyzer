@@ -1,13 +1,26 @@
 //###########################
 //   Author John Almond
 //###########################
+
+UNDER CONSTRUCTION
+
+This is new setup for 2017: will be backward compatible with 2016 code.
+
+For 2017:
+source setup.sh 
+
+For 2016:
+source setup.sh 2016
+
+--------------------------------------------------------------------------------
+
 Steps to run analysis:
-1) Download LQanalyzer:
-git clone git@github.com:jalmond/LQanalyzer.git
-cd LQanalyzer/
+1) Download SNUanalyzer:
+git clone git@github.com:jalmond/SNUanalyzer.git
+cd SNUanalyzer/
 git checkout -b BRANCH_NAME origin/BRANCH_NAME
  
-2) in LQanalyzer main directory type:
+2) in SNUanalyzer main directory type:
 source setup.sh
 
 ## NOTE
