@@ -43,22 +43,6 @@ if [[ $setupok == "False" ]]; then
     return 1
 fi
 
-if [[ $USER == "jalmond" ]]; then
-    alias cat_path_analysis_ls='ll -rth /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/ '
-    if [ $LQANALYZER_DIR ]; then
-	echo "Running on batch"
-    else
-	source python/jalmondsetup.sh
-    fi
-    function cat_path_analysis_ls {
-        ll -rth  /data2/CAT_SKTreeOutput/JobOutPut/jalmond/${Flag}analyzer/data/output/CAT/HNDiLepton/periodBtoH/${1}
-    }
-    function cat_path_analysis {
-	cd /data2/CAT_SKTreeOutput/JobOutPut/jalmond/${Flag}analyzer/data/output/CAT/HNDiLepton/periodBtoH/${1}
-    }
-fi
-
-
 
 
 if [[ $PWD !=  *"/data4/${Flag}AnalyzerCode/"* ]];
@@ -76,7 +60,7 @@ then
 fi
 
 
-if [ $LQANALYZER_DIR ]; then
+if [ ${Flag}ANALYZER_DIR ]; then
     echo ${Flag}ANALYZER_DIR is already defined, use a clean shell
     return 1
 fi
@@ -99,13 +83,6 @@ fi
 
 # speficy the ${Flag}ANALYZER_DIR base directory, i.e., the directory in which this file lives
 export ANALYZER_DIR=${PWD}
-
-
-
-if [[ $USER == "jalmond" ]]; then
-    python python/setupAN.py
-fi
-
 
 
 if [[ $1 == *"v7"* ]]; then

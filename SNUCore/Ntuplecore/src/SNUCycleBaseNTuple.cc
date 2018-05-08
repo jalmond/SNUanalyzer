@@ -11,25 +11,25 @@
 #include <iomanip>
 
 //local  includes
-#include "LQCycleBaseNTuple.h"
+#include "SNUCycleBaseNTuple.h"
 
 
-ClassImp( LQCycleBaseNTuple);
+ClassImp( SNUCycleBaseNTuple);
 
-LQCycleBaseNTuple::LQCycleBaseNTuple() : LQCycleBaseBase(), m_outputFile(0),m_outputTrees(),m_outputVarPointers(), k_isdata(false) ,k_running_nonprompt(false), k_running_chargeflip(false),k_running_taudecays(false), k_sample_name(""), k_tag_name(""),k_classname(""),k_skim(""), sample_entries(-999), output_interval(10000), events_to_process(-1), k_mcperiod(0) {
+SNUCycleBaseNTuple::SNUCycleBaseNTuple() : SNUCycleBaseBase(), m_outputFile(0),m_outputTrees(),m_outputVarPointers(), k_isdata(false) ,k_running_nonprompt(false), k_running_chargeflip(false),k_running_taudecays(false), k_sample_name(""), k_tag_name(""),k_classname(""),k_skim(""), sample_entries(-999), output_interval(10000), events_to_process(-1), k_mcperiod(0) {
 
 
  
 }
 
 
-LQCycleBaseNTuple::~LQCycleBaseNTuple(){
+SNUCycleBaseNTuple::~SNUCycleBaseNTuple(){
   DeleteInputVariables();
 }
 
 
 
-void LQCycleBaseNTuple::DeleteInputVariables() {
+void SNUCycleBaseNTuple::DeleteInputVariables() {
 
   for( std::list< TObject* >::iterator it = m_inputVarPointers.begin();
        it != m_inputVarPointers.end(); ++it ) {
@@ -40,9 +40,9 @@ void LQCycleBaseNTuple::DeleteInputVariables() {
   return;
 }
 
-void LQCycleBaseNTuple::CreateOutputTrees(TFile* outputFile, TString name, TString title){
+void SNUCycleBaseNTuple::CreateOutputTrees(TFile* outputFile, TString name, TString title){
   
-  m_logger << INFO  << "Creating Output Trees" << LQLogger::endmsg;
+  m_logger << INFO  << "Creating Output Trees" << SNULogger::endmsg;
 
   // Clear the vector of output trees:
   m_outputTrees.clear();
@@ -74,80 +74,80 @@ void LQCycleBaseNTuple::CreateOutputTrees(TFile* outputFile, TString name, TStri
 }
 
 
-void LQCycleBaseNTuple::SetOutPutStep(int step){
+void SNUCycleBaseNTuple::SetOutPutStep(int step){
 
-  if(step != output_interval) m_logger << INFO << "Changing default value for output interval from every 10000 events to every " << step << " events" << LQLogger::endmsg;
+  if(step != output_interval) m_logger << INFO << "Changing default value for output interval from every 10000 events to every " << step << " events" << SNULogger::endmsg;
   output_interval = step;  
 }
 
-void LQCycleBaseNTuple::SetNEventsToProcess(int nentries){
+void SNUCycleBaseNTuple::SetNEventsToProcess(int nentries){
   events_to_process = nentries;
 }
 
 
-void LQCycleBaseNTuple::SetDataType( bool type){  
+void SNUCycleBaseNTuple::SetDataType( bool type){  
   k_isdata = type;
 }
 
-void LQCycleBaseNTuple::SetMCPeriod( int period){
-  m_logger << INFO << "SetMCPeriod : " << k_mcperiod << LQLogger::endmsg;
+void SNUCycleBaseNTuple::SetMCPeriod( int period){
+  m_logger << INFO << "SetMCPeriod : " << k_mcperiod << SNULogger::endmsg;
   k_mcperiod= period;
 }
 
-void LQCycleBaseNTuple::SetTauStatus( bool type){
+void SNUCycleBaseNTuple::SetTauStatus( bool type){
   k_running_taudecays = type;
 }
 
 
-void LQCycleBaseNTuple::SetNPStatus( bool type){
+void SNUCycleBaseNTuple::SetNPStatus( bool type){
   k_running_nonprompt = type;
 }
 
-void LQCycleBaseNTuple::SetCFStatus( bool type){
+void SNUCycleBaseNTuple::SetCFStatus( bool type){
   k_running_chargeflip = type;
 }
 
-void LQCycleBaseNTuple::SetSampleName( TString name){
+void SNUCycleBaseNTuple::SetSampleName( TString name){
   k_sample_name = name;
 }
-void LQCycleBaseNTuple::SetTagName( TString name){
+void SNUCycleBaseNTuple::SetTagName( TString name){
   k_tag_name= name;
 }
-void LQCycleBaseNTuple::SetAnalyzerClassName( TString c){
+void SNUCycleBaseNTuple::SetAnalyzerClassName( TString c){
   k_classname= c;
 }
 
-void LQCycleBaseNTuple::SetDataChannel( TString channel){
+void SNUCycleBaseNTuple::SetDataChannel( TString channel){
   k_channel= channel;
 }
-void LQCycleBaseNTuple::SetSkimName( TString skim){
+void SNUCycleBaseNTuple::SetSkimName( TString skim){
   k_skim= skim;
 }
 
 
 
-void LQCycleBaseNTuple::SetNSampleEvents(double nev){
+void SNUCycleBaseNTuple::SetNSampleEvents(double nev){
   sample_entries = nev;
 }
 
-TFile* LQCycleBaseNTuple::GetOutputFile(){
+TFile* SNUCycleBaseNTuple::GetOutputFile(){
   return m_outputFile;
 }
   
-void LQCycleBaseNTuple::MakeOutPutFile(TString outfile, TString treename){
+void SNUCycleBaseNTuple::MakeOutPutFile(TString outfile, TString treename){
   
   if(!m_outputFile){
-    m_logger << INFO << "Creating " << outfile << LQLogger::endmsg;  
+    m_logger << INFO << "Creating " << outfile << SNULogger::endmsg;  
     m_outputFile = TFile::Open(outfile, "RECREATE");
   }else {
-    m_logger << WARNING << "Output file created already. Will not create again" << LQLogger::endmsg;
+    m_logger << WARNING << "Output file created already. Will not create again" << SNULogger::endmsg;
   }
   
   if(!treename.Contains("NOTREE"))  CreateOutputTrees(m_outputFile, treename , "");
   
 }
 
-void LQCycleBaseNTuple::FillOutTree(){
+void SNUCycleBaseNTuple::FillOutTree(){
 
   int nbytes = 0;
   for( std::vector< TTree* >::iterator tree = m_outputTrees.begin();
@@ -158,12 +158,12 @@ void LQCycleBaseNTuple::FillOutTree(){
 		    << ( *tree )->GetName() << "\"" );
     } else if( nbytes == 0 ) {
       m_logger << WARNING << "No data written to tree \""
-	       << ( *tree )->GetName() << "\"" << LQLogger::endmsg;
+	       << ( *tree )->GetName() << "\"" << SNULogger::endmsg;
     }
   }
 }
 
-void LQCycleBaseNTuple::WriteCycleHists(TH1F* h_timing, TH1F* hmem1, TH1F* hmem2){
+void SNUCycleBaseNTuple::WriteCycleHists(TH1F* h_timing, TH1F* hmem1, TH1F* hmem2){
 
   // Remember which directory we were in: 
   TDirectory* savedir = gDirectory;
@@ -179,9 +179,9 @@ void LQCycleBaseNTuple::WriteCycleHists(TH1F* h_timing, TH1F* hmem1, TH1F* hmem2
   
 }
 
-void  LQCycleBaseNTuple::CloseFiles(){
+void  SNUCycleBaseNTuple::CloseFiles(){
   
-  m_logger << INFO << "Closing output file  " << m_outputFile->GetName() << LQLogger::endmsg;
+  m_logger << INFO << "Closing output file  " << m_outputFile->GetName() << SNULogger::endmsg;
   m_outputFile->SaveSelf( kTRUE ); /// is this needed 
   m_outputFile->Close();
   delete m_outputFile;
@@ -189,7 +189,7 @@ void  LQCycleBaseNTuple::CloseFiles(){
   
 }
 
-void LQCycleBaseNTuple::SaveOutputTrees( TDirectory* /*output*/ ) {
+void SNUCycleBaseNTuple::SaveOutputTrees( TDirectory* /*output*/ ) {
 
   // Remember which directory we were in:
   TDirectory* savedir = gDirectory;
@@ -212,11 +212,11 @@ void LQCycleBaseNTuple::SaveOutputTrees( TDirectory* /*output*/ ) {
   return;
 }
 
-TTree* LQCycleBaseNTuple::GetOutputTree( const char* treeName ) const{
+TTree* SNUCycleBaseNTuple::GetOutputTree( const char* treeName ) const{
   
   // Look for such output tree:                                                
   //                                                                           
-  m_logger << INFO << "Getting output Tree " << LQLogger::endmsg;
+  m_logger << INFO << "Getting output Tree " << SNULogger::endmsg;
   TString tname( treeName );
   for( std::vector< TTree* >::const_iterator it = m_outputTrees.begin();
        it != m_outputTrees.end(); ++it ) {
@@ -226,12 +226,12 @@ TTree* LQCycleBaseNTuple::GetOutputTree( const char* treeName ) const{
       }
     }
   }
-  m_logger << INFO << "Asked for output tree when none was initially created. " << LQLogger::endmsg;
+  m_logger << INFO << "Asked for output tree when none was initially created. " << SNULogger::endmsg;
   return 0;
 }
 
 
-const char* LQCycleBaseNTuple::RootType( const char* typeid_type ){
+const char* SNUCycleBaseNTuple::RootType( const char* typeid_type ){
 
   switch( typeid_type[ 0 ] ) {
 

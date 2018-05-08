@@ -19,7 +19,7 @@ SKTreeFiller::~SKTreeFiller() {};
 
 bool SKTreeFiller::SkipTrigger(TString tname){
   
-  m_logger << DEBUG << "Trigger: " << tname << LQLogger::endmsg;  
+  m_logger << DEBUG << "Trigger: " << tname << SNULogger::endmsg;  
   /// Remove extra unnecisary  triggers (from v7-6-4+ this will not be needed))
   if((tname.Contains("Jpsi")
        || tname.Contains("NoFilters")
@@ -48,11 +48,11 @@ bool SKTreeFiller::SkipTrigger(TString tname){
 snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   snu::KTrigger ktrigger;
 
-  if(!LQinput){
+  if(!SNUinput){
     ktrigger = *k_inputtrigger;
     return ktrigger;
   }
-  m_logger << DEBUG << "Filling trigger Info" << LQLogger::endmsg;
+  m_logger << DEBUG << "Filling trigger Info" << SNULogger::endmsg;
 
 
   std::vector<std::string> vHLTInsideDatasetTriggerNames;
@@ -116,7 +116,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
  
   snu::KEvent kevent;
 
-  if(!LQinput){
+  if(!SNUinput){
     kevent = *k_inputevent;
     if(k_cat_version < 3){
       if(!TString(kevent.CatVersion()).Contains("v7-4"))kevent.SetCatVersion(CatVersion);
@@ -125,7 +125,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   }
   //  lumimask = snu::KEvent::gold
 
-  m_logger << DEBUG << "Filling Event Info" << LQLogger::endmsg;
+  m_logger << DEBUG << "Filling Event Info" << SNULogger::endmsg;
   
   // New variable to set catversion. Add this to flat ntuples for next iteration
   kevent.SetCatVersion(CatVersion);
@@ -180,7 +180,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     if(jets_rho->size() > 0)kevent.SetRho(jets_rho->at(0));
     else kevent.SetRho(-999.);
   }
-  m_logger << DEBUG << "Filling Event Info [2]" << LQLogger::endmsg;
+  m_logger << DEBUG << "Filling Event Info [2]" << SNULogger::endmsg;
   /// Since some versions of catuples have no metNoHF due to bug in met code 
 
 
@@ -287,7 +287,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   }
   
 
-  m_logger << DEBUG << "Filling Event Info [3]" << LQLogger::endmsg;
+  m_logger << DEBUG << "Filling Event Info [3]" << SNULogger::endmsg;
   
   if(k_cat_version > 2){
     if(met_unclusteredEn_Px_up){
@@ -324,7 +324,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       }
     }
   }
-  m_logger << DEBUG << "Filling Event Info [4]" << LQLogger::endmsg;
+  m_logger << DEBUG << "Filling Event Info [4]" << SNULogger::endmsg;
   
   /// Filling event variables
     
@@ -415,7 +415,7 @@ std::vector<KPhoton> SKTreeFiller::GetAllPhotons(){
   if(k_cat_version < 3) return photons;
   if(k_cat_version > 4) return photons;
   
-  if(!LQinput){
+  if(!SNUinput){
     for(std::vector<KPhoton>::iterator kit  = k_inputphotons->begin(); kit != k_inputphotons->end(); kit++){
       photons.push_back(*kit);
     }
@@ -463,14 +463,14 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
   std::vector<KElectron> electrons;
 
-  if(!LQinput){
+  if(!SNUinput){
     for(std::vector<KElectron>::iterator kit  = k_inputelectrons->begin(); kit != k_inputelectrons->end(); kit++){
       electrons.push_back(*kit);
     }
     return electrons;
   }
 
-  m_logger << DEBUG << "Filling electron Info " << electrons_eta->size() << LQLogger::endmsg;
+  m_logger << DEBUG << "Filling electron Info " << electrons_eta->size() << SNULogger::endmsg;
   
   vector<int> matched_truth;
   for (UInt_t iel=0; iel< electrons_eta->size(); iel++) {
@@ -502,10 +502,10 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
 
 
-    m_logger << DEBUG << "Filling electron_minirelIso " << LQLogger::endmsg;
+    m_logger << DEBUG << "Filling electron_minirelIso " << SNULogger::endmsg;
     if(electrons_minirelIso) el.SetPFRelMiniIso(electrons_minirelIso->at(iel));
     
-    m_logger << DEBUG << "Filling electron Info 2" << LQLogger::endmsg;
+    m_logger << DEBUG << "Filling electron Info 2" << SNULogger::endmsg;
     
     el.SetPFChargedHadronIso(0.4,electrons_puChIso04->at(iel));
     el.SetPFPhotonIso(0.4,electrons_phIso04->at(iel));
@@ -520,7 +520,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetCharge(electrons_q->at(iel));
     el.SetGsfCtfScPixCharge(electrons_isGsfCtfScPixChargeConsistent->at(iel));
     
-    m_logger << DEBUG << "Filling electron Info 3" << LQLogger::endmsg;
+    m_logger << DEBUG << "Filling electron Info 3" << SNULogger::endmsg;
     /// set conversion variables
     
     if(electrons_shiftedEnDown){
@@ -553,7 +553,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetTrkVx(electrons_x->at(iel));
     el.SetTrkVy(electrons_y->at(iel));
     el.SetTrkVz(electrons_z->at(iel));
-    m_logger << DEBUG << "Filling electron Info 4" << LQLogger::endmsg;    
+    m_logger << DEBUG << "Filling electron Info 4" << SNULogger::endmsg;    
 
     //// Set Is ChargeFlip
     bool isprompt= false;
@@ -1055,7 +1055,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     }
     electrons.push_back(el);
   }
-  m_logger << DEBUG << "END electrons " << LQLogger::endmsg;
+  m_logger << DEBUG << "END electrons " << SNULogger::endmsg;
   std::sort( electrons.begin(), electrons.end(), isHigherPt );
   
   return electrons;
@@ -1064,7 +1064,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
 void SKTreeFiller::ERRORMessage(TString comment){
   
-  m_logger << ERROR << "SKTreeFiller had a probleming filling " << comment << ". This variable is not present in the current LQntuples." << LQLogger::endmsg;   
+  m_logger << ERROR << "SKTreeFiller had a probleming filling " << comment << ". This variable is not present in the current SNUntuples." << SNULogger::endmsg;   
 }
 
 
@@ -1073,7 +1073,7 @@ std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
 
   std::vector<KGenJet> genjets;
   if(isData) return genjets;
-  if(!LQinput){
+  if(!SNUinput){
     if(k_inputgenjets){
       for(std::vector<KGenJet>::iterator kit  = k_inputgenjets->begin(); kit != k_inputgenjets->end(); kit++){
 	genjets.push_back(*kit);
@@ -1106,7 +1106,7 @@ std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
 std::vector<KJet> SKTreeFiller::GetAllJets(){
 
   std::vector<KJet> jets;
-  if(!LQinput){
+  if(!SNUinput){
 
     for(std::vector<KJet>::iterator kit  = k_inputjets->begin(); kit != k_inputjets->end(); kit++){
       jets.push_back(*kit);
@@ -1204,7 +1204,7 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
   
   std::sort( jets.begin(), jets.end(), isHigherPt );
   
-  m_logger << DEBUG << "PFJet size = " << jets.size() << LQLogger::endmsg;
+  m_logger << DEBUG << "PFJet size = " << jets.size() << SNULogger::endmsg;
   return jets;
 }
 
@@ -1216,7 +1216,7 @@ std::vector<KFatJet> SKTreeFiller::GetAllFatJets(){
 
   if(k_cat_version <  7) return fatjets;
 
-  if(!LQinput){
+  if(!SNUinput){
 
     for(std::vector<KFatJet>::iterator kit  = k_inputfatjets->begin(); kit != k_inputfatjets->end(); kit++){
       fatjets.push_back(*kit);
@@ -1311,7 +1311,7 @@ std::vector<KFatJet> SKTreeFiller::GetAllFatJets(){
   }// end of jet                                                   
   std::sort( fatjets.begin(), fatjets.end(), isHigherPt );
 
-  m_logger << DEBUG << "PFJet size = " << fatjets.size() << LQLogger::endmsg;
+  m_logger << DEBUG << "PFJet size = " << fatjets.size() << SNULogger::endmsg;
   return fatjets;
 }
 
@@ -1321,20 +1321,20 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
   std::vector<KMuon> muons ;
   
-  if(!LQinput){
+  if(!SNUinput){
     for(std::vector<KMuon>::iterator kit  = k_inputmuons->begin(); kit != k_inputmuons->end(); kit++){
       muons.push_back(*kit);
     }  
     return muons;
   }
 
-  m_logger << DEBUG << "Filling Muons" << LQLogger::endmsg;
+  m_logger << DEBUG << "Filling Muons" << SNULogger::endmsg;
 
   vector<int> matched_truth;
   for (UInt_t ilep=0; ilep< muon_eta->size(); ilep++) {
     KMuon muon;
     if(muon_pt->at(ilep) != muon_pt->at(ilep)) continue;
-    m_logger << DEBUG << "Filling global pt/eta ... " << LQLogger::endmsg;
+    m_logger << DEBUG << "Filling global pt/eta ... " << SNULogger::endmsg;
    
     muon.SetTrigMatch(muon_trigmatch->at(ilep));
       
@@ -1371,7 +1371,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     }
     muon.SetCharge(muon_q->at(ilep));
      
-    m_logger << DEBUG << "Filling ms pt/eta ... " << LQLogger::endmsg;
+    m_logger << DEBUG << "Filling ms pt/eta ... " << SNULogger::endmsg;
  
     muon.SetRelIso(0.3,muon_relIso03->at(ilep));
     muon.SetRelIso(0.4,muon_relIso04->at(ilep));
@@ -1769,7 +1769,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
   }
   
   std::sort( muons.begin(), muons.end(), isHigherPt );
-  m_logger << DEBUG << "End of Muon Filling" << LQLogger::endmsg;
+  m_logger << DEBUG << "End of Muon Filling" << SNULogger::endmsg;
   return muons;
 }
 
@@ -1777,14 +1777,14 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
 std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
   
-  m_logger << DEBUG << "Filling Truth" << LQLogger::endmsg;
+  m_logger << DEBUG << "Filling Truth" << SNULogger::endmsg;
   std::vector<snu::KTruth> vtruth;
 
   if(isData) return vtruth;
 
   int counter=0;
 
-  if(!LQinput){
+  if(!SNUinput){
 
     for(std::vector<KTruth>::iterator kit  = k_inputtruth->begin(); kit != k_inputtruth->end(); kit++, counter++){
       if(counter == np)  break;
@@ -1793,7 +1793,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
     return vtruth;
   }
   
-  m_logger << DEBUG << "Filling truth Info: " << gen_pt->size() << LQLogger::endmsg;
+  m_logger << DEBUG << "Filling truth Info: " << gen_pt->size() << SNULogger::endmsg;
 
   for (UInt_t it=0; it< gen_pt->size(); it++ , counter++) {
     

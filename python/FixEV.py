@@ -7,6 +7,7 @@ parser.add_option("-x", "--x", dest="x", default="123",help="tag")
 (options, args) = parser.parse_args()
 filepath=options.x
 
+flag=os.getenv("Flag")
 
 
 filepathFix=filepath.replace(".txt","_fix.txt")

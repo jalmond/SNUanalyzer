@@ -1,8 +1,7 @@
-
 // $Id: SKTreeMakerFakeEl.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: SNUAnalyzer Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *
@@ -15,7 +14,7 @@
 #include "EventBase.h"                                                                                                                           
 
 
-//// Needed to allow inheritance for use in LQCore/core classes
+//// Needed to allow inheritance for use in SNUCore/core classes
 ClassImp (SKTreeMakerFakeHN);
 
 
@@ -33,7 +32,7 @@ SKTreeMakerFakeHN::SKTreeMakerFakeHN() :  AnalyzerCore(), out_muons(0), out_elec
   
 }
 
-void SKTreeMakerFakeHN::ExecuteEvents()throw( LQError ){
+void SKTreeMakerFakeHN::ExecuteEvents()throw( SNUError ){
   
   bool _doubleEG =(k_channel.Contains("DoubleEG"));
   bool _doubleMuon =(k_channel.Contains("DoubleMuon"));
@@ -51,11 +50,11 @@ void SKTreeMakerFakeHN::ExecuteEvents()throw( LQError ){
     if(PassTrigger(triggerslist_12)) passtrig=true;
     if(PassTrigger(triggerslist_18)) passtrig=true;
     if(PassTrigger(triggerslist_23)) passtrig=true;
-    if(!passtrig) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+    if(!passtrig) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
 
 
     std::vector<snu::KMuon> muonColl = GetMuons("MUON_HN_VETO");  // loose selection                                                                                                                                                               
-    if(muonColl.size() > 0) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+    if(muonColl.size() > 0) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
     
   }
   else if(_doubleMuon){
@@ -65,9 +64,9 @@ void SKTreeMakerFakeHN::ExecuteEvents()throw( LQError ){
     if(PassTrigger("HLT_Mu17_v")) passtrig=true;
     if(PassTrigger("HLT_Mu8_TrkIsoVVL_v")) passtrig=true;
     if(PassTrigger("HLT_Mu17_TrkIsoVVL_v")) passtrig=true;
-    if(!passtrig) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+    if(!passtrig) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
     std::vector<snu::KElectron> elColl = GetElectrons("ELECTRON_HN_VETO");  // loose selection                                                    
-    if(elColl.size() > 0) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+    if(elColl.size() > 0) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
 
   }
   else if(_singleMuon){
@@ -75,20 +74,20 @@ void SKTreeMakerFakeHN::ExecuteEvents()throw( LQError ){
     TString analysis_trigger_muon="HLT_IsoMu24_v";
     TString analysis_trigger_tkmuon="HLT_IsoTkMu24_v";
     
-    if(!(PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon)) )throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+    if(!(PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon)) )throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
     std::vector<snu::KElectron> elColl = GetElectrons("ELECTRON_HN_VETO");  // loose selection                                              
     
-    if(elColl.size() > 0) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+    if(elColl.size() > 0) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
     
   }
   else if(_singleEG){
 
     TString analysis_trigger_1="HLT_Ele27_WPTight_Gsf_v";
     TString analysis_trigger_2="HLT_Ele25_eta2p1_WPTight_Gsf_v";
-    if(!(PassTrigger(analysis_trigger_1) || PassTrigger(analysis_trigger_2)) )throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+    if(!(PassTrigger(analysis_trigger_1) || PassTrigger(analysis_trigger_2)) )throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
     
     std::vector<snu::KMuon> muonColl = GetMuons("MUON_HN_VETO");  // loose selection                                                        
-    if(muonColl.size() > 0) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+    if(muonColl.size() > 0) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
   }
   else {
     bool passtrig=false;
@@ -109,17 +108,17 @@ void SKTreeMakerFakeHN::ExecuteEvents()throw( LQError ){
     if(PassTrigger("HLT_Mu17_TrkIsoVVL_v")) passtrig=true;
     if(PassTrigger(analysis_trigger_1))  passtrig=true;
     if(PassTrigger(analysis_trigger_2))  passtrig=true;
-    if(!passtrig) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+    if(!passtrig) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
     
     std::vector<snu::KMuon> muonColl = GetMuons("MUON_HN_VETO");  // loose selection  
     std::vector<snu::KElectron> elColl = GetElectrons("ELECTRON_HN_VETO");  // loose selection                                                                                                                                                 
-    if((muonColl.size() > 0) && (elColl.size() > 0)) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+    if((muonColl.size() > 0) && (elColl.size() > 0)) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
     
-    if(muonColl.size() > 2) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-    if(elColl.size() > 2) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+    if(muonColl.size() > 2) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
+    if(elColl.size() > 2) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
   }
   std::vector<snu::KJet> jetCollTight = GetJets("JET_HN");
-  if(jetCollTight.size() ==0) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+  if(jetCollTight.size() ==0) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
  
 
 
@@ -160,7 +159,7 @@ void SKTreeMakerFakeHN::ExecuteEvents()throw( LQError ){
   eventbase->GetFatJetSel()->SetEta(5.);
   eventbase->GetFatJetSel()->BasicSelection(out_fatjets);
 
-  if(out_jets.size() ==0) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+  if(out_jets.size() ==0) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
 
   out_event   = eventbase->GetEvent();
   out_trigger = eventbase->GetTrigger();
@@ -171,18 +170,18 @@ void SKTreeMakerFakeHN::ExecuteEvents()throw( LQError ){
 
 
 
-void SKTreeMakerFakeHN::EndCycle()throw( LQError ){
+void SKTreeMakerFakeHN::EndCycle()throw( SNUError ){
   
   Message("In EndCycle" , INFO);
 }
 
 
-void SKTreeMakerFakeHN::BeginCycle() throw( LQError ){
+void SKTreeMakerFakeHN::BeginCycle() throw( SNUError ){
   
   Message("In begin Cycle", INFO);
 
-  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  DeclareVariable(out_electrons, "KElectrons", "LQTree");
+  //DeclareVariable(obj, label ); //-> will use default treename: SNUTree
+  DeclareVariable(out_electrons, "KElectrons", "SNUTree");
   DeclareVariable(out_photons, "KPhotons");
 
   DeclareVariable(out_muons, "KMuons");
@@ -282,7 +281,7 @@ void SKTreeMakerFakeHN::FillCutFlow(TString cut, float weight){
 
 
 
-void SKTreeMakerFakeHN::BeginEvent( )throw( LQError ){
+void SKTreeMakerFakeHN::BeginEvent( )throw( SNUError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -290,7 +289,7 @@ void SKTreeMakerFakeHN::BeginEvent( )throw( LQError ){
 }
 
 
-void SKTreeMakerFakeHN::ClearOutputVectors() throw (LQError){
+void SKTreeMakerFakeHN::ClearOutputVectors() throw (SNUError){
   //
   // Reset all variables declared in Declare Variable
   //

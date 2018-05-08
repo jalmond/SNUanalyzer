@@ -1,8 +1,8 @@
-#ifndef LQConstants_H
-#define LQConstants_H
+#ifndef SNUConstants_H
+#define SNUConstants_H
 
 
-namespace LQAnalysis {
+namespace SNUAnalysis {
 
   //  static const char* CycleConfigName      = "CycleConfig";
   // Add any constants to be used by core code

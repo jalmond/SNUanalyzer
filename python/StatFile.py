@@ -1,5 +1,7 @@
 import os,sys,getpass
 
+flag=os.getenv("Flag")
+
 
 def RoundMemory(mem):
     string_length= len(mem)
@@ -20,15 +22,15 @@ if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
 
 
 
-path_master=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION") +".txt"
-path_skel_master=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton.txt"
+path_master=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION") +".txt"
+path_skel_master=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton.txt"
 
 if not os.path.exists(path_master):
-    os.system("cp " + path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton_newversion.txt " + path_master )
+    os.system("cp " + path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton_newversion.txt " + path_master )
     os.system("chmod 777 " + path_master)
 
-if not os.path.exists(path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()):
-    os.system("mkdir  " + path_jobpre + "/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
+if not os.path.exists(path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()):
+    os.system("mkdir  " + path_jobpre + "/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
 
 from optparse import OptionParser
 parser = OptionParser()
@@ -42,8 +44,8 @@ sample=options.s
 njobs_submittest=int(options.n)
 
 
-path_job=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(filetag)+ "/statlog_time_"+sample + filetag + ".txt"
-path_tmpmaster=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/MasterFile_tmp" + filetag +sample+ ".txt"
+path_job=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(filetag)+ "/statlog_time_"+sample + filetag + ".txt"
+path_tmpmaster=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/MasterFile_tmp" + filetag +sample+ ".txt"
 
 os.system("cp " + path_master + " " + path_tmpmaster)
 
@@ -51,8 +53,8 @@ os.system("cp " + path_master + " " + path_tmpmaster)
 file_job=open(path_job,"r")
 file_tmpmaster=open(path_tmpmaster,"r")
 
-path_cluster=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_"+sample + filetag + ".txt"
-path_log=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" +sample+ filetag + ".log"
+path_cluster=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_"+sample + filetag + ".txt"
+path_log=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" +sample+ filetag + ".log"
 
 
 
@@ -154,7 +156,7 @@ if nclusterjobs == "":
     nclusterjobs=" NULL "
 
 
-path_jobinfo=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+month+"_"+year+".txt"
+path_jobinfo=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+month+"_"+year+".txt"
 if not os.path.exists(path_jobinfo):
     with open(path_jobinfo, "w") as myfile:
           myfile.write("Summary of CatAnalyzer Processes: month="+month+" year=" +year+"\n")

@@ -7,7 +7,7 @@ using namespace std;
 
 #include "TLorentzVector.h"
 #include <vector>
-#include "LQEvent.h"
+#include "SNUEvent.h"
 
 /// Selection codes
 #include "MuonSelection.h"
@@ -33,7 +33,7 @@ class EventBase {
 
  public:
   EventBase();
-  EventBase(LQEvent kbase);
+  EventBase(SNUEvent kbase);
   EventBase(EventBase& evbase);
   EventBase& operator= (const EventBase& obj);
   ~EventBase();
@@ -47,15 +47,15 @@ class EventBase {
   inline GenSelection* GetTruthSel() const {return k_truthsel;}
   inline EventSelection* GetEventSel() const {return k_eventsel;}
 
-  inline std::vector<snu::KMuon> GetMuons() const {return k_LQevent->GetMuons();}
-  inline std::vector<snu::KElectron> GetElectrons() const {return k_LQevent->GetElectrons();}
-  inline std::vector<snu::KPhoton> GetPhotons() const {return k_LQevent->GetPhotons();}
-  inline std::vector<snu::KJet> GetJets() const {return k_LQevent->GetJets();}
-  inline std::vector<snu::KFatJet> GetFatJets() const {return k_LQevent->GetFatJets();}
-  inline std::vector<snu::KGenJet> GetGenJets() const {return k_LQevent->GetGenJets();}
-  inline std::vector<snu::KTruth> GetTruth() const {return k_LQevent->GetTruth();}
-  inline snu::KTrigger GetTrigger() const {return k_LQevent->GetTrigger();}
-  inline snu::KEvent GetEvent() const {return k_LQevent->GetEvent();}
+  inline std::vector<snu::KMuon> GetMuons() const {return k_SNUevent->GetMuons();}
+  inline std::vector<snu::KElectron> GetElectrons() const {return k_SNUevent->GetElectrons();}
+  inline std::vector<snu::KPhoton> GetPhotons() const {return k_SNUevent->GetPhotons();}
+  inline std::vector<snu::KJet> GetJets() const {return k_SNUevent->GetJets();}
+  inline std::vector<snu::KFatJet> GetFatJets() const {return k_SNUevent->GetFatJets();}
+  inline std::vector<snu::KGenJet> GetGenJets() const {return k_SNUevent->GetGenJets();}
+  inline std::vector<snu::KTruth> GetTruth() const {return k_SNUevent->GetTruth();}
+  inline snu::KTrigger GetTrigger() const {return k_SNUevent->GetTrigger();}
+  inline snu::KEvent GetEvent() const {return k_SNUevent->GetEvent();}
 
   void SetEventBase(snu::KEvent); 
 
@@ -63,9 +63,9 @@ class EventBase {
   ///Copy constructor
   EventBase(const EventBase& sb);
   
-  LQEvent* GetEventBase() const {return k_LQevent;}
+  SNUEvent* GetEventBase() const {return k_SNUevent;}
 
-  LQEvent* k_LQevent;
+  SNUEvent* k_SNUevent;
   MuonSelection* k_muonsel;
   ElectronSelection* k_electronsel;
   PhotonSelection* k_photonsel;

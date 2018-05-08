@@ -1,8 +1,8 @@
 // Local includes
-#include "LQController.h"
-#include "ILQCycleBase.h"
-#include "LQLogWriter.h"
-#include "LQConstants.h"
+#include "SNUController.h"
+#include "ISNUCycleBase.h"
+#include "SNULogWriter.h"
+#include "SNUConstants.h"
 
 
 // System include(s):                                                           
@@ -29,7 +29,7 @@
 
 
 
-LQController::LQController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"),skimName(""), jobName("Test"), tagName(""),treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),runnp(false), runcf(false), runtau(false), m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0),v_user_flags(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true) {
+SNUController::SNUController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"),skimName(""), jobName("Test"), tagName(""),treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),runnp(false), runcf(false), runtau(false), m_logger( "SNUCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0),v_user_flags(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kSNUInput(true) {
   
   catversion_lq = none;
   chain = NULL;
@@ -64,35 +64,35 @@ LQController::LQController():inputType(NOTSET), outputLevelString("INFO"), Cycle
   h_physicalmemory_hist->GetXaxis()->SetBinLabel(8, "EndCycle");
 }
 
-LQController::~LQController(){
+SNUController::~SNUController(){
   
   delete h_timing_hist;
   delete h_virtmemory_hist;
   delete h_physicalmemory_hist;
 }
 
-void LQController::AddLibraries(TString libname){
+void SNUController::AddLibraries(TString libname){
   v_libnames.push_back(libname);
   
 }
-void LQController::RunNtupleEvent(Long64_t pick_event){
+void SNUController::RunNtupleEvent(Long64_t pick_event){
   list_to_run.push_back(pick_event);
 }
 
-void LQController::RunEvent(Long64_t ev){
+void SNUController::RunEvent(Long64_t ev){
 
   if(ev==-1) return;
   run_single_event=true;
   single_ev=ev;
 }
 
-void LQController::SetOutPutStep(int step){
+void SNUController::SetOutPutStep(int step){
   output_step = step;
 }
 
-void LQController::SetName(TString name, Int_t version, TString dir) {
+void SNUController::SetName(TString name, Int_t version, TString dir) {
   
-  string out_dir = getenv("LQANALYZER_OUTPUT_PATH");
+  string out_dir = getenv("SNUANALYZER_OUTPUT_PATH");
   if(!dir.Contains("NULL")) out_dir = dir;
   
   completename = TString(out_dir) + name + "_";
@@ -102,16 +102,16 @@ void LQController::SetName(TString name, Int_t version, TString dir) {
   return;
 }
 
-void LQController::SkipEvents(int toskip){
+void SNUController::SkipEvents(int toskip){
   n_ev_to_skip = toskip;
 }
 
 
-void LQController::SetInputChain(TChain* ch){
+void SNUController::SetInputChain(TChain* ch){
   chain = ch;
 }
 
-void LQController::SetUserFlag(TString flag){
+void SNUController::SetUserFlag(TString flag){
   
   //stringstream ss(flag); // Turn the string into a stream.
   //std::string tok;
@@ -129,7 +129,7 @@ void LQController::SetUserFlag(TString flag){
   
 }
 
-void LQController::SetDataType(TString settype){
+void SNUController::SetDataType(TString settype){
   
   if     ( settype == "Data" )    inputType = data;
   else if( settype == "data" )    inputType = data;
@@ -140,30 +140,30 @@ void LQController::SetDataType(TString settype){
   
 }
 
-void LQController::RunTauMode(TString runt){
+void SNUController::RunTauMode(TString runt){
   if(runt.Contains("True")) runtau= true;
   else runtau=false;
-  if(runt.Contains("True"))m_logger << INFO << "Running tau->e background estimate" << LQLogger::endmsg;
+  if(runt.Contains("True"))m_logger << INFO << "Running tau->e background estimate" << SNULogger::endmsg;
 
 
 }
-void LQController::RunNonPrompt(TString np){
+void SNUController::RunNonPrompt(TString np){
 
   if(np.Contains("True")) runnp = true;
   else runnp = false;
-  if(np.Contains("True"))m_logger << INFO << "Running Non-Prompt background estimate" << LQLogger::endmsg; 
+  if(np.Contains("True"))m_logger << INFO << "Running Non-Prompt background estimate" << SNULogger::endmsg; 
 }
 
 
-void LQController::RunChargeFlip(TString cf){
+void SNUController::RunChargeFlip(TString cf){
 
   if(cf.Contains("True")) runcf = true;
   else runcf = false;
-  if(cf.Contains("True"))m_logger << INFO << "Running ChargeFlip background estimate" << LQLogger::endmsg;
+  if(cf.Contains("True"))m_logger << INFO << "Running ChargeFlip background estimate" << SNULogger::endmsg;
 }
 
 
-std::pair<Double_t, Double_t>  LQController::GetTotalEvents() throw (LQError){
+std::pair<Double_t, Double_t>  SNUController::GetTotalEvents() throw (SNUError){
   
   if(fullfilelist.Contains("NULL")){
     return std::make_pair(0.,0.);
@@ -180,7 +180,7 @@ std::pair<Double_t, Double_t>  LQController::GetTotalEvents() throw (LQError){
 
       TFile * file = TFile::Open(word.c_str());
       TH1F*  EventCounter = (TH1F*) (file ->Get("hNEvent"));
-      if(!EventCounter) throw LQError( "hNEvent NOT found!!!",   LQError::StopExecution );
+      if(!EventCounter) throw SNUError( "hNEvent NOT found!!!",   SNUError::StopExecution );
 
       total_events_beforeskim += EventCounter->GetBinContent(1);
       total_events_afterskim += EventCounter->GetBinContent(1);
@@ -195,11 +195,11 @@ std::pair<Double_t, Double_t>  LQController::GetTotalEvents() throw (LQError){
 }
 
 
-void LQController::SetChannel(TString ch){
+void SNUController::SetChannel(TString ch){
   
   if(catversion_lq== none) {
-    m_logger << ERROR << "Failed to correctly set data period" << LQLogger::endmsg;
-    throw LQError( "This is because catversion was not set... Fix this    ",          LQError::StopExecution );
+    m_logger << ERROR << "Failed to correctly set data period" << SNULogger::endmsg;
+    throw SNUError( "This is because catversion was not set... Fix this    ",          SNUError::StopExecution );
   }
   if     (ch == "DoubleMuon")  channel = "DoubleMuon";
   else if     (ch == "DoubleMuon_CF")  channel = "DoubleMuon_CF";
@@ -208,14 +208,14 @@ void LQController::SetChannel(TString ch){
   else if     (ch == "SingleMuon")      channel = "SingleMuon";
   else if     (ch == "SingleElectron")  channel = "SingleElectron";
   else if     (ch == "SinglePhoton")  channel = "SinglePhoton";
-  else throw LQError( "No channel set. Not names have changed in v76X+",LQError::SkipCycle);
+  else throw SNUError( "No channel set. Not names have changed in v76X+",SNUError::SkipCycle);
   
 }
-void LQController::SetDataPeriod(TString period){
+void SNUController::SetDataPeriod(TString period){
   
   if(catversion_lq== none) {
-    m_logger << ERROR << "Failed to correctly set data period" << LQLogger::endmsg;
-    throw LQError( "This is because catversion was not set... Fix this  ",            LQError::StopExecution );
+    m_logger << ERROR << "Failed to correctly set data period" << SNULogger::endmsg;
+    throw SNUError( "This is because catversion was not set... Fix this  ",            SNUError::StopExecution );
   }
   
   if( period == "All") period = "ALL";
@@ -225,7 +225,7 @@ void LQController::SetDataPeriod(TString period){
 
 }
 
-int LQController::VersionStamp(){
+int SNUController::VersionStamp(){
   
   string cat_version=getenv("cat_version");
   int cv(0);
@@ -235,37 +235,37 @@ int LQController::VersionStamp(){
 
 }
 
-void LQController::SetTotalMCEvents(int ev){
+void SNUController::SetTotalMCEvents(int ev){
   n_total_event = ev;
 }
   
-void LQController::SetMCCrossSection(float xsec){
-  m_logger << INFO << "Set cross section: This is be used to calculate event weights. WARNING be careful." << LQLogger::endmsg;
-  m_logger << INFO << "Will use weight = (lumi *  cs(pb) * gen filter efficiency) / MCevents "  << LQLogger::endmsg;
+void SNUController::SetMCCrossSection(float xsec){
+  m_logger << INFO << "Set cross section: This is be used to calculate event weights. WARNING be careful." << SNULogger::endmsg;
+  m_logger << INFO << "Will use weight = (lumi *  cs(pb) * gen filter efficiency) / MCevents "  << SNULogger::endmsg;
   sample_crosssection = xsec;
 }
 
 
-void LQController::SetJobName(TString name){
+void SNUController::SetJobName(TString name){
   jobName = name;
 }
   
 
-void LQController::SetTagName(TString name){
+void SNUController::SetTagName(TString name){
   tagName = name;
 }
 
 
 
-void LQController::SetInputList(TString list) throw( LQError ){
+void SNUController::SetInputList(TString list) throw( SNUError ){
   filelist = list;
 
-  if(filelist == "0") throw LQError( "No input filelist",
-				     LQError::StopExecution );
+  if(filelist == "0") throw SNUError( "No input filelist",
+				     SNUError::StopExecution );
 
   if(filelist.Contains("NULL")){
-    throw LQError( "Filelist is null!!!",
-		   LQError::StopExecution );
+    throw SNUError( "Filelist is null!!!",
+		   SNUError::StopExecution );
   }
   std::ifstream fin(filelist.Data());
   std::string word;
@@ -278,51 +278,51 @@ void LQController::SetInputList(TString list) throw( LQError ){
   }
 }
 
-void LQController::SetFullInputList(TString list){
+void SNUController::SetFullInputList(TString list){
   fullfilelist = list;
 }
 
-void LQController::SetTreeName(TString treename){
+void SNUController::SetTreeName(TString treename){
   treeName = treename;
 }
 
-void LQController::SetCycleName(TString cyclename){
+void SNUController::SetCycleName(TString cyclename){
   CycleName= cyclename;
 
 }
 
-void LQController::SetSkimName(TString skimname){
+void SNUController::SetSkimName(TString skimname){
   skimName= skimname;
 
 }
 
 
-void LQController::SetLogLevel(TString  level){
+void SNUController::SetLogLevel(TString  level){
   outputLevelString = level;
 }
 
 
 
-void LQController::SetNEventsToProcess(int nevents){
+void SNUController::SetNEventsToProcess(int nevents){
 
   nevents_to_process = nevents;
 }
 
-void LQController::SetTargetLuminosity(float target_lumi){
+void SNUController::SetTargetLuminosity(float target_lumi){
 
   target_luminosity= target_lumi;
 }
   
 
-void LQController::SetEffectiveLuminosity(float eff_lumi){
+void SNUController::SetEffectiveLuminosity(float eff_lumi){
 
   effective_luminosity= eff_lumi;
 }
 
 
-void LQController::Initialize() throw( LQError ){
+void SNUController::Initialize() throw( SNUError ){
   
-  m_logger << DEBUG << "Initializing" << LQLogger::endmsg;
+  m_logger << DEBUG << "Initializing" << SNULogger::endmsg;
   
   GetMemoryConsumption("Start of Initialize()");
 
@@ -341,7 +341,7 @@ void LQController::Initialize() throw( LQError ){
     4) Set jobName
   */
   
-  LQMsgType type = INFO;
+  SNUMsgType type = INFO;
   if     ( outputLevelString == "VERBOSE" ) type = VERBOSE;
   else if( outputLevelString == "DEBUG" )   type = DEBUG;
   else if( outputLevelString == "INFO" )    type = INFO;
@@ -352,10 +352,10 @@ void LQController::Initialize() throw( LQError ){
   else {
     m_logger << WARNING << "Message output level ("
 	     << outputLevelString << ") not recognized"
-	     << LQLogger::endmsg;
+	     << SNULogger::endmsg;
   }
   
-  LQLogWriter::Instance()->SetMinType( type );
+  SNULogWriter::Instance()->SetMinType( type );
   
   
   ////// Either  use default OR use class specified by user
@@ -366,9 +366,9 @@ void LQController::Initialize() throw( LQError ){
       int ret = 0;
       if( ( ret = gSystem->Load( libraryName.Data() ) ) >= 0 ) {
 	m_logger << INFO << "Library loaded: \"" << libraryName << "\""
-		 << LQLogger::endmsg;
+		 << SNULogger::endmsg;
       } else {
-	LQError error( LQError::StopExecution );
+	SNUError error( SNUError::StopExecution );
 	error << "Library failed to load: \"" << libraryName
 	<< "\"\nRet. Val.: " << ret;
 	throw error;
@@ -379,54 +379,54 @@ void LQController::Initialize() throw( LQError ){
     
     FillMemoryHists("LoadLibraries");
   }
-  catch( const LQError& error ) {
+  catch( const SNUError& error ) {
     //                                                                                                              
     // This is where I catch "cycle level" problems:                                                                
     //                                                                                                              
-    if( error.request() <= LQError::SkipCycle ) {
+    if( error.request() <= SNUError::SkipCycle ) {
     //// If just this cycle has to be skipped:                                                                     
       REPORT_ERROR( "Message: " << error.what() );
       REPORT_ERROR( "--> Skipping cycle!" );
       
       return;
     } else {
-      m_logger << INFO << "FAILED" << LQLogger::endmsg;
+      m_logger << INFO << "FAILED" << SNULogger::endmsg;
      // If this is more serious:                                                                                  
       throw;
     }
   }
   
-  m_logger << INFO << "Job '" << jobName << "' configured" << LQLogger::endmsg;
+  m_logger << INFO << "Job '" << jobName << "' configured" << SNULogger::endmsg;
   
   timer.Stop();
   m_logger << INFO << "Time needed for initialisation: " << std::setw( 6 )
 	   << std::setprecision( 2 ) << timer.RealTime() << " s"
-	   << LQLogger::endmsg;
+	   << SNULogger::endmsg;
   h_timing_hist->Fill("Initialisation", timer.RealTime());
   // Print memory consumption after initialising the analysis:                                                             
   ProcInfo_t procinfo;
   gSystem->GetProcInfo( &procinfo );
-  m_logger << DEBUG << "Memory consumption after initialisation:" << LQLogger::endmsg;
+  m_logger << DEBUG << "Memory consumption after initialisation:" << SNULogger::endmsg;
   m_logger.setf( std::ios::fixed );
   m_logger << DEBUG << "  Resident mem.: " << std::setw( 7 ) << procinfo.fMemResident
 	   << " kB; Virtual mem.: " << std::setw( 7 ) << procinfo.fMemVirtual
-	   << " kB" << LQLogger::endmsg;
+	   << " kB" << SNULogger::endmsg;
   
   FillMemoryHists("EndInitialization");
   // set object status to be ready                                                                                         
   m_isInitialized = kTRUE;
 }
 
-void LQController::ExecuteCycle() throw( LQError ) {
+void SNUController::ExecuteCycle() throw( SNUError ) {
     
   if( ! m_isInitialized ) {
-    throw LQError( "LQCycleController is not initialized",
-    LQError::StopExecution );
+    throw SNUError( "SNUCycleController is not initialized",
+    SNUError::StopExecution );
   }
 
   TString muonfitParametersFile = "";
   GetMemoryConsumption("Start of ExecuteCycle");
-  m_logger << DEBUG << "Entering ExecuteCycles" << LQLogger::endmsg;
+  m_logger << DEBUG << "Entering ExecuteCycles" << SNULogger::endmsg;
 
   //                                                                                                                       
   // Measure the total time needed for this cycle:                                                                         
@@ -441,15 +441,15 @@ void LQController::ExecuteCycle() throw( LQError ) {
     
     TClass* cycleClass  = gROOT->GetClass(CycleName.Data(), true);
     if( ! cycleClass){
-      LQError error( LQError::SkipCycle );
-      m_logger << INFO << "Failed to get class" <<  LQLogger::endmsg;
+      SNUError error( SNUError::SkipCycle );
+      m_logger << INFO << "Failed to get class" <<  SNULogger::endmsg;
       throw error;
     }
-    ILQCycleBase* cycle = reinterpret_cast<ILQCycleBase*> ( cycleClass->New());
+    ISNUCycleBase* cycle = reinterpret_cast<ISNUCycleBase*> ( cycleClass->New());
     
     TString      cycleName = CycleName;
     m_logger << INFO << "Created cycle '" << cycleName << "'"
-             << LQLogger::endmsg;
+             << SNULogger::endmsg;
     
     cycle->SetAnalyzerClassName(cycleName);
     cycle->SetSkimName(skimName);
@@ -467,7 +467,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
       // This is if set by user:
       if(inputType == data) cycle->SetDataType(true);
       else if(inputType == mc) cycle->SetDataType(false);
-      else throw LQError( "InputType is wrongly configured",LQError::SkipCycle);
+      else throw SNUError( "InputType is wrongly configured",SNUError::SkipCycle);
     }
     cycle->SetFlags(v_user_flags);
 
@@ -485,54 +485,54 @@ void LQController::ExecuteCycle() throw( LQError ) {
     GetMemoryConsumption("Ran Begin Cycle");
 
     
-    if(!kLQInput){
+    if(!kSNUInput){
       /// Use SKTree input
 
-      chain = new TChain( "LQTree" );
+      chain = new TChain( "SNUTree" );
       if(filelist.Contains("NULL")){
-	throw LQError( "Filelist is null!!!",
-		       LQError::StopExecution );
+	throw SNUError( "Filelist is null!!!",
+		       SNUError::StopExecution );
       }
       std::ifstream fin(filelist.Data());
       std::string word;
       
       if(!chain) {
-	throw LQError( "Chain is null!!!",
-		       LQError::StopExecution );
+	throw SNUError( "Chain is null!!!",
+		       SNUError::StopExecution );
       }
       
       if(fin.is_open()){
 	while(getline (fin,word)){
-	  m_logger <<  INFO << "- " << word << LQLogger::endmsg;
+	  m_logger <<  INFO << "- " << word << SNULogger::endmsg;
 	  chain->Add(word.c_str());
 	}
 	fin.close();
        
       }
-      cycle->SetLQNtupleInputType(false);
+      cycle->SetSNUNtupleInputType(false);
     }
     else{
-      cycle->SetLQNtupleInputType(true);
+      cycle->SetSNUNtupleInputType(true);
       if(!chain){
-	m_logger << INFO << filelist << LQLogger::endmsg;
-	if(filelist == "0") throw LQError( "No input filelist",
-					   LQError::StopExecution );
+	m_logger << INFO << filelist << SNULogger::endmsg;
+	if(filelist == "0") throw SNUError( "No input filelist",
+					   SNUError::StopExecution );
 	///  Get Tree Name / input filename
 	chain = new TChain( treeName );
 	if(filelist.Contains("NULL")){
-	  throw LQError( "Filelist is null!!!",
-			 LQError::StopExecution );
+	  throw SNUError( "Filelist is null!!!",
+			 SNUError::StopExecution );
 	}
 	std::ifstream fin(filelist.Data());
 	std::string word;
 	if(!chain) {
-	  throw LQError( "Chain is null!!!",
-			 LQError::StopExecution );
+	  throw SNUError( "Chain is null!!!",
+			 SNUError::StopExecution );
 	}
 	
 	if(fin.is_open()){
 	  while(getline (fin,word)){      
-	    m_logger <<  INFO << "- " << word << LQLogger::endmsg;
+	    m_logger <<  INFO << "- " << word << SNULogger::endmsg;
 	    chain->Add(word.c_str());
 	  }
 	  fin.close();
@@ -550,10 +550,10 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     //// Connect chain to Data class                                                                                                                                        
     if(inputType!=NOTSET) {
-      if(inputType == data) cycle->SetLQNtupleInputType(1 );
-      else if(inputType == mc)  cycle->SetLQNtupleInputType(2 );
+      if(inputType == data) cycle->SetSNUNtupleInputType(1 );
+      else if(inputType == mc)  cycle->SetSNUNtupleInputType(2 );
     }
-    else cycle->SetLQNtupleInputType(3 );
+    else cycle->SetSNUNtupleInputType(3 );
 
 
     GetMemoryConsumption("Connected All Active Branches");
@@ -570,11 +570,11 @@ void LQController::ExecuteCycle() throw( LQError ) {
       // This is if set by user:
       if(inputType == data) cycle->SetDataType(true);
       else if(inputType == mc) cycle->SetDataType(false);
-      else throw LQError( "InputType is wrongly configured",LQError::SkipCycle);
+      else throw SNUError( "InputType is wrongly configured",SNUError::SkipCycle);
     }
     else{
       /// Get answer from input ntuple
-      m_logger <<  INFO << chain <<  LQLogger::endmsg;
+      m_logger <<  INFO << chain <<  SNULogger::endmsg;
       cycle->LoadTree(1);
       cycle->GetInputTree()->GetEntry(1,0);/// Get first entry in ntuple
       bool alt_isdata =  cycle->isData;
@@ -587,8 +587,8 @@ void LQController::ExecuteCycle() throw( LQError ) {
     Long64_t nentries = cycle->GetNEntries(); /// This is total number of events in Input list    
     if(n_ev_to_skip > nentries) n_ev_to_skip =0;
     
-    if((k_period != "NOTSET") && (inputType == data)) m_logger << INFO << "Running on Data: Period " << k_period  << LQLogger::endmsg;
-    if((k_period != "NOTSET") && (inputType == mc)) m_logger << INFO << "Running on MC: This will be weighted to represent period " << k_period << " of data" << LQLogger::endmsg;
+    if((k_period != "NOTSET") && (inputType == data)) m_logger << INFO << "Running on Data: Period " << k_period  << SNULogger::endmsg;
+    if((k_period != "NOTSET") && (inputType == mc)) m_logger << INFO << "Running on MC: This will be weighted to represent period " << k_period << " of data" << SNULogger::endmsg;
     
     if(k_period == "B") cycle->SetMCPeriod(1); 
     else if(k_period == "C") cycle->SetMCPeriod(2); 
@@ -609,18 +609,18 @@ void LQController::ExecuteCycle() throw( LQError ) {
     GetMemoryConsumption("Calculated Weight");
     // Set number of event
     if(nevents_to_process > nentries || (nevents_to_process == -1) ) nevents_to_process = nentries;
-    else if( nevents_to_process <=0) throw LQError( "nevents_to_process  is wrongly configured",LQError::SkipCycle);
+    else if( nevents_to_process <=0) throw SNUError( "nevents_to_process  is wrongly configured",SNUError::SkipCycle);
     else {
       if(inputType == mc) ev_weight *= (nentries/nevents_to_process);
-      if(inputType == mc) m_logger << INFO << "Weight is recalculated. Since user set a specific number of entries" << LQLogger::endmsg;
-      if(inputType == data) m_logger << WARNING << "Weight is not recalculated (as it is data). Even though user set a number of entries to run on." << LQLogger::endmsg;
+      if(inputType == mc) m_logger << INFO << "Weight is recalculated. Since user set a specific number of entries" << SNULogger::endmsg;
+      if(inputType == data) m_logger << WARNING << "Weight is not recalculated (as it is data). Even though user set a number of entries to run on." << SNULogger::endmsg;
     }
     cycle->SetNEventsToProcess(nevents_to_process);
     cycle->SetOutPutStep(output_step);
     
     //// Help user understand  event readout
-    if(nevents_to_process == nentries) m_logger << INFO <<  "Processing entry (#entry)/(#enties In Job)"<< LQLogger::endmsg;
-    else  m_logger << INFO <<  "Processing entry (#entry)/(#enties to process) [(#Entries in input sample)]"<< LQLogger::endmsg;
+    if(nevents_to_process == nentries) m_logger << INFO <<  "Processing entry (#entry)/(#enties In Job)"<< SNULogger::endmsg;
+    else  m_logger << INFO <<  "Processing entry (#entry)/(#enties to process) [(#Entries in input sample)]"<< SNULogger::endmsg;
 
     timer.Stop();
     h_timing_hist->Fill("BeginCycle", timer.RealTime());
@@ -646,12 +646,12 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	  cycle->ClearOutputVectors();
 	  cycle->BeginEvent();
 	  if(list_entry==0){
-	    if(!CheckBranch(cycle->GetCatVersion(kLQInput), catversion_env)) throw LQError( "Error in catversion.... Either you need to update LQanalyzer or you are running on a directory name which does not contain the catuple version in the path ",LQError::SkipCycle);
+	    if(!CheckBranch(cycle->GetCatVersion(kSNUInput), catversion_env)) throw SNUError( "Error in catversion.... Either you need to update SNUanalyzer or you are running on a directory name which does not contain the catuple version in the path ",SNUError::SkipCycle);
 	  }
 	  cycle->ExecuteEvents();
 	  cycle->EndEvent();
-	} catch( const LQError& error ) {
-	  if( error.request() <= LQError::SkipEvent ) {
+	} catch( const SNUError& error ) {
+	  if( error.request() <= SNUError::SkipEvent ) {
 	    skipEvent = kTRUE;
 	  } else {
 	    throw;
@@ -665,7 +665,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	Long64_t ifentry =	cycle->LoadTree(jentry);
 	if (ifentry < 0) break;
 	cycle->GetEntry(jentry);	
-	if(!(jentry%50000)) m_logger << INFO << "Processing event " << jentry << " " << cycle->GetEventNumber() << LQLogger::endmsg;
+	if(!(jentry%50000)) m_logger << INFO << "Processing event " << jentry << " " << cycle->GetEventNumber() << SNULogger::endmsg;
 	if(cycle->GetEventNumber() == single_ev){
 	  Long64_t ifentry =cycle->LoadTree(jentry);
           if (ifentry < 0) break;
@@ -673,7 +673,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	  cycle->ClearOutputVectors();
 	  cycle->BeginEvent();
 	  if(jentry==n_ev_to_skip){
-            if(!CheckBranch(cycle->GetCatVersion(kLQInput), catversion_env)) throw LQError( "Error in catversion.... Either you need to update LQanalyzer or you are running on a directory name which does not contain the catuple version in the path ",LQError::SkipCycle);
+            if(!CheckBranch(cycle->GetCatVersion(kSNUInput), catversion_env)) throw SNUError( "Error in catversion.... Either you need to update SNUanalyzer or you are running on a directory name which does not contain the catuple version in the path ",SNUError::SkipCycle);
           }
 	  cycle->ExecuteEvents();
 	  cycle->EndEvent();
@@ -684,35 +684,35 @@ void LQController::ExecuteCycle() throw( LQError ) {
     }
     else{
       for (Long64_t jentry = n_ev_to_skip; jentry < nevents_to_process; jentry++ ) {            
-	m_logger << DEBUG << "cycle->SetUpEvent " << LQLogger::endmsg;
+	m_logger << DEBUG << "cycle->SetUpEvent " << SNULogger::endmsg;
 	Bool_t skipEvent = kFALSE;
         try {
-	  m_logger << DEBUG << "cycle->GetEvent " << LQLogger::endmsg;
+	  m_logger << DEBUG << "cycle->GetEvent " << SNULogger::endmsg;
 	  Long64_t ifentry =cycle->LoadTree(jentry);
 	  if (ifentry < 0) break;    
 	  cycle->GetEntry(jentry);
-	  m_logger << DEBUG <<   jentry << LQLogger::endmsg;
-	  m_logger << DEBUG << "cycle->SetUpEvent " << LQLogger::endmsg;
+	  m_logger << DEBUG <<   jentry << SNULogger::endmsg;
+	  m_logger << DEBUG << "cycle->SetUpEvent " << SNULogger::endmsg;
 	  cycle->SetUpEvent(jentry, ev_weight);
 	  
-	  m_logger << DEBUG << "cycle->BeginEvent " << LQLogger::endmsg;
+	  m_logger << DEBUG << "cycle->BeginEvent " << SNULogger::endmsg;
 	  cycle->ClearOutputVectors();
 	  cycle->BeginEvent();   
 	  /// executes analysis code
 	  if(jentry==n_ev_to_skip){
-            if(!CheckBranch(cycle->GetCatVersion(kLQInput), catversion_env)) throw LQError( "Error in catversion.... Either you need to update LQanalyzer or you are running on a directory name which does not contain the catuple version in the path ",LQError::SkipCycle);
+            if(!CheckBranch(cycle->GetCatVersion(kSNUInput), catversion_env)) throw SNUError( "Error in catversion.... Either you need to update SNUanalyzer or you are running on a directory name which does not contain the catuple version in the path ",SNUError::SkipCycle);
           }
-	  m_logger << DEBUG << "cycle->ExecuteEvent start " << LQLogger::endmsg;
+	  m_logger << DEBUG << "cycle->ExecuteEvent start " << SNULogger::endmsg;
 
 	  cycle->ExecuteEvents();
-          m_logger << DEBUG << "cycle->ExecuteEvent " << LQLogger::endmsg;
+          m_logger << DEBUG << "cycle->ExecuteEvent " << SNULogger::endmsg;
 
 	  // cleans up any pointers etc.
 	  cycle->EndEvent();
-	  m_logger << DEBUG << "cycle->ENDEvent " << LQLogger::endmsg;	  
+	  m_logger << DEBUG << "cycle->ENDEvent " << SNULogger::endmsg;	  
 	}
-	catch( const LQError& error ) {
-          if( error.request() <= LQError::SkipEvent ) {
+	catch( const SNUError& error ) {
+          if( error.request() <= SNUError::SkipEvent ) {
             skipEvent = kTRUE;
 	    cycle->EndEvent();
           } else {
@@ -748,7 +748,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
     //    timer.Stop();
     h_timing_hist->Fill("FullExecute", timer.RealTime());
     //timer.Start();
-    m_logger << INFO << "Execute time = " << timer.RealTime() << " s" << LQLogger::endmsg;
+    m_logger << INFO << "Execute time = " << timer.RealTime() << " s" << SNULogger::endmsg;
     FillMemoryHists("FullExecute");
     
     cycle->SaveOutputTrees(cycle->GetOutputFile());
@@ -763,17 +763,17 @@ void LQController::ExecuteCycle() throw( LQError ) {
     cycle->WriteCycleHists(h_timing_hist,h_virtmemory_hist,h_physicalmemory_hist);
     cycle->CloseFiles();
 
-    m_logger << INFO << "Number of event processed = " << m_nProcessedEvents << LQLogger::endmsg;
-    m_logger << INFO << "Number of event skipped = " << m_nSkippedEvents << LQLogger::endmsg;
+    m_logger << INFO << "Number of event processed = " << m_nProcessedEvents << SNULogger::endmsg;
+    m_logger << INFO << "Number of event skipped = " << m_nSkippedEvents << SNULogger::endmsg;
     
     GetMemoryConsumption("Finished Running Cycle");
   }
   
-  catch( const LQError& error ) {
+  catch( const SNUError& error ) {
     // 
     // This is where I catch "cycle level" problems: 
     //                                                                                                                                                            
-    if( error.request() <= LQError::SkipCycle ) {
+    if( error.request() <= SNUError::SkipCycle ) {
       //If just this cycle has to be skipped:                                                                                                                    
       REPORT_ERROR( "Message: " << error.what() );
       REPORT_ERROR( "--> Skipping cycle!" );
@@ -787,16 +787,16 @@ void LQController::ExecuteCycle() throw( LQError ) {
   
 }
  
-std::string LQController::SetNTCatVersion(){
+std::string SNUController::SetNTCatVersion(){
   return string(getenv("CATVERSION"));
 
 }
 
-void LQController::SetLQInput(bool lq){
-  kLQInput=lq;
+void SNUController::SetSNUInput(bool lq){
+  kSNUInput=lq;
 }
 
-bool LQController::CheckBranch(std::string ntuple_version, std::string version_env){
+bool SNUController::CheckBranch(std::string ntuple_version, std::string version_env){
   TString ntuple_path(ntuple_version);
   TString env_path(version_env);
 
@@ -809,20 +809,20 @@ bool LQController::CheckBranch(std::string ntuple_version, std::string version_e
 }
   
 
-LQController::_catversion  LQController::GetCatVersion(std::string filepath) throw(LQError){
+SNUController::_catversion  SNUController::GetCatVersion(std::string filepath) throw(SNUError){
   TString ts_path(filepath); 
   if(ts_path.Contains(getenv("CATVERSION"))) return v801;
   
   else cout << "WARNING CATVERSION cannot be found in input dir name... " << endl;
-  //throw LQError( "CATVERSION cannot be found in input dir name... If you are running your own sample make give the input dir a name with /v-X-X-X/ corresponding to catversion you are using!",   LQError::StopExecution );
+  //throw SNUError( "CATVERSION cannot be found in input dir name... If you are running your own sample make give the input dir a name with /v-X-X-X/ corresponding to catversion you are using!",   SNUError::StopExecution );
   
 }
 
-float LQController::CalculateWeight() throw(LQError) {
+float SNUController::CalculateWeight() throw(SNUError) {
   
   // First check that sample is MC
   if(inputType == NOTSET){
-    throw LQError( "inputType is failed to be set!!",   LQError::StopExecution );
+    throw SNUError( "inputType is failed to be set!!",   SNUError::StopExecution );
     return 1.;
   }
   if(inputType == data) return 1.;
@@ -831,58 +831,58 @@ float LQController::CalculateWeight() throw(LQError) {
   // Calculate weight for MC
   //
   
-  m_logger <<  INFO << "Target lumi = " << target_luminosity << " " << effective_luminosity << LQLogger::endmsg;
+  m_logger <<  INFO << "Target lumi = " << target_luminosity << " " << effective_luminosity << SNULogger::endmsg;
   if(target_luminosity != 1. || effective_luminosity != 1.){
-    m_logger <<  INFO << "Target lumi = " << target_luminosity <<LQLogger::endmsg;
-    //if(target_luminosity == 1. ) m_logger << WARNING << "Target_luminosity is set to 1. while effective_luminosity is not. Is this correct?" <<LQLogger::endmsg;
-    if(effective_luminosity == 1. ) m_logger << WARNING <<"Effective_luminosity is set to 1. while target_luminosity is not. Is this correct?" <<LQLogger::endmsg;    
+    m_logger <<  INFO << "Target lumi = " << target_luminosity <<SNULogger::endmsg;
+    //if(target_luminosity == 1. ) m_logger << WARNING << "Target_luminosity is set to 1. while effective_luminosity is not. Is this correct?" <<SNULogger::endmsg;
+    if(effective_luminosity == 1. ) m_logger << WARNING <<"Effective_luminosity is set to 1. while target_luminosity is not. Is this correct?" <<SNULogger::endmsg;    
     return (target_luminosity/effective_luminosity);
   }
   
   
   if(n_total_event != 0){
-    if(sample_crosssection  ==999.) m_logger << WARNING <<" SetTotalMCEvents was set but no xsec is given as input" <<LQLogger::endmsg;
+    if(sample_crosssection  ==999.) m_logger << WARNING <<" SetTotalMCEvents was set but no xsec is given as input" <<SNULogger::endmsg;
   }
   else {
-    m_logger << WARNING <<"Total number of sample events is being used to calculate MC event weight:"<<LQLogger::endmsg;
-    m_logger << ERROR  <<"n_total_event is not configuured "<<LQLogger::endmsg;
-    m_logger << WARNING <<"You can use SetFullInputFileList("") or SetTotalMCEvents(int) to configure this" <<LQLogger::endmsg;
+    m_logger << WARNING <<"Total number of sample events is being used to calculate MC event weight:"<<SNULogger::endmsg;
+    m_logger << ERROR  <<"n_total_event is not configuured "<<SNULogger::endmsg;
+    m_logger << WARNING <<"You can use SetFullInputFileList("") or SetTotalMCEvents(int) to configure this" <<SNULogger::endmsg;
   }
   
   if(sample_crosssection != 999.&& n_total_event != -1.){
     return (target_luminosity* sample_crosssection / n_total_event);
   }
   
-  m_logger << INFO << "Weight is set to 1. by default. This is ONLY correct for data. " << LQLogger::endmsg;
+  m_logger << INFO << "Weight is set to 1. by default. This is ONLY correct for data. " << SNULogger::endmsg;
   return 1.;
 }
 
 
-void LQController::FillMemoryHists(std::string binname){
+void SNUController::FillMemoryHists(std::string binname){
   h_virtmemory_hist->Fill(binname.c_str(), GetVirtualMemoryConsumption());
   h_physicalmemory_hist->Fill(binname.c_str(), GetPhysicalMemoryConsumption());
 }
 
 
-void LQController::GetMemoryConsumption(TString label){
+void SNUController::GetMemoryConsumption(TString label){
 
   ProcInfo_t procinfo;
   gSystem->GetProcInfo( &procinfo );
-  m_logger << DEBUG << "Memory consumption at: " << label << LQLogger::endmsg;
+  m_logger << DEBUG << "Memory consumption at: " << label << SNULogger::endmsg;
   m_logger.setf( std::ios::fixed );
   m_logger << DEBUG << "  Resident mem.: " << std::setw( 7 ) << procinfo.fMemResident
 	   << " kB; Virtual mem.: " << std::setw( 7 ) << procinfo.fMemVirtual
-	   << " kB" << LQLogger::endmsg;
+	   << " kB" << SNULogger::endmsg;
 
 }
-double LQController::GetPhysicalMemoryConsumption(){
+double SNUController::GetPhysicalMemoryConsumption(){
   
   ProcInfo_t procinfo;
   gSystem->GetProcInfo( &procinfo );
   return procinfo.fMemResident;
 }
 
-double LQController::GetVirtualMemoryConsumption(){
+double SNUController::GetVirtualMemoryConsumption(){
 
   ProcInfo_t procinfo;
   gSystem->GetProcInfo( &procinfo );

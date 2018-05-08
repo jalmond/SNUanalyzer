@@ -1,5 +1,8 @@
 import os
 
+flag=os.getenv("Flag")
+
+
 path_jobpre="/data1/"
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     path_jobpre="/data2/"
@@ -13,7 +16,7 @@ def SendEmail(cattag, email_user):
 
 
     email_user=""
-    configfile = os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
+    configfile = os.getenv("ANALYZER_DIR")+"/bin/catconfig"
     file_configfile = open(configfile,"r")
     for line in file_configfile:
         if "email" in line:
@@ -33,7 +36,7 @@ def SendEmail(cattag, email_user):
     file_email.close()
 
     filejobsummary = open(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/email.txt","w")
-    tagdiff = path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATTag/TagDiff_"+cattag+".txt"
+    tagdiff = path_jobpre+"/Analyzer_rootfiles_for_analysis/CATTag/TagDiff_"+cattag+".txt"
     file_tagdiff=open(tagdiff,"r")
     for eline in file_tagdiff:
         filejobsummary.write(eline)

@@ -1,7 +1,7 @@
 // $Id: ExampleAnalyzer.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQGetFakeSF Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: SNUGetFakeSF Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *d
@@ -14,7 +14,7 @@
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
-//// Needed to allow inheritance for use in LQCore/core classes
+//// Needed to allow inheritance for use in SNUCore/core classes
 ClassImp (GetFakeSF);
 
 
@@ -36,13 +36,13 @@ GetFakeSF::GetFakeSF() :  AnalyzerCore() {
 }
 
 
-void GetFakeSF::InitialiseAnalysis() throw( LQError ) {
+void GetFakeSF::InitialiseAnalysis() throw( SNUError ) {
   
   /// Initialise histograms
   MakeHistograms();  
   //
   // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
-  // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
+  // You can also use m_logger << level << "comment" << int/double  << SNULogger::endmsg;
   //
 
    Message("Making clever hists for Z ->ll test code", INFO);
@@ -55,7 +55,7 @@ void GetFakeSF::InitialiseAnalysis() throw( LQError ) {
 }
 
 
-void GetFakeSF::ExecuteEvents()throw( LQError ){
+void GetFakeSF::ExecuteEvents()throw( SNUError ){
   
 
 
@@ -143,15 +143,15 @@ void GetFakeSF::ExecuteEvents()throw( LQError ){
 
 
 
-void GetFakeSF::EndCycle()throw( LQError ){
+void GetFakeSF::EndCycle()throw( SNUError ){
   
   Message("In EndCycle" , INFO);
-  m_logger << DEBUG << "END OF CYCLE: isdata=" << isData <<  LQLogger::endmsg;
+  m_logger << DEBUG << "END OF CYCLE: isdata=" << isData <<  SNULogger::endmsg;
 
 }
 
 
-void GetFakeSF::BeginCycle() throw( LQError ){
+void GetFakeSF::BeginCycle() throw( SNUError ){
   
   Message("In begin Cycle", INFO);
   
@@ -160,8 +160,8 @@ void GetFakeSF::BeginCycle() throw( LQError ){
   //If you wish to output variables to output file use DeclareVariable
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
-  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  //  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //DeclareVariable(obj, label ); //-> will use default treename: SNUTree
+  //  DeclareVariable(out_electrons, "Signal_Electrons", "SNUTree");
   //  DeclareVariable(out_muons, "Signal_Muons");
 
   
@@ -177,7 +177,7 @@ GetFakeSF::~GetFakeSF() {
 
 
 
-void GetFakeSF::BeginEvent( )throw( LQError ){
+void GetFakeSF::BeginEvent( )throw( SNUError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -200,7 +200,7 @@ void GetFakeSF::MakeHistograms(){
 }
 
 
-void GetFakeSF::ClearOutputVectors() throw(LQError) {
+void GetFakeSF::ClearOutputVectors() throw(SNUError) {
 
   // This function is called before every execute event (NO need to call this yourself.
   

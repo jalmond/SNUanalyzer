@@ -1,7 +1,7 @@
 // $Id: ExampleAnalyzer.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQHNDiElectronOptimisation Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: SNUHNDiElectronOptimisation Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *d
@@ -14,7 +14,7 @@
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
-//// Needed to allow inheritance for use in LQCore/core classes
+//// Needed to allow inheritance for use in SNUCore/core classes
 ClassImp (HNDiElectronOptimisation);
 
 
@@ -36,13 +36,13 @@ HNDiElectronOptimisation::HNDiElectronOptimisation() :  AnalyzerCore(),  out_ele
 }
 
 
-void HNDiElectronOptimisation::InitialiseAnalysis() throw( LQError ) {
+void HNDiElectronOptimisation::InitialiseAnalysis() throw( SNUError ) {
   
   /// Initialise histograms
   MakeHistograms();  
   //
   // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
-  // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
+  // You can also use m_logger << level << "comment" << int/double  << SNULogger::endmsg;
   //
 
    Message("Making clever hists for Z ->ll test code", INFO);
@@ -56,10 +56,10 @@ void HNDiElectronOptimisation::InitialiseAnalysis() throw( LQError ) {
 }
 
 
-void HNDiElectronOptimisation::ExecuteEvents()throw( LQError ){
+void HNDiElectronOptimisation::ExecuteEvents()throw( SNUError ){
   
-  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-  m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
+  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << SNULogger::endmsg;
+  m_logger << DEBUG << "isData = " << isData << SNULogger::endmsg;
 
   if(!isData){
     weight*= MCweight;
@@ -1991,15 +1991,15 @@ bool HNDiElectronOptimisation::HighMassCheckSignalRegion(  std::vector<snu::KEle
 
 
 
-void HNDiElectronOptimisation::EndCycle()throw( LQError ){
+void HNDiElectronOptimisation::EndCycle()throw( SNUError ){
   
   Message("In EndCycle" , INFO);
-  m_logger << DEBUG << "END OF CYCLE: isdata=" << isData <<  LQLogger::endmsg;
+  m_logger << DEBUG << "END OF CYCLE: isdata=" << isData <<  SNULogger::endmsg;
 
 }
 
 
-void HNDiElectronOptimisation::BeginCycle() throw( LQError ){
+void HNDiElectronOptimisation::BeginCycle() throw( SNUError ){
   
   Message("In begin Cycle", INFO);
   
@@ -2008,8 +2008,8 @@ void HNDiElectronOptimisation::BeginCycle() throw( LQError ){
   //If you wish to output variables to output file use DeclareVariable
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
-  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  //  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //DeclareVariable(obj, label ); //-> will use default treename: SNUTree
+  //  DeclareVariable(out_electrons, "Signal_Electrons", "SNUTree");
   //  DeclareVariable(out_muons, "Signal_Muons");
 
   
@@ -2025,7 +2025,7 @@ HNDiElectronOptimisation::~HNDiElectronOptimisation() {
 
 
 
-void HNDiElectronOptimisation::BeginEvent( )throw( LQError ){
+void HNDiElectronOptimisation::BeginEvent( )throw( SNUError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -2048,7 +2048,7 @@ void HNDiElectronOptimisation::MakeHistograms(){
 }
 
 
-void HNDiElectronOptimisation::ClearOutputVectors() throw(LQError) {
+void HNDiElectronOptimisation::ClearOutputVectors() throw(SNUError) {
 
   // This function is called before every execute event (NO need to call this yourself.
   

@@ -3,8 +3,8 @@
 
 using namespace snu;
 
-GenJetSelection::GenJetSelection(LQEvent ev) :BaseSelection() {
-  k_lqevent = ev;
+GenJetSelection::GenJetSelection(SNUEvent ev) :BaseSelection() {
+  k_snuevent = ev;
 }
 
 GenJetSelection::~GenJetSelection() {}
@@ -16,7 +16,7 @@ void GenJetSelection::BasicSelection(std::vector<KGenJet>& jetColl) {
   
   //// This is a basic set of cuts on jets
 
-  std::vector<KGenJet> alljets = k_lqevent.GetGenJets();
+  std::vector<KGenJet> alljets = k_snuevent.GetGenJets();
   
   for (std::vector<KGenJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     
@@ -32,7 +32,7 @@ void GenJetSelection::Selection(std::vector<KGenJet>& jetColl) {
   
   //// This is a basic set of cuts on jets
  
-  std::vector<KGenJet> alljets = k_lqevent.GetGenJets();
+  std::vector<KGenJet> alljets = k_snuevent.GetGenJets();
   
   for (std::vector<KGenJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     if( jit->Pt() > 10. &&  fabs(jit->Eta() < 4.)){
@@ -48,7 +48,7 @@ void GenJetSelection::Selection(std::vector<KGenJet>& jetColl) {
 GenJetSelection& GenJetSelection::operator= (const GenJetSelection& ms) {
   if(this != &ms){    
     BaseSelection::operator = (ms);
-    k_lqevent = ms.k_lqevent;  
+    k_snuevent = ms.k_snuevent;  
   }
   return *this;
 };
@@ -56,7 +56,7 @@ GenJetSelection& GenJetSelection::operator= (const GenJetSelection& ms) {
 GenJetSelection::GenJetSelection(const GenJetSelection& ms):
   BaseSelection(ms)
 {
-  k_lqevent = ms.k_lqevent;  
+  k_snuevent = ms.k_snuevent;  
 };
 
 

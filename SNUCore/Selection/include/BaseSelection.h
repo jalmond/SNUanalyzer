@@ -16,7 +16,7 @@ using namespace std;
 #include "TH2F.h"
 #include "TH3F.h"
 #include "AnalysisBase.h"
-#include "LQEvent.h"
+#include "SNUEvent.h"
 
 class BaseSelection {
 
@@ -94,8 +94,8 @@ class BaseSelection {
 
   Int_t casediscriminator,simpleselection;
 
-  /// LQEvent class object. Stores all vectors
-  LQEvent k_lqevent;
+  /// SNUEvent class object. Stores all vectors
+  SNUEvent k_snuevent;
 
 
   TString AccessStringMap(TString label, TString id);

@@ -7,18 +7,18 @@
 #include <TError.h>
 
 // Local include(s):  
-#include "LQErrorHandler.h"
-#include "LQLogger.h"
+#include "SNUErrorHandler.h"
+#include "SNULogger.h"
 
-/// Local map to translate between ROOT and LQAnalysis message levels                                                           
-static std::map< int, LQMsgType > msgLevelMap;
+/// Local map to translate between ROOT and SNUAnalysis message levels                                                           
+static std::map< int, SNUMsgType > msgLevelMap;
 
 /**                                                                                                                         
- * This function is the "LQAnalysis version" of DefaultErrorHandler defined in the                                              
+ * This function is the "SNUAnalysis version" of DefaultErrorHandler defined in the                                              
  * TError.h header. By calling                                                                                              
  *                                                                                                                          
  * <code>                                                                                                                   
- * SetErrorHandler( LQErrorHandler )                                                                                         
+ * SetErrorHandler( SNUErrorHandler )                                                                                         
  * </code>                                                                                                                  
  *                                                                                                                          
  * somewhere at the beginning of the application, we can channel all ROOT messages                                          
@@ -31,7 +31,7 @@ static std::map< int, LQMsgType > msgLevelMap;
  */
 
 
-void LQErrorHandler( int level, Bool_t abort, const char* location,
+void SNUErrorHandler( int level, Bool_t abort, const char* location,
                     const char* message ) {
 
   // Veto some message locations:                                                                                          
@@ -40,7 +40,7 @@ void LQErrorHandler( int level, Bool_t abort, const char* location,
     return;
   }
   // Create a local logger object:                                                                                         
-  LQLogger logger( location );
+  SNULogger logger( location );
 
   // Initialise the helper map the first time the function is called:                                                      
   if( ! msgLevelMap.size() ) {
@@ -54,11 +54,11 @@ void LQErrorHandler( int level, Bool_t abort, const char* location,
 
 
   // Print the message:                                                                                                    
-  logger << msgLevelMap[ level ] << message << LQLogger::endmsg;
+  logger << msgLevelMap[ level ] << message << SNULogger::endmsg;
 
   // Abort the process if necessary:                                                                                       
   if( abort ) {
-    logger << ERROR << "Aborting..." << LQLogger::endmsg;
+    logger << ERROR << "Aborting..." << SNULogger::endmsg;
     if( gSystem ) {
       gSystem->StackTrace();
       gSystem->Abort();
@@ -71,22 +71,22 @@ void LQErrorHandler( int level, Bool_t abort, const char* location,
 
 }
 /**                                                                                                                         
- * The following code makes sure that <code>SetErrorHandler(LQErrorHandler)</code>                                           
- * is called when loading the LQAnalysisCore library. This way all ROOT messages get                                            
- * printed using LQLogger on the PROOF workers from the moment the LQAnalysis libraries                                          
+ * The following code makes sure that <code>SetErrorHandler(SNUErrorHandler)</code>                                           
+ * is called when loading the SNUAnalysisCore library. This way all ROOT messages get                                            
+ * printed using SNULogger on the PROOF workers from the moment the SNUAnalysis libraries                                          
  * are loaded. (This is one of the first things that the workers do...)                                                     
  *                                                                                                                          
  * I "stole" the idea for this kind of code from RooFit actually...                                                         
  */
-Int_t SetLQErrorHandler() {
+Int_t SetSNUErrorHandler() {
 
-  // Set up LQAnalysis's error handler:                                                                                        
-  SetErrorHandler( LQErrorHandler );
+  // Set up SNUAnalysis's error handler:                                                                                        
+  SetErrorHandler( SNUErrorHandler );
 
   // Report this feat:                                                                                                     
-  LQLogger logger( "SetLQErrorHandler" );
+  SNULogger logger( "SetSNUErrorHandler" );
 
-  logger << DEBUG << "Redirected ROOT messages to LQAnalys's logger" << LQLogger::endmsg;
+  logger << DEBUG << "Redirected ROOT messages to SNUAnalys's logger" << SNULogger::endmsg;
 
   return 0;
 
@@ -94,4 +94,4 @@ Int_t SetLQErrorHandler() {
 
 
 // Call the function:                                                                                                       
-static Int_t dummy = SetLQErrorHandler();
+static Int_t dummy = SetSNUErrorHandler();

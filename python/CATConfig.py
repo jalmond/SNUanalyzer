@@ -294,11 +294,11 @@ import platform
 
 if platform.system() != "Linux":
 
-    localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/"
+    localDir = os.getenv("ANALYZER_DIR")+ "/data/input/"
     if not mc:
-        localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/data/" + new_channel  + sample
+        localDir = os.getenv("ANALYZER_DIR")+ "/data/input/data/" + new_channel  + sample
     else:
-        localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/mc/"  + sample
+        localDir = os.getenv("ANALYZER_DIR")+ "/data/input/mc/"  + sample
 
 
     if not os.path.exists(localDir):
@@ -357,16 +357,16 @@ while inDS == "":
         if printToScreen:
             print "Using CAT " +sample_catversion + " ntuples"
         if mc:
-            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/'+datasetfile +sample_catversion +  '.txt'
+            filename = os.getenv("ANALYZER_RUN_PATH") + '/txt/'+datasetfile +sample_catversion +  '.txt'
             if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/Cluster/datasets_snu_cluster_CAT_mc_' +sample_catversion +  '.txt'
+                filename = os.getenv("ANALYZER_RUN_PATH") + '/txt/Cluster/datasets_snu_cluster_CAT_mc_' +sample_catversion +  '.txt'
 
         else:
-            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  +sample_catversion +'.txt'
+            filename = os.getenv("ANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  +sample_catversion +'.txt'
             if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/Cluster/datasets_snu_cluster_CAT_data_'  +sample_catversion +'.txt'
+                filename = os.getenv("ANALYZER_RUN_PATH") + '/txt/Cluster/datasets_snu_cluster_CAT_data_'  +sample_catversion +'.txt'
     else:
-        filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
+        filename = os.getenv("ANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
 
     if printToScreen:
         print "Using " + filename
@@ -405,13 +405,13 @@ while inDS == "":
         if catversion != "":
             print "Input dataset is not available in specifies catversion: Exiting"
             sys.exit()
-        print "LQAnalyzer :: WARNING :: Sample is not available in " + filename + "."
+        print "Analyzer :: WARNING :: Sample is not available in " + filename + "."
         print "Will look in previous compatable version. Need input from user if this is ok or a mistake."
         update = raw_input("This is likely because you have not changed the name of the input file. Since CATVERSION v7-6-3 these were changed. Is using anolder version of tuples ok for what you are doing? If you wish to use an older sample type Y. If not change input. run 'sktree -l' for options" )
         if not  update == "Y":
             sys.exit()
         if iversion == len(catversions):
-            print "LQAnalyzer :: ERROR :: Input dataset is not available: Exiting"
+            print "Analyzer :: ERROR :: Input dataset is not available: Exiting"
             sys.exit()
 
 
@@ -426,7 +426,10 @@ isfile = os.path.isfile
 join = os.path.join
 number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir, item)))
 
-path_log=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_"+original_sample + tagger + ".log"
+flag=os.getenv("Flag")
+
+
+path_log=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_"+original_sample + tagger + ".log"
 
 time.sleep(5.)
 os.system("qstat -u '*' > " + path_log)

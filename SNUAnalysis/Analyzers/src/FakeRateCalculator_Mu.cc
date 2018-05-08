@@ -1,6 +1,6 @@
 /***************************************************************************
- * @Project: LQFakeRateCalculator_Mu Frame - ROOT-based analysis framework for Korea SNU
-OB * @Package: LQCycles
+ * @Project: SNUFakeRateCalculator_Mu Frame - ROOT-based analysis framework for Korea SNU
+OB * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *
@@ -14,7 +14,7 @@ OB * @Package: LQCycles
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
-//// Needed to allow inheritance for use in LQCore/core classes
+//// Needed to allow inheritance for use in SNUCore/core classes
 ClassImp (FakeRateCalculator_Mu);
 
 
@@ -36,13 +36,13 @@ FakeRateCalculator_Mu::FakeRateCalculator_Mu() :  AnalyzerCore(),  out_electrons
 }
 
 
-void FakeRateCalculator_Mu::InitialiseAnalysis() throw( LQError ) {
+void FakeRateCalculator_Mu::InitialiseAnalysis() throw( SNUError ) {
   
   /// Initialise histograms
   MakeHistograms();  
   //
   // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
-  // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
+  // You can also use m_logger << level << "comment" << int/double  << SNULogger::endmsg;
   //
 
   MakeCleverHistograms(sighist_m, "SingleMuonSNU_prompt");
@@ -52,7 +52,7 @@ void FakeRateCalculator_Mu::InitialiseAnalysis() throw( LQError ) {
 }
 
 
-void FakeRateCalculator_Mu::ExecuteEvents()throw( LQError ){
+void FakeRateCalculator_Mu::ExecuteEvents()throw( SNUError ){
   
   RunFakes("SNUTight","MUON_HN_Tight_FAKELOOSEST");
   RunFakes("SNUMedium","MUON_HN_Medium_FAKELOOSEST");
@@ -608,24 +608,24 @@ void FakeRateCalculator_Mu::GetFakeRates(std::vector<snu::KMuon> loose_mu, std::
 
 
 
-void FakeRateCalculator_Mu::EndCycle()throw( LQError ){
+void FakeRateCalculator_Mu::EndCycle()throw( SNUError ){
   
   Message("In EndCycle" , INFO);
-  m_logger<< INFO << "Number of events that pass 1 7GeV trigger = " << n_17_pass  << LQLogger::endmsg;
-  m_logger<< INFO << "Number of events that pass 17 GeV + jet trigger = " << n_17_jet_pass  << LQLogger::endmsg;
-  m_logger<< INFO << "Number of events that pass 17 GeV || jet trigger = " << n_17_17_jet_pass  << LQLogger::endmsg;
+  m_logger<< INFO << "Number of events that pass 1 7GeV trigger = " << n_17_pass  << SNULogger::endmsg;
+  m_logger<< INFO << "Number of events that pass 17 GeV + jet trigger = " << n_17_jet_pass  << SNULogger::endmsg;
+  m_logger<< INFO << "Number of events that pass 17 GeV || jet trigger = " << n_17_17_jet_pass  << SNULogger::endmsg;
 
 }
 
-void FakeRateCalculator_Mu::BeginCycle() throw( LQError ){
+void FakeRateCalculator_Mu::BeginCycle() throw( SNUError ){
   
   Message("In begin Cycle", INFO);
   
   //If you wish to output variables to output file use DeclareVariable
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
-  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  //DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //DeclareVariable(obj, label ); //-> will use default treename: SNUTree
+  //DeclareVariable(out_electrons, "Signal_Electrons", "SNUTree");
   //DeclareVariable(out_muons, "Signal_Muons");
 
   n_17_jet_pass=0;
@@ -645,7 +645,7 @@ FakeRateCalculator_Mu::~FakeRateCalculator_Mu() {
 
 
 
-void FakeRateCalculator_Mu::BeginEvent( )throw( LQError ){
+void FakeRateCalculator_Mu::BeginEvent( )throw( SNUError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -668,7 +668,7 @@ void FakeRateCalculator_Mu::MakeHistograms(){
 }
 
 
-void FakeRateCalculator_Mu::ClearOutputVectors() throw(LQError) {
+void FakeRateCalculator_Mu::ClearOutputVectors() throw(SNUError) {
 
   // This function is called before every execute event (NO need to call this yourself.
   

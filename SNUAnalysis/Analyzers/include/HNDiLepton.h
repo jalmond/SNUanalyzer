@@ -18,11 +18,11 @@ class HNDiLepton : public AnalyzerCore {
   };
 
   /// Functions from core
-  virtual void BeginCycle() throw( LQError );
-  virtual void BeginEvent()throw( LQError );
-  virtual void ExecuteEvents()throw( LQError );
-  virtual void EndCycle()throw( LQError );
-  virtual void ClearOutputVectors()throw( LQError );
+  virtual void BeginCycle() throw( SNUError );
+  virtual void BeginEvent()throw( SNUError );
+  virtual void ExecuteEvents()throw( SNUError );
+  virtual void EndCycle()throw( SNUError );
+  virtual void ClearOutputVectors()throw( SNUError );
   
   void DoCutFlow(float w);
 
@@ -53,7 +53,7 @@ class HNDiLepton : public AnalyzerCore {
   void FillHighMassBins(bool fill, int mode, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,  int nbjet_m,  float ll_weight, std::vector<TString> trig,float pt1, float pt2);
 
   void CheckJetIDs(TString label, float ll_weight, float ptcut, TString trig, std::vector<snu::KMuon> muons, vector<snu::KFatJet> fatjets, int nbjet_m);
-  void InitialiseAnalysis() throw( LQError );
+  void InitialiseAnalysis() throw( SNUError );
   void MakeHistograms();
   void FillEventCutFlow(int cf,TString cut,  float weight, TString label);
   void FillEventCutFlow(TString cut, TString label , float weight);

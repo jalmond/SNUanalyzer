@@ -2,7 +2,7 @@ import os,filecmp,sys
     
 def GetCATAnalyzerMailList():
     maillist=[]
-    path_emailconfig = os.getenv("LQANALYZER_MOD")+"/emailconfig.txt"
+    path_emailconfig = os.getenv("ANALYZER_MOD")+"/emailconfig.txt"
     file_emailconfig = open(path_emailconfig,"r")
     for line in file_emailconfig:
         splitline=line.split()
@@ -83,8 +83,8 @@ parser.add_option("-s", "--s", dest="s", default="123",help="tag")
 (options, args) = parser.parse_args()
 seltag=options.s
 
-path_master = os.getenv("LQANALYZER_FILE_DIR")+ "/Selection/"
-path_local= os.getenv("LQANALYZER_DIR") + "/CATConfig/SelectionConfig/"
+path_master = os.getenv("ANALYZER_FILE_DIR")+ "/Selection/"
+path_local= os.getenv("ANALYZER_DIR") + "/CATConfig/SelectionConfig/"
 
 selfile=""
 seltmptag=""

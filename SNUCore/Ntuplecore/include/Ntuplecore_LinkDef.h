@@ -7,14 +7,14 @@
 #pragma link C++ nestedclass;
 
 #pragma link C++ class AnalysisBase+;
-#pragma link C++ class LQCycleBaseNTuple+;
+#pragma link C++ class SNUCycleBaseNTuple+;
 #pragma link C++ class Data+;
-#pragma link C++ class LQEvent+;
+#pragma link C++ class SNUEvent+;
 #pragma link C++ class SKTreeFiller+;
-#pragma link C++ class LQController+;
-#pragma link C++ class LQCycleBase+;
-#pragma link C++ class LQCycleBaseBase+;
-#pragma link C++ class ILQCycleBase+;
-#pragma link C++ class LQCycleBaseExec+;
+#pragma link C++ class SNUController+;
+#pragma link C++ class SNUCycleBase+;
+#pragma link C++ class SNUCycleBaseBase+;
+#pragma link C++ class ISNUCycleBase+;
+#pragma link C++ class SNUCycleBaseExec+;
 
 #endif // __CINT__

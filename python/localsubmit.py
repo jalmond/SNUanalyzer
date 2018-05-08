@@ -106,7 +106,7 @@ if tmpsubmit_allfiles == "true":
 
 
 ###### New for 801.7 tag  
-ClusterStatFile = os.getenv("LQANALYZER_DIR")+ "/python/CheckCluster.py"
+ClusterStatFile = os.getenv("ANALYZER_DIR")+ "/python/CheckCluster.py"
 os.system("python " + ClusterStatFile + " -x " + tagger + " -s " + sample)
 
 
@@ -123,8 +123,9 @@ if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     path_jobpre="/data2/"
     
     
-    
-queuepath=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/ForceQueue.txt"
+flag=os.getenv("Flag")
+
+queuepath=path_jobpre +flag+"Analyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/ForceQueue.txt"
 file_queuepath = open(queuepath,"r")
 for line in file_queuepath:
     if "#" in line:
@@ -558,11 +559,11 @@ isfile = os.path.isfile
 join = os.path.join
 if platform.system() != "Linux":
 
-    localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/" 
+    localDir = os.getenv("ANALYZER_DIR")+ "/data/input/" 
     if not mc:        
-        localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/data/" + new_channel  + sample
+        localDir = os.getenv("ANALYZER_DIR")+ "/data/input/data/" + new_channel  + sample
     else:
-        localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/mc/"  + sample
+        localDir = os.getenv("ANALYZER_DIR")+ "/data/input/mc/"  + sample
     
     if not os.path.exists(localDir):
         print "No files in current location: Will copy them over"
@@ -618,12 +619,12 @@ while inDS == "":
 
         print "Using CAT " +sample_catversion + " ntuples"
         if mc:
-            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/'+datasetfile +sample_catversion +  '.txt'
+            filename = os.getenv("ANALYZER_RUN_PATH") + '/txt/'+datasetfile +sample_catversion +  '.txt'
 
         else:
-            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  +sample_catversion +'.txt'
+            filename = os.getenv("ANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  +sample_catversion +'.txt'
     else:
-        filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
+        filename = os.getenv("ANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
              
 
     print "Using " + filename    
@@ -660,13 +661,13 @@ while inDS == "":
         if catversion != "":
             print "Input dataset is not available in specifies catversion: Exiting"
             sys.exit()
-        print "LQAnalyzer :: WARNING :: Sample is not available in " + filename + "."
+        print "Analyzer :: WARNING :: Sample is not available in " + filename + "."
         print "Will look in previous compatable version. Need input from user if this is ok or a mistake."
         update = raw_input("This is likely because you have not changed the name of the input file. Since CATVERSION v7-6-3 these were changed. Is using anolder version of catuples ok for what you are doing? If you wish to use an older sample type Y. If not change input. run 'sktree -l' for options" )
         if not  update == "Y":
             sys.exit()
         if iversion == len(catversions):
-            print "LQAnalyzer :: ERROR :: Input dataset is not available: Exiting"
+            print "Analyzer :: ERROR :: Input dataset is not available: Exiting"
             sys.exit()
 
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
@@ -987,7 +988,7 @@ for i in range(1,number_of_cores+1):
 
     batchscript =  output+ "Job_" + str(i) + "/runJob_" + str(i) + ".sh"
     batchfile=open(batchscript,'w')
-    batchfile.write(make_batch_script(output+ "Job_" + str(i) , outsamplename+ "_Job_" + str(i),str(os.getenv("LQANALYZER_DIR")),"runJob_" + str(i) + ".C",cluster))
+    batchfile.write(make_batch_script(output+ "Job_" + str(i) , outsamplename+ "_Job_" + str(i),str(os.getenv("ANALYZER_DIR")),"runJob_" + str(i) + ".C",cluster))
     batchfile.close()
 
     
@@ -1067,11 +1068,11 @@ if running_batch:
 ##########################################################
 ## wait and do merging (also remove old log file/rootfiles
 ##########################################################
-check_log= os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/"
+check_log= os.getenv("ANALYZER_LOG_PATH") + "/" + outsamplename + "/"
 if number_of_cores > 1:
     if (os.path.exists(check_log)):
         if sum(1 for item in os.listdir(check_log) if isfile(join(check_log, item))) > 0:
-            os.system("rm " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/*.o*")
+            os.system("rm " + os.getenv("ANALYZER_LOG_PATH") + "/" + outsamplename + "/*.o*")
 
 if DEBUG == "True":
     print "Waiting for all jobs to finish before Merging."
@@ -1305,7 +1306,7 @@ while not JobSuccess:
             nevents_total_i=0.
             for line in open(local_sub_dir + '/outlog.txt', 'r'):
                 if "Processing entry" in line:
-                    if "LQCycleController" not in line:
+                    if flag+"CycleController" not in line:
                         entries = line.split()
                         if len(entries)> 7:                        
                             num = entries[7]
@@ -1362,19 +1363,19 @@ if not JobOutput:
    
     print ""
     print "Job Failed...."
-    if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")):
-        os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH"))
-    if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename):
-        os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename)
+    if not os.path.exists(os.getenv("ANALYZER_LOG_PATH")):
+        os.system("mkdir " + os.getenv("ANALYZER_LOG_PATH"))
+    if not os.path.exists(os.getenv("ANALYZER_LOG_PATH")+ "/" + outsamplename):
+        os.system("mkdir " + os.getenv("ANALYZER_LOG_PATH")+ "/" + outsamplename)
         
     if not number_of_cores == 1:
-        os.system("mv "+ output + "/*/*.o* " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)    
-        os.system("mv "+ output + "/*/*.e* " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)    
+        os.system("mv "+ output + "/*/*.o* " + os.getenv("ANALYZER_LOG_PATH") + "/" + outsamplename)    
+        os.system("mv "+ output + "/*/*.e* " + os.getenv("ANALYZER_LOG_PATH") + "/" + outsamplename)    
     print "###########################################################################################################"
     print "Check crash by running root -q -b " + failed_macro 
     print "after typing: export cat_version=$CATVERSION"
     print 'export CATAnalyzerPeriod="B"'
-    print "Logfile of failed job is can be found at " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   + failed_log 
+    print "Logfile of failed job is can be found at " + os.getenv("ANALYZER_LOG_PATH") + "/" + outsamplename   + failed_log 
     print "###########################################################################################################"
     JobCrash=True
     #os.system("rm -r " + output)    
@@ -1699,14 +1700,14 @@ else:
         if mc:
             if not os.path.exists( "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger ):
                 os.system("mkdir " +  "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger)
-            os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/Counter.sh " + mergeoutputdir +  outfile + " > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+original_sample+"Hist.txt"   )
-            os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/CutFlow.sh " + mergeoutputdir +  outfile + " > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+original_sample+"CutFlow.txt"   )  
+            os.system("source "+os.getenv("ANALYZER_DIR")+"/scripts/Counter.sh " + mergeoutputdir +  outfile + " > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+original_sample+"Hist.txt"   )
+            os.system("source "+os.getenv("ANALYZER_DIR")+"/scripts/CutFlow.sh " + mergeoutputdir +  outfile + " > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+original_sample+"CutFlow.txt"   )  
 
         if os.getenv("USER") == "jalmond":
 
-            transout=Finaloutputdir.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
+            transout=Finaloutputdir.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
             
-            catpath=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
+            catpath=os.getenv("ANALYZER_DIR")+"/bin/catconfig"
             readcatpath=open(catpath,"r")
             lxmachine=""
             for rline in readcatpath:
@@ -1724,7 +1725,7 @@ else:
             
 
         os.system("mv " + mergeoutputdir +  outfile + " "  + Finaloutputdir)
-        os.system("ls -lh " + Finaloutputdir +  outfile + " > " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger +".txt")
+        os.system("ls -lh " + Finaloutputdir +  outfile + " > " + path_jobpre +flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger +".txt")
         f = ROOT.TFile(Finaloutputdir +  outfile)
         t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
         t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
@@ -1740,7 +1741,7 @@ else:
         if number_of_cores == 1 and setnumber_of_cores:
             os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + outfile )
             
-            os.system("ls -lh " + Finaloutputdir +   outfile + " > " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger+".txt")
+            os.system("ls -lh " + Finaloutputdir +   outfile + " > " + path_jobpre +flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger+".txt")
             f = ROOT.TFile(Finaloutputdir +  outfile)
             t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
             t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
@@ -1752,7 +1753,7 @@ else:
             os.system("rm " + Finaloutputdir + "/*.root")
             os.system("mv " + outputdir + "*.root " + Finaloutputdir )
             os.system("chmod -R 777 " + Finaloutputdir )
-            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger+".txt")
+            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + path_jobpre +flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger+".txt")
             f = ROOT.TFile(Finaloutputdir +  outsamplename + "_1.root")
             t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
             t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
@@ -1764,18 +1765,18 @@ else:
             print "Non merged output :" +Finaloutputdir
     
     if remove_workspace == "True":
-        if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")):
-            os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH"))
+        if not os.path.exists(os.getenv("ANALYZER_LOG_PATH")):
+            os.system("mkdir " + os.getenv("ANALYZER_LOG_PATH"))
             
-        if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename):
-            os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename)
+        if not os.path.exists(os.getenv("ANALYZER_LOG_PATH")+ "/" + outsamplename):
+            os.system("mkdir " + os.getenv("ANALYZER_LOG_PATH")+ "/" + outsamplename)
         
         if not number_of_cores == 1:    
-            os.system("mv "+ output + "/*/*.o* " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
+            os.system("mv "+ output + "/*/*.o* " + os.getenv("ANALYZER_LOG_PATH") + "/" + outsamplename)
         os.system("rm -r " + output)
         os.system("rm -r " + local_sub_dir)
         os.system("rm -r " + timestamp_dir)
-        print "Log files are sent to  --> "  + os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename
+        print "Log files are sent to  --> "  + os.getenv("ANALYZER_LOG_PATH")+ "/" + outsamplename
         if doMerge:
             print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + outsamplename + ".root -->" + Finaloutputdir
         else:
@@ -1796,15 +1797,15 @@ total_time=end_time- start_time
 print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"
 print ""
 
-statfile=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_"+ original_sample + tagger +".txt"
-statfile_time=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_timetmp_"+original_sample+tagger +".txt"
-statfile_time_complete=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_time_"+original_sample+tagger +".txt"
+statfile=path_jobpre +flag+ "Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_"+ original_sample + tagger +".txt"
+statfile_time=path_jobpre +flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_timetmp_"+original_sample+tagger +".txt"
+statfile_time_complete=path_jobpre + flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_time_"+original_sample+tagger +".txt"
 
-if not os.path.exists(path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() ):
-    os.system("mkdir " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
-if not os.path.exists(path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)):
-    print "mkdir " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()+ "/" + str(tagger)
-    os.system("mkdir " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()+ "/" + str(tagger))
+if not os.path.exists(path_jobpre +flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() ):
+    os.system("mkdir " + path_jobpre + flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
+if not os.path.exists(path_jobpre + flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)):
+    print "mkdir " + path_jobpre + flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()+ "/" + str(tagger)
+    os.system("mkdir " + path_jobpre +flag +"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()+ "/" + str(tagger))
 
 statwrite = open(statfile, 'r')
 statwrite_time = open(statfile_time, 'w')
@@ -1820,7 +1821,7 @@ print "job_time  " + str(job_time)
 print "start_running_time " + str(start_running_time)
 print "last_job_time " + str(last_job_time)
 
-pathfilesize=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_"+original_sample + tagger +".txt"
+pathfilesize=path_jobpre +flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_"+original_sample + tagger +".txt"
 
 if os.path.exists(pathfilesize):
     readfilesize = open(pathfilesize, "r")
@@ -1848,7 +1849,7 @@ if JobCrash:
     writecrashlog = open(crash_log,"w")
     writecrashlog.write("###########################################################################################################")
     writecrashlog.write("Check crash by running root -q -b " + failed_macro)
-    writecrashlog.write("Logfile of failed job is can be found at " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   + failed_log)
+    writecrashlog.write("Logfile of failed job is can be found at " + os.getenv("ANALYZER_LOG_PATH") + "/" + outsamplename   + failed_log)
     writecrashlog.write("###########################################################################################################")
     writecrashlog.close()
 else:
@@ -1859,7 +1860,7 @@ print "mv " + statfile_time + " " + statfile_time_complete
 
 os.system("mv " + statfile_time + " " + statfile_time_complete)
 
-GeneralStatFile = os.getenv("LQANALYZER_DIR")+ "/python/StatFile.py"
+GeneralStatFile = os.getenv("ANALYZER_DIR")+ "/python/StatFile.py"
 
 number_of_jobs_for_statfile=number_of_cores
 

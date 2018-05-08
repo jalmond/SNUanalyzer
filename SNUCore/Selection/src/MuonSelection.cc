@@ -2,10 +2,10 @@
 
 using namespace snu;
 
-MuonSelection::MuonSelection(LQEvent ev) :
+MuonSelection::MuonSelection(SNUEvent ev) :
   BaseSelection()
 {
-  k_lqevent = ev;  
+  k_snuevent = ev;  
 
 };
 
@@ -14,7 +14,7 @@ MuonSelection::~MuonSelection() {};
 
 void MuonSelection::BasicSelection( std::vector<KMuon>& leptonColl,bool m_debug) {
 
-  std::vector<KMuon> allmuons = k_lqevent.GetMuons();
+  std::vector<KMuon> allmuons = k_snuevent.GetMuons();
   int ilep(0);
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++, ilep++)
     {
@@ -46,7 +46,7 @@ void MuonSelection::BasicSelection( std::vector<KMuon>& leptonColl,bool m_debug)
 
 void MuonSelection::SkimSelection( std::vector<KMuon>& leptonColl , bool m_debug) {
 
-  std::vector<KMuon> allmuons = k_lqevent.GetMuons();
+  std::vector<KMuon> allmuons = k_snuevent.GetMuons();
   int ilep(0);
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++, ilep++)
     {
@@ -78,7 +78,7 @@ void MuonSelection::SkimSelection( std::vector<KMuon>& leptonColl , bool m_debug
 
 void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool applyrochester, TString Option){
 
-  std::vector<KMuon> allmuons = k_lqevent.GetMuons();
+  std::vector<KMuon> allmuons = k_snuevent.GetMuons();
 
   int  SystDir=0;
   bool Syst_MuEn=false, DebugPrint=false;
@@ -218,7 +218,7 @@ void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, ID muid, vector<
 
 void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, TString muid,vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf, float ptcut, float etacut){
 
-  std::vector<KMuon> allmuons = k_lqevent.GetMuons();
+  std::vector<KMuon> allmuons = k_snuevent.GetMuons();
   
   
   bool applyrochester(true);
@@ -571,7 +571,7 @@ void MuonSelection::SetDeposits(Double_t ECalDeposit1 , Double_t HCalDeposit1, D
 MuonSelection& MuonSelection::operator= (const MuonSelection& ms) {
   if(this != &ms){    
     BaseSelection::operator = (ms);
-    k_lqevent = ms.k_lqevent;  
+    k_snuevent = ms.k_snuevent;  
 
   }
   return *this;
@@ -580,6 +580,6 @@ MuonSelection& MuonSelection::operator= (const MuonSelection& ms) {
 MuonSelection::MuonSelection(const MuonSelection& ms):
   BaseSelection(ms)
 {
-  k_lqevent = ms.k_lqevent; 
+  k_snuevent = ms.k_snuevent; 
 };
 

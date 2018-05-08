@@ -1,8 +1,8 @@
 
 // $Id: SKTreeMakerTriLep.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: SNUAnalyzer Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *
@@ -15,7 +15,7 @@
 #include "EventBase.h"                                                                                                                           
 
 
-//// Needed to allow inheritance for use in LQCore/core classes
+//// Needed to allow inheritance for use in SNUCore/core classes
 ClassImp (SKTreeMakerTriLep);
 
 
@@ -33,7 +33,7 @@ SKTreeMakerTriLep::SKTreeMakerTriLep() :  AnalyzerCore(), out_muons(0), out_elec
   
 }
 
-void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
+void SKTreeMakerTriLep::ExecuteEvents()throw( SNUError ){
   
 
 
@@ -101,7 +101,7 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
       if(skim_muons.at(0).Charge() == skim_muons.at(1).Charge()) nlep = 3;
     }
   }
-  if(! ((nlep > 2) )) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+  if(! ((nlep > 2) )) throw SNUError( "Not Lepton Event",  SNUError::SkipEvent );
   
   bool pass15gev=false;
   
@@ -114,7 +114,7 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
     if(skim_muons.at(0).RochPt() < 0.) mupt=skim_muons.at(0).Pt();
     if(mupt > 14.)  pass15gev= true;
   }
-  if(!pass15gev) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+  if(!pass15gev) throw SNUError( "Not Lepton Event",  SNUError::SkipEvent );
 
 
   FillCutFlow("TriLep", 1);
@@ -128,18 +128,18 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
 
 
 
-void SKTreeMakerTriLep::EndCycle()throw( LQError ){
+void SKTreeMakerTriLep::EndCycle()throw( SNUError ){
   
   Message("In EndCycle" , INFO);
 }
 
 
-void SKTreeMakerTriLep::BeginCycle() throw( LQError ){
+void SKTreeMakerTriLep::BeginCycle() throw( SNUError ){
   
   Message("In begin Cycle", INFO);
 
-  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  DeclareVariable(out_electrons, "KElectrons", "LQTree");
+  //DeclareVariable(obj, label ); //-> will use default treename: SNUTree
+  DeclareVariable(out_electrons, "KElectrons", "SNUTree");
   DeclareVariable(out_photons, "KPhotons");
 
   DeclareVariable(out_muons, "KMuons");
@@ -239,7 +239,7 @@ void SKTreeMakerTriLep::FillCutFlow(TString cut, float weight){
 
 
 
-void SKTreeMakerTriLep::BeginEvent( )throw( LQError ){
+void SKTreeMakerTriLep::BeginEvent( )throw( SNUError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -247,7 +247,7 @@ void SKTreeMakerTriLep::BeginEvent( )throw( LQError ){
 }
 
 
-void SKTreeMakerTriLep::ClearOutputVectors() throw (LQError){
+void SKTreeMakerTriLep::ClearOutputVectors() throw (SNUError){
   //
   // Reset all variables declared in Declare Variable
   //

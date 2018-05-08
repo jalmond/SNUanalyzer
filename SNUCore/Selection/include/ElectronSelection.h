@@ -2,7 +2,7 @@
 #define ElectronSelection_h
 
 #include "KElectron.h"
-#include "LQEvent.h"
+#include "SNUEvent.h"
 #include "BaseSelection.h" 
 
 class ElectronSelection : public BaseSelection {
@@ -12,7 +12,7 @@ class ElectronSelection : public BaseSelection {
   Bool_t ElectronID;
 
 
-  ElectronSelection(LQEvent ev);
+  ElectronSelection(SNUEvent ev);
   ~ElectronSelection();
 
   ElectronSelection& operator= (const ElectronSelection& obj);

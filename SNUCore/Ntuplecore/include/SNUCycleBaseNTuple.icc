@@ -1,13 +1,13 @@
 // Dear emacs, this is -*- c++ -*-  
-// $Id:  LQCycleBaseNTuple.icc  jalmond$  
+// $Id:  SNUCycleBaseNTuple.icc  jalmond$  
 /***************************************************************************  
  * @author  John Almond
  *                                                                              
  ***************************************************************************/
 
 
-#ifndef LQCycleBaseNTuple_ICC
-#define LQCycleBaseNTuple_ICC
+#ifndef SNUCycleBaseNTuple_ICC
+#define SNUCycleBaseNTuple_ICC
 
 
 // System include(s):
@@ -30,8 +30,8 @@
 
 
 template < class T >
-TBranch* LQCycleBaseNTuple::DeclareVariable( T& obj, const char* name,
-                                const char* treeName )throw( LQError ) {
+TBranch* SNUCycleBaseNTuple::DeclareVariable( T& obj, const char* name,
+                                const char* treeName )throw( SNUError ) {
   TTree*  output_tree = 0;
   TBranch* branch = 0;
 
@@ -40,29 +40,29 @@ TBranch* LQCycleBaseNTuple::DeclareVariable( T& obj, const char* name,
     output_tree = GetOutputTree( treeName );
     
     if(!output_tree){
-      m_logger << INFO << "Will create a tree for you. With name " << treeName  << LQLogger::endmsg;
+      m_logger << INFO << "Will create a tree for you. With name " << treeName  << SNULogger::endmsg;
       CreateOutputTrees(m_outputFile, treeName , "");
       output_tree = GetOutputTree( treeName );
       if(!output_tree) {
-	m_logger << ERROR << "Failed to creat this tree " << treeName << LQLogger::endmsg;
-	throw LQError( "No many output trees created !!!",   LQError::StopExecution );
+	m_logger << ERROR << "Failed to creat this tree " << treeName << SNULogger::endmsg;
+	throw SNUError( "No many output trees created !!!",   SNUError::StopExecution );
       }
     }
   }
   else {
-    if( m_outputTrees.size()  > 1)  throw LQError( "Many output trees created. You MUST speicfy whhich tree to connect output in DeclareVariable !!!",   LQError::StopExecution );
+    if( m_outputTrees.size()  > 1)  throw SNUError( "Many output trees created. You MUST speicfy whhich tree to connect output in DeclareVariable !!!",   SNUError::StopExecution );
     if( m_outputTrees.size() == 1 )   output_tree = m_outputTrees.front();
     else {
-      m_logger << WARNING  << "No output tree is specified in DeclareVariables. None exists in memory. Creating default tree."  << LQLogger::endmsg;
-      CreateOutputTrees(m_outputFile, "LQTree" , "");
-      output_tree = GetOutputTree( "LQTree");
+      m_logger << WARNING  << "No output tree is specified in DeclareVariables. None exists in memory. Creating default tree."  << SNULogger::endmsg;
+      CreateOutputTrees(m_outputFile, "SNUTree" , "");
+      output_tree = GetOutputTree( "SNUTree");
     }
   }
   //                                                                           
   // Check if the tree has been found:                                         
   // 
   if( ! output_tree ) {
-    LQError error( LQError::SkipInputData );
+    SNUError error( SNUError::SkipInputData );
     if( treeName ) {
       error << "Couldn't find output tree with name: " << treeName;
     } else {
@@ -80,7 +80,7 @@ TBranch* LQCycleBaseNTuple::DeclareVariable( T& obj, const char* name,
     // This branch doesn't exist yet. We have to (try to) create it.          
     //                                                                        
     m_logger << DEBUG << "Creating new output branch with name: " << name
-             << LQLogger::endmsg;
+             << SNULogger::endmsg;
 
     const char* type_name = typeid( obj ).name();
 
@@ -89,11 +89,11 @@ TBranch* LQCycleBaseNTuple::DeclareVariable( T& obj, const char* name,
       std::ostringstream leaflist;
       leaflist << name << "/" << RootType( type_name );
       branch = output_tree->Branch( name, &obj, leaflist.str().c_str() );
-      m_logger << DEBUG << "Simple variable " << LQLogger::endmsg;
+      m_logger << DEBUG << "Simple variable " << SNULogger::endmsg;
     }
     else {
       
-      m_logger << DEBUG << "Complex variable/object " << LQLogger::endmsg;
+      m_logger << DEBUG << "Complex variable/object " << SNULogger::endmsg;
       //                                                                     
       // This is an object:                                                  
       //                                                                     
@@ -103,12 +103,12 @@ TBranch* LQCycleBaseNTuple::DeclareVariable( T& obj, const char* name,
       char* real_type_name = abi::__cxa_demangle( type_name, 0, 0, &status );
 
       if( status ) {
-	LQError error( LQError::StopExecution );
+	SNUError error( SNUError::StopExecution );
 	error << "Couldn't demangle type name: " << type_name;
 	throw error;
       }
       if(real_type_name == NULL) {
-	LQError error( LQError::SkipInputData );
+	SNUError error( SNUError::SkipInputData );
 	error << "Couldn't create branch with name: " << name;
 	throw error;
       }
@@ -126,7 +126,7 @@ TBranch* LQCycleBaseNTuple::DeclareVariable( T& obj, const char* name,
     }
     
     if( ! branch ) {
-      LQError error( LQError::SkipInputData );
+      SNUError error( SNUError::SkipInputData );
       error << "Couldn't create branch with name: " << name;
       throw error;
     }    
@@ -136,13 +136,13 @@ TBranch* LQCycleBaseNTuple::DeclareVariable( T& obj, const char* name,
     
     m_logger << WARNING << "A branch with the name \"" << name << "\" already\
  exists"
-	     << LQLogger::endmsg;
-    m_logger << WARNING << "New object not added to tree!" << LQLogger::endmsg \
+	     << SNULogger::endmsg;
+    m_logger << WARNING << "New object not added to tree!" << SNULogger::endmsg \
       ;
 
   }
   
-  m_logger << DEBUG  << "Created output branch" << LQLogger::endmsg;
+  m_logger << DEBUG  << "Created output branch" << SNULogger::endmsg;
 
   return branch;
 }

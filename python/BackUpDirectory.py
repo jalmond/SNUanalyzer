@@ -1,7 +1,8 @@
 import os,datetime,sys,filecmp
 from datetime import timedelta
 
-path_admin = os.getenv("LQANALYZER_MOD")+"/config.txt"
+path_admin = os.getenv("ANALYZER_MOD")+"/config.txt"
+flag=os.getenv("Flag")
 
 path_jobpre="/data1/"
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
@@ -22,7 +23,7 @@ def checkLumiFile(backupdir,backup_datelist):
         sys.exit()
 
     catversion=os.getenv("CATVERSION")
-    lumidir=os.getenv("LQANALYZER_DATASETFILE_DIR")
+    lumidir=os.getenv("ANALYZER_DATASETFILE_DIR")
     currentfile=lumidir+"/datasets_snu_CAT_mc_" + catversion+".txt"
     
     backupfile = lumidir+"/BackUp/"+backup_datelist[len(backup_datelist)-1] + "/datasets_snu_CAT_mc_" + catversion+".txt"
@@ -144,7 +145,7 @@ for line in file_admin:
 file_admin.close()
 
 if dobackup:
-    lumidir=os.getenv("LQANALYZER_DATASETFILE_DIR")
+    lumidir=os.getenv("ANALYZER_DATASETFILE_DIR")
     checkLumiFile(lumidir+"/BackUp/",backup_date)
 
 
@@ -158,12 +159,15 @@ for xbackup in backup_date:
 if dobackup:
     print "ADMIN: Making backup"
     
+    flag=os.getenv("Flag")
+
+    print flag
     copylist=[]
-    copylist.append(path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_v* ")
-    copylist.append(path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary* ")
-    makeBackUp(path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/BackUp/",copylist,backup_date)
+    copylist.append(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_v* ")
+    copylist.append(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary* ")
+    makeBackUp(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/BackUp/",copylist,backup_date)
     copylist2=[]
-    lumidir=os.getenv("LQANALYZER_DATASETFILE_DIR")
+    lumidir=os.getenv("ANALYZER_DATASETFILE_DIR")
     copylist2.append(lumidir+"/data* ")
 
     makeBackUp(lumidir+"/BackUp/",copylist2,backup_date)

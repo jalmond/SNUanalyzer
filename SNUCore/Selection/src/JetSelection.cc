@@ -4,8 +4,8 @@
 
 using namespace snu;
 
-JetSelection::JetSelection(LQEvent ev) :BaseSelection() {
-  k_lqevent = ev;
+JetSelection::JetSelection(SNUEvent ev) :BaseSelection() {
+  k_snuevent = ev;
 }
 
 JetSelection::~JetSelection() {}
@@ -17,7 +17,7 @@ void JetSelection::BasicSelection(std::vector<KJet>& jetColl) {
   
   //// This is a basic set of cuts on jets
 
-  std::vector<KJet> alljets = k_lqevent.GetJets();
+  std::vector<KJet> alljets = k_snuevent.GetJets();
 
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
   
@@ -30,7 +30,7 @@ void JetSelection::BasicSelection(std::vector<KJet>& jetColl) {
 
 void JetSelection::Selection(std::vector<KJet>& jetColl){
 
-  std::vector<KJet> alljets = k_lqevent.GetJets();
+  std::vector<KJet> alljets = k_snuevent.GetJets();
 
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
 
@@ -59,7 +59,7 @@ void JetSelection::Selection(std::vector<KJet>& jetColl){
 
 void JetSelection::Selection(std::vector<KJet>& jetColl, bool LepVeto, std::vector<KMuon>& muonColl, std::vector<KElectron>& electronColl, TString Option){
  
-  std::vector<KJet> alljets = k_lqevent.GetJets();
+  std::vector<KJet> alljets = k_snuevent.GetJets();
   
   std::vector<KJet> prejetColl; 
   int  SystDir=0;
@@ -128,7 +128,7 @@ void JetSelection::Selection(std::vector<KJet>& jetColl, bool LepVeto, std::vect
 
 void JetSelection::SelectJets(std::vector<KJet>& jetColl,  vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf,float ptcut, float etacut) {
 
-  std::vector<KJet> alljets = k_lqevent.GetJets();
+  std::vector<KJet> alljets = k_snuevent.GetJets();
 
   int icut(0);
   if (ptcut == -999. || etacut == -999.){
@@ -153,7 +153,7 @@ void JetSelection::SelectJets(std::vector<KJet>& jetColl,  vector<pair<TString, 
 void JetSelection::SelectJets(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl,vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf,  float ptcut, float etacut) {
   
   std::vector<KJet> pre_jetColl; 
-  std::vector<KJet> alljets = k_lqevent.GetJets();
+  std::vector<KJet> alljets = k_snuevent.GetJets();
 
   int icut(0);
   if (ptcut == -999. || etacut == -999.){
@@ -200,7 +200,7 @@ void JetSelection::SelectJets(std::vector<KJet>& jetColl, std::vector<KMuon> muo
 void JetSelection::SelectJets(std::vector<KJet>& jetColl, std::vector<snu::KFatJet> fatjets , std::vector<KMuon> muonColl, std::vector<KElectron> electronColl,vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf,  float ptcut, float etacut) {
 
   std::vector<KJet> pre_jetColl;
-  std::vector<KJet> alljets = k_lqevent.GetJets();
+  std::vector<KJet> alljets = k_snuevent.GetJets();
 
   int icut(0);
   if (ptcut == -999. || etacut == -999.){
@@ -298,7 +298,7 @@ bool JetSelection::PassUserID_PFJetTight ( snu::KJet jet)
 JetSelection& JetSelection::operator= (const JetSelection& ms) {
   if(this != &ms){    
     BaseSelection::operator = (ms);
-    k_lqevent = ms.k_lqevent;  
+    k_snuevent = ms.k_snuevent;  
   }
   return *this;
 };
@@ -306,7 +306,7 @@ JetSelection& JetSelection::operator= (const JetSelection& ms) {
 JetSelection::JetSelection(const JetSelection& ms):
   BaseSelection(ms)
 {
-  k_lqevent = ms.k_lqevent;  
+  k_snuevent = ms.k_snuevent;  
 };
 
 

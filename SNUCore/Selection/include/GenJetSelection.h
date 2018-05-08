@@ -7,14 +7,14 @@ using namespace std;
 
 #include "TLorentzVector.h"
 #include <vector>
-#include "LQEvent.h"
+#include "SNUEvent.h"
 #include "KGenJet.h"
 #include "BaseSelection.h"
 
 class GenJetSelection : public BaseSelection {
 
  public:
-  GenJetSelection(LQEvent ev);
+  GenJetSelection(SNUEvent ev);
   ~GenJetSelection();
 
   GenJetSelection& operator= (const GenJetSelection& obj);

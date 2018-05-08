@@ -2,7 +2,7 @@
 #define PhotonSelection_h
 
 #include "KPhoton.h"
-#include "LQEvent.h"
+#include "SNUEvent.h"
 #include "BaseSelection.h" 
 
 class PhotonSelection : public BaseSelection {
@@ -11,7 +11,7 @@ class PhotonSelection : public BaseSelection {
   
   Bool_t PhotonID;
 
-  PhotonSelection(LQEvent ev);
+  PhotonSelection(SNUEvent ev);
   ~PhotonSelection();
 
   PhotonSelection& operator= (const PhotonSelection& obj);

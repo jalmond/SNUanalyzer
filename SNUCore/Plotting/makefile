@@ -6,7 +6,7 @@ SRCDIR  = src
 INCDIR  = include
 
 # Include the generic compilation rules
-include $(LQANALYZER_DIR)/Makefile.common
+include $(ANALYZER_DIR)/Makefile.common
 
-INCLUDES += -I$(LQANALYZER_DIR)/LQCore/SKTree/include/
-INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Ntuplecore/include/
+INCLUDES += -I$(ANALYZER_DIR)/${Flag}Core/SKTree/include/
+INCLUDES += -I$(ANALYZER_DIR)/${Flag}Core/Ntuplecore/include/

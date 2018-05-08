@@ -5,8 +5,8 @@ using namespace snu;
 EventBase::EventBase() {
 }
 
-EventBase::EventBase(LQEvent kbase) {
-  k_LQevent = new LQEvent(kbase);
+EventBase::EventBase(SNUEvent kbase) {
+  k_SNUevent = new SNUEvent(kbase);
   k_muonsel = new MuonSelection(kbase);
   k_jetsel = new JetSelection(kbase);
   k_fatjetsel = new FatJetSelection(kbase);
@@ -19,7 +19,7 @@ EventBase::EventBase(LQEvent kbase) {
 
 }
 EventBase::~EventBase() {
-  delete k_LQevent;
+  delete k_SNUevent;
   delete k_muonsel;
   delete k_jetsel;
   delete k_fatjetsel;
@@ -32,7 +32,7 @@ EventBase::~EventBase() {
 }
 
 EventBase::EventBase(EventBase& b){
-  k_LQevent = b.GetEventBase();
+  k_SNUevent = b.GetEventBase();
   k_muonsel = b.GetMuonSel();
   k_electronsel = b.GetElectronSel();
   k_photonsel = b.GetPhotonSel();
@@ -45,7 +45,7 @@ EventBase::EventBase(EventBase& b){
 
 EventBase& EventBase::operator= (const EventBase& b){
   if(this != & b){
-    k_LQevent = b.GetEventBase();
+    k_SNUevent = b.GetEventBase();
     k_muonsel = b.GetMuonSel();
     k_electronsel = b.GetElectronSel();
     k_photonsel = b.GetPhotonSel();
@@ -60,7 +60,7 @@ EventBase& EventBase::operator= (const EventBase& b){
 
 
 void EventBase::SetEventBase(snu::KEvent ev){
-  k_LQevent->SetEvent(ev);
+  k_SNUevent->SetEvent(ev);
 
 }
 

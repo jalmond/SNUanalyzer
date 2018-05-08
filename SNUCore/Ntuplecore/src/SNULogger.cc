@@ -6,7 +6,7 @@
 #include "TObject.h"
 
 // Local include(s):
-#include "LQLogger.h"
+#include "SNULogger.h"
 
 using namespace std;
 
@@ -14,23 +14,23 @@ using namespace std;
 static const string::size_type MAXIMUM_SOURCE_NAME_LENGTH = 18;
 
 
-LQLogger::LQLogger( const TObject* source )
+SNULogger::SNULogger( const TObject* source )
   : m_objSource( source ), m_strSource( "" ), m_activeType( INFO ) {
 
-  m_logWriter = LQLogWriter::Instance();
+  m_logWriter = SNULogWriter::Instance();
 
 }
 
 
-LQLogger::LQLogger( const string& source )
+SNULogger::SNULogger( const string& source )
   : m_objSource( 0 ), m_strSource( source ), m_activeType( INFO ) {
 
-  m_logWriter = LQLogWriter::Instance();
+  m_logWriter = SNULogWriter::Instance();
 
 }
 
-LQLogger::LQLogger( const LQLogger& parent )
-  : std::basic_ios< LQLogger::char_type, LQLogger::traits_type >(),
+SNULogger::SNULogger( const SNULogger& parent )
+  : std::basic_ios< SNULogger::char_type, SNULogger::traits_type >(),
     ostringstream() {
 
   *this = parent;
@@ -40,12 +40,12 @@ LQLogger::LQLogger( const LQLogger& parent )
 /**                                                                                                                         
  * The destructor is literally not doing anything...                                                                        
  */
-LQLogger::~LQLogger() {
+SNULogger::~SNULogger() {
 
 }
 
 
-void LQLogger::SetSource( const TObject* source ) {
+void SNULogger::SetSource( const TObject* source ) {
 
   m_objSource = source;
   m_strSource = "";
@@ -53,7 +53,7 @@ void LQLogger::SetSource( const TObject* source ) {
 
 }
 
-void LQLogger::SetSource( const std::string& source ) {
+void SNULogger::SetSource( const std::string& source ) {
 
   m_objSource = 0;
   m_strSource = source;
@@ -62,17 +62,17 @@ void LQLogger::SetSource( const std::string& source ) {
 }
 
 
-LQLogger& LQLogger::operator= ( const LQLogger& parent ) {
+SNULogger& SNULogger::operator= ( const SNULogger& parent ) {
 
   m_objSource = parent.m_objSource;
   m_strSource = parent.m_strSource;
-  m_logWriter = LQLogWriter::Instance();
+  m_logWriter = SNULogWriter::Instance();
 
   return *this;
 
 }
 
-void LQLogger::Send( const LQMsgType type, const string& message ) const {
+void SNULogger::Send( const SNUMsgType type, const string& message ) const {
 
   if( type < m_logWriter->GetMinType() ) return;
 
@@ -117,7 +117,7 @@ void LQLogger::Send( const LQMsgType type, const string& message ) const {
 }
 
 
-void LQLogger::Send() {
+void SNULogger::Send() {
 
   //                                                                                                                       
   // Call the "other" send(...) function:                                                                                  
@@ -135,7 +135,7 @@ void LQLogger::Send() {
 
 
 
-LQLogger& LQLogger::endmsg( LQLogger& logger ) {
+SNULogger& SNULogger::endmsg( SNULogger& logger ) {
 
   logger.Send();
   return logger;

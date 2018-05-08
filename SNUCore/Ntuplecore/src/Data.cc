@@ -1,6 +1,6 @@
 // $Id: Data.cxx
 /***************************************************************************
- * @Project: LQAnalyzer
+ * @Project: SNUAnalyzer
  * @Package: Core
  */
 
@@ -39,7 +39,7 @@
 // STL include(s):                                                                                                      
 #include <sstream>
 
-Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),k_inputphotons(0),  k_inputjets(0),k_inputfatjets(0), k_inputgenjets(0),k_inputevent(0),k_inputtrigger(0),k_inputtruth(0), setting_ntuple_data(-1),TargetLumi(0.),k_flags(0), k_cat_version(-1)
+Data::Data() : SNUCycleBaseNTuple(), SNUinput(true), k_inputmuons(0),  k_inputelectrons(0),k_inputphotons(0),  k_inputjets(0),k_inputfatjets(0), k_inputgenjets(0),k_inputevent(0),k_inputtrigger(0),k_inputtruth(0), setting_ntuple_data(-1),TargetLumi(0.),k_flags(0), k_cat_version(-1)
   
 {
 
@@ -56,28 +56,28 @@ TTree* Data::GetInputTree(){
 }
 
 void Data::CheckCaching(){
-  m_logger << INFO << fChain->GetCurrentFile()->GetBytesRead() << " bytes with calls: " << fChain->GetCurrentFile()->GetReadCalls() << LQLogger::endmsg;
+  m_logger << INFO << fChain->GetCurrentFile()->GetBytesRead() << " bytes with calls: " << fChain->GetCurrentFile()->GetReadCalls() << SNULogger::endmsg;
 
 }
 
 
-void Data::GetEvent(Long64_t entry) throw( LQError )
+void Data::GetEvent(Long64_t entry) throw( SNUError )
 {
   
 
-  m_logger << DEBUG <<  "Number of branches =  " << m_inputbranches.size() << LQLogger::endmsg;
+  m_logger << DEBUG <<  "Number of branches =  " << m_inputbranches.size() << SNULogger::endmsg;
 
-  if (!fChain)  throw LQError( "!!! Event is not Loaded", LQError::SkipCycle );
-  m_logger << DEBUG <<  fChain << LQLogger::endmsg;
+  if (!fChain)  throw SNUError( "!!! Event is not Loaded", SNUError::SkipCycle );
+  m_logger << DEBUG <<  fChain << SNULogger::endmsg;
   fChain->LoadTree( entry );
 
-  m_logger << DEBUG <<  fChain << LQLogger::endmsg;
+  m_logger << DEBUG <<  fChain << SNULogger::endmsg;
   // Load the current entry for all the regular input variables:                              
   for( std::vector< TBranch* >::const_iterator it = m_inputbranches.begin();
        it != m_inputbranches.end(); ++it ) {
-    m_logger << DEBUG <<  (*it) << LQLogger::endmsg;
+    m_logger << DEBUG <<  (*it) << SNULogger::endmsg;
     int nbytes =  ( *it )->GetEntry( entry,0);
-    if(nbytes==0)  throw LQError( "!!! Event is not Loaded", LQError::SkipCycle );
+    if(nbytes==0)  throw SNUError( "!!! Event is not Loaded", SNUError::SkipCycle );
   }
   
   return;
@@ -88,7 +88,7 @@ Int_t Data::GetEntry(Long64_t entry)
 {
   // Read contents of entry.
    if (!fChain) return 0;
-   m_logger << DEBUG << "Getting Entry " << entry << " in Data.cc " << fChain->GetEntry(entry,0)  << LQLogger::endmsg;
+   m_logger << DEBUG << "Getting Entry " << entry << " in Data.cc " << fChain->GetEntry(entry,0)  << SNULogger::endmsg;
    int nbytes = fChain->GetEntry(entry,0);
    return nbytes;
 }
@@ -97,9 +97,9 @@ Long64_t Data::LoadTree(Long64_t entry)
 {
 // Set the environment to read one entry
    if (!fChain) return -5;
-   m_logger << DEBUG << "LOADING TREE" << LQLogger::endmsg;
+   m_logger << DEBUG << "LOADING TREE" << SNULogger::endmsg;
    Long64_t centry = fChain->LoadTree(entry);
-   m_logger << DEBUG << "LOADING TREE 2" << LQLogger::endmsg;
+   m_logger << DEBUG << "LOADING TREE 2" << SNULogger::endmsg;
    if (centry < 0) return centry;
    //if (!fChain->InheritsFrom(TChain::Class()))  return centry;
    TChain *chain = (TChain*)fChain;
@@ -152,15 +152,15 @@ void Data::Init(TTree *tree)
   }
 
   fChain = tree;
-  m_logger << INFO << "Chain entries = " << fChain->GetEntries() <<  " UseLQ ntuples =  " << LQinput<< LQLogger::endmsg;
+  m_logger << INFO << "Chain entries = " << fChain->GetEntries() <<  " UseSNU ntuples =  " << SNUinput<< SNULogger::endmsg;
   fCurrent = -1;
-  if(LQinput)fChain->SetMakeClass(1);
+  if(SNUinput)fChain->SetMakeClass(1);
 
   /// TESTS
   //fChain->SetMaxVirtualSize(100000000); 
   Int_t cachesize=100000000;
   fChain->SetCacheSize(cachesize);
-  if(LQinput)fChain->SetBranchStatus("*",0);// disbles all branches                                                                                                                      
+  if(SNUinput)fChain->SetBranchStatus("*",0);// disbles all branches                                                                                                                      
   if(setting_ntuple_data < 0) return;
   ConnectVariables(false, setting_ntuple_data); // -> false means not ALL branches are loaded
 
@@ -178,7 +178,7 @@ Long64_t  Data::GetNEntries(){
 }
 
 UInt_t Data::GetEventNumber(){
-  if(LQinput)  return event;
+  if(SNUinput)  return event;
   else return k_inputevent->EventNumber();
   return k_inputevent->EventNumber();
 
@@ -480,18 +480,18 @@ void Data::SetFlags(std::vector<TString> flags){
   k_flags= flags;
 }
 
-void Data::SetLQNtupleInputType(int dataflag){
+void Data::SetSNUNtupleInputType(int dataflag){
   setting_ntuple_data= dataflag;
 }
 
 
-void Data::SetLQNtupleInputType(bool lq){
-  LQinput= lq;
+void Data::SetSNUNtupleInputType(bool lq){
+  SNUinput= lq;
 }
 
-std::string  Data::GetCatVersion(bool runLQ){
+std::string  Data::GetCatVersion(bool runSNU){
   
-  if(runLQ) {
+  if(runSNU) {
     return CatVersion;
   }
   else return k_inputevent->CatVersion();
@@ -512,7 +512,7 @@ void Data::ConnectVariables(bool setall, int setting_data){
   /// set all controlls which cranches are set 
   //#####   EVENT branches
 
-  if(!LQinput){
+  if(!SNUinput){
     k_inputmuons=0;
     k_inputelectrons=0;
     k_inputphotons=0;
@@ -574,7 +574,7 @@ void Data::ConnectEvent(int setting_data){
   // new for v7-4-6
   if(k_cat_version > 2 && k_cat_version < 5){
     if( (setting_data == 1) || (setting_data == 3)){
-      m_logger << INFO << "setting_lumi" << LQLogger::endmsg;
+      m_logger << INFO << "setting_lumi" << SNULogger::endmsg;
       ConnectVariable("lumiMaskGold", lumiMaskGold, b_lumiMaskGold);
       ConnectVariable("lumiMaskSilver", lumiMaskSilver, b_lumiMaskSilver);
     }
@@ -793,7 +793,7 @@ void Data::ConnectElectrons(){
 
 void Data::ConnectPFJets(){
 
-  m_logger << DEBUG << "ConnectPFJets : "<< LQLogger::endmsg;
+  m_logger << DEBUG << "ConnectPFJets : "<< SNULogger::endmsg;
 
   //#####   Jet branches
   //  ConnectVariable("rhoJets", rhoJets, b_rhoJets);
@@ -852,7 +852,7 @@ void Data::ConnectPFJets(){
 
 void Data::ConnectPFFatJets(){
 
-  m_logger << DEBUG << "ConnectPFJets : "<< LQLogger::endmsg;
+  m_logger << DEBUG << "ConnectPFJets : "<< SNULogger::endmsg;
 
   //#####   Jet branches                                                                                                                                                         
   //  ConnectVariable("rhoJets", rhoJets, b_rhoJets);                                                                                                                            
@@ -1038,7 +1038,7 @@ bool Data::ConnectVariable( const char* branchName,
   // Check if the branch actually exists:                                                                                                                                                                                                                                                             
   TBranch* branch_info;
   if( ! (branch_info = fChain->GetBranch( branchName ) ) ) {    
-    m_logger << INFO << "Branch NOT FOUND " << branchName << LQLogger::endmsg;
+    m_logger << INFO << "Branch NOT FOUND " << branchName << SNULogger::endmsg;
     return false;
   }
   
@@ -1050,9 +1050,9 @@ bool Data::ConnectVariable( const char* branchName,
   delete variable; 
   if( strlen( type_name ) == 1 ) {
 
-    throw LQError( "ConnectVariable(...) specialised for object pointers calle\
+    throw SNUError( "ConnectVariable(...) specialised for object pointers calle\
 d "
-		  "with a simple variable.", LQError::SkipCycle );
+		  "with a simple variable.", SNUError::SkipCycle );
 
   } else {
 
@@ -1075,12 +1075,12 @@ template< typename T >
 bool Data::ConnectVariable(  const char* branchName,
 			     T& variable, TBranch* br){
   
-  m_logger << INFO << "ConnectVariable 1: " << branchName <<  LQLogger::endmsg;
+  m_logger << INFO << "ConnectVariable 1: " << branchName <<  SNULogger::endmsg;
 
   // Check if the branch actually exists:                                      
   TBranch* branch_info;
   if( ! (branch_info = fChain->GetBranch( branchName ) ) ) {    
-    m_logger << INFO << "Branch NOT FOUND " << branchName << LQLogger::endmsg;
+    m_logger << INFO << "Branch NOT FOUND " << branchName << SNULogger::endmsg;
     return false;
   }
 

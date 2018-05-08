@@ -7,9 +7,9 @@ extern "C" {
 #include <iostream>
 
 // Local include(s):                                                                                                        
-#include "LQLogWriter.h"
+#include "SNULogWriter.h"
 
-LQLogWriter* LQLogWriter::m_instance = 0;
+SNULogWriter* SNULogWriter::m_instance = 0;
 
 /**                                                                                                                         
  * This function implements the singleton design pattern for the                                                            
@@ -17,10 +17,10 @@ LQLogWriter* LQLogWriter::m_instance = 0;
  * user can not create it manually. He/she has to access a (single)                                                         
  * instance of the object with this function.                                                                               
  */
-LQLogWriter* LQLogWriter::Instance() {
+SNULogWriter* SNULogWriter::Instance() {
 
   if( ! m_instance ) {
-    m_instance = new LQLogWriter();
+    m_instance = new SNULogWriter();
   }
 
   return m_instance;
@@ -28,22 +28,22 @@ LQLogWriter* LQLogWriter::Instance() {
 /**                                                                                                                         
  * This is also one of the "don't do anything" destructors.                                                                 
  */
-LQLogWriter::~LQLogWriter() {
+SNULogWriter::~SNULogWriter() {
 
 }
 
 /**                                                                                                                         
  * This function is the heavy-lifter of the class. It writes the received                                                   
  * message to the console. The function assumes that the message has no                                                     
- * line breaks and that it has been formatted by LQLogger.                                                                   
+ * line breaks and that it has been formatted by SNULogger.                                                                   
  *                                                                                                                          
  * @param type The message type                                                                                             
  * @param line A single line of message to be displayed.                                                                    
  */
-void LQLogWriter::Write( LQMsgType type, const std::string& line ) const {
+void SNULogWriter::Write( SNUMsgType type, const std::string& line ) const {
 
   if( type < m_minType ) return;
-  std::map< LQMsgType, std::string >::const_iterator stype;
+  std::map< SNUMsgType, std::string >::const_iterator stype;
   if( ( stype = m_typeMap.find( type ) ) == m_typeMap.end() ) return;
 
   // Print the output in colours only if it's printed to the console. If it's                                              
@@ -66,9 +66,9 @@ void LQLogWriter::Write( LQMsgType type, const std::string& line ) const {
  * as well of course.                                                                                                       
  *                                                                                                                          
  * @param type The value of the minimum type                                                                                
- * @see LQLogWriter::GetMinType                                                                                              
+ * @see SNULogWriter::GetMinType                                                                                              
  */
-void LQLogWriter::SetMinType( LQMsgType type ) {
+void SNULogWriter::SetMinType( SNUMsgType type ) {
 
   m_minType = type;
   return;
@@ -78,9 +78,9 @@ void LQLogWriter::SetMinType( LQMsgType type ) {
 /**                                                                                                                         
  * Not much to say here.                                                                                                    
  *                                                                                                                          
- * @see LQLogWriter::SetMinType                                                                                              
+ * @see SNULogWriter::SetMinType                                                                                              
  */
-LQMsgType LQLogWriter::GetMinType() const {
+SNUMsgType SNULogWriter::GetMinType() const {
 
   return m_minType;
 }
@@ -89,7 +89,7 @@ LQMsgType LQLogWriter::GetMinType() const {
  * The constructor takes care of filling the two std::map-s that are                                                        
  * used for generating the nice colured output.                                                                             
  */
-LQLogWriter::LQLogWriter()
+SNULogWriter::SNULogWriter()
   : m_minType( INFO ) {
 
   m_typeMap[ VERBOSE ] = "VERBOSE";

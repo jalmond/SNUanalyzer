@@ -1,5 +1,5 @@
-#ifndef LQEvent_h
-#define LQEvent_h
+#ifndef SNUEvent_h
+#define SNUEvent_h
 
 #include <iostream>
 using namespace std;
@@ -23,18 +23,18 @@ using namespace std;
 #include "KEvent.h"
 #include "KPhoton.h"
 
-class LQEvent {
+class SNUEvent {
 
  public:
-  LQEvent(std::vector<snu::KMuon> muons, std::vector<snu::KElectron> el,  std::vector<snu::KPhoton> photons, std::vector<snu::KJet> jets,  std::vector<snu::KFatJet> fatjets,  std::vector<snu::KGenJet> genjets,std::vector<snu::KTruth> truth, snu::KTrigger tr,  snu::KEvent ev);
+  SNUEvent(std::vector<snu::KMuon> muons, std::vector<snu::KElectron> el,  std::vector<snu::KPhoton> photons, std::vector<snu::KJet> jets,  std::vector<snu::KFatJet> fatjets,  std::vector<snu::KGenJet> genjets,std::vector<snu::KTruth> truth, snu::KTrigger tr,  snu::KEvent ev);
 
   ///Copy constructor
-  LQEvent(const LQEvent& evb);
+  SNUEvent(const SNUEvent& evb);
 
-  LQEvent();
-  LQEvent& operator= (const LQEvent& obj);
+  SNUEvent();
+  SNUEvent& operator= (const SNUEvent& obj);
 
-  ~LQEvent();
+  ~SNUEvent();
   
   void SetEvent(snu::KEvent);
 

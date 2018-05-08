@@ -1,7 +1,7 @@
 // $Id: SKTreeMaker.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: SNUAnalyzer Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *
@@ -14,7 +14,7 @@
 #include "EventBase.h"                                                                                                                           
 
 
-//// Needed to allow inheritance for use in LQCore/core classes
+//// Needed to allow inheritance for use in SNUCore/core classes
 ClassImp (SKTreeMaker);
 
 
@@ -32,7 +32,7 @@ SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0),  o
 
 }
 
-void SKTreeMaker::ExecuteEvents()throw( LQError ){
+void SKTreeMaker::ExecuteEvents()throw( SNUError ){
 
   //////////////////////////////////////////////////////
   //////////// Select objetcs
@@ -104,7 +104,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   }
   /// select events with either 1 lepton with pt > 15  gev or 2 leptons with pt > 15
   if(! ((nlep > 1) || ( nlep ==1 && pass15gevlep))) {
-    throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+    throw SNUError( "Not Lepton Event",  SNUError::SkipEvent );
   }
 
   out_event   = eventbase->GetEvent();
@@ -116,18 +116,18 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   
 
 
-void SKTreeMaker::EndCycle()throw( LQError ){
+void SKTreeMaker::EndCycle()throw( SNUError ){
   
   Message("In EndCycle" , INFO);
 }
 
 
-void SKTreeMaker::BeginCycle() throw( LQError ){
+void SKTreeMaker::BeginCycle() throw( SNUError ){
   
   Message("In begin Cycle", INFO);
 
-  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  DeclareVariable(out_electrons, "KElectrons", "LQTree");
+  //DeclareVariable(obj, label ); //-> will use default treename: SNUTree
+  DeclareVariable(out_electrons, "KElectrons", "SNUTree");
   DeclareVariable(out_photons, "KPhotons");
   DeclareVariable(out_muons, "KMuons");
   DeclareVariable(out_jets, "KJets");
@@ -223,7 +223,7 @@ void SKTreeMaker::FillCutFlow(TString cut, float weight){
 
 
 
-void SKTreeMaker::BeginEvent( )throw( LQError ){
+void SKTreeMaker::BeginEvent( )throw( SNUError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -231,7 +231,7 @@ void SKTreeMaker::BeginEvent( )throw( LQError ){
 }
 
 
-void SKTreeMaker::ClearOutputVectors() throw (LQError){
+void SKTreeMaker::ClearOutputVectors() throw (SNUError){
   //
   // Reset all variables declared in Declare Variable
   //

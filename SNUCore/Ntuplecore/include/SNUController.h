@@ -1,20 +1,20 @@
-#ifndef LQController_h
-#define LQController_h
+#ifndef SNUController_h
+#define SNUController_h
 
 /// standard includes
 #include <set>
 #include <vector>
 
 // Local include(s):
-#include "LQLogger.h"
-#include "LQError.h"
+#include "SNULogger.h"
+#include "SNUError.h"
 #include "SKTreeFiller.h"
 
 //Forward declaration
 class TH1F;
 class TChain;
 
-class LQController  {
+class SNUController  {
 
  public:
   
@@ -31,14 +31,14 @@ class LQController  {
 
   
   //// constructors
-  LQController();
-  virtual ~LQController();
+  SNUController();
+  virtual ~SNUController();
 
   enum dataType {NOTSET, data, mc};
 
   /// Initialise the analysis from the configuration file
-  void Initialize() throw( LQError );  
-  void ExecuteCycle()throw( LQError );
+  void Initialize() throw( SNUError );  
+  void ExecuteCycle()throw( SNUError );
 
   /// Useful for checking performance
   void GetMemoryConsumption(TString label);
@@ -55,7 +55,7 @@ class LQController  {
   void AddLibraries(TString libname);  
   void SetJobName(TString name);
   void SetTagName(TString name);
-  void SetInputList(TString list) throw( LQError );
+  void SetInputList(TString list) throw( SNUError );
   void SetFullInputList(TString list);
   void SetDataType(TString settype);
   void SetLogLevel(TString level);
@@ -70,12 +70,12 @@ class LQController  {
   void SetDataPeriod(TString period);
   void SetChannel(TString channel);
   void SetInputChain(TChain* ch);
-  void SetLQInput(bool lq);
+  void SetSNUInput(bool lq);
   void SetUserFlag(TString flag);
 
   std::string SetNTCatVersion();
 
-  _catversion GetCatVersion(std::string filepath)  throw( LQError ); 
+  _catversion GetCatVersion(std::string filepath)  throw( SNUError ); 
   bool CheckBranch(std::string ntuple_version, std::string env_version);
 
 
@@ -87,8 +87,8 @@ class LQController  {
   void RunNonPrompt(TString np);
   void RunChargeFlip(TString cf);
 
-  std::pair< Double_t, Double_t> GetTotalEvents() throw(LQError);
-  float CalculateWeight() throw (LQError);
+  std::pair< Double_t, Double_t> GetTotalEvents() throw(SNUError);
+  float CalculateWeight() throw (SNUError);
   
  private:
   TChain*  chain;
@@ -105,7 +105,7 @@ class LQController  {
   bool runnp;
   bool runcf;
   bool runtau;
-  mutable LQLogger m_logger;
+  mutable SNULogger m_logger;
   
   float target_luminosity;
   float sample_crosssection;
@@ -125,7 +125,7 @@ class LQController  {
   int output_step;
   TString channel;
   TString k_period;
-  bool kLQInput;
+  bool kSNUInput;
   _catversion catversion_lq;
 
   TH1F* h_timing_hist;

@@ -1,5 +1,8 @@
 import os
 
+flag=os.getenv("Flag")
+
+
 def CheckPathInFile(channel,sample,mc):
     CopySKTrees(channel, sample, mc , "False")
     
@@ -32,7 +35,7 @@ def CopySKTrees(channel,sample,mc,docopy):
                     if sample == entries[0]:
                         inputdir = entries[2]
 
-    sample_dir = os.getenv("LQANALYZER_DIR")+ "/data/input/"
+    sample_dir = os.getenv("ANALYZER_DIR")+ "/data/input/"
     if not os.path.exists(sample_dir):                
         os.system("mkdir " + sample_dir)
     if not mc:
@@ -116,42 +119,42 @@ def make_batch_script(workdir, jname, lqdir, macroname, cluster):
 
 def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries, runnp, runcf, runtau, skflag,tmplibdir, nskim):
 
-    if not os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir):
-        os.system("mkdir " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir)
-        os.system("cp " + os.getenv("LQANALYZER_LIB_PATH") + "/*.so  " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
-        os.system("cp " + os.getenv("LQANALYZER_LIB_PATH") + "/*.rootmap  " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
+    if not os.path.exists(os.getenv("ANALYZER_BATCHLIB_PATH")+"/"+tmplibdir):
+        os.system("mkdir " + os.getenv("ANALYZER_BATCHLIB_PATH")+"/"+tmplibdir)
+        os.system("cp " + os.getenv("ANALYZER_LIB_PATH") + "/*.so  " + os.getenv("ANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
+        os.system("cp " + os.getenv("ANALYZER_LIB_PATH") + "/*.rootmap  " + os.getenv("ANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
         
     config='{\n'
     config+='    gEnv->SetValue("TFile.AsyncPrefetching", 1);\n'
 
     config+='   //### Load Libraries\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSKTree.so");\n'
+    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSKTree.so");\n'
     config+='   gSystem->Load("libHist.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libAnalysisCore.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libNtuplecore.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSelection.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libPlotting.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libHNCommonLeptonFakes.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/librochcor2016");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libBTagSFUtil.so");\n'
+    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libAnalysisCore.so");\n'
+    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libNtuplecore.so");\n'
+    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSelection.so");\n'
+    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libPlotting.so");\n'
+    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libHNCommonLeptonFakes.so");\n'
+    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/librochcor2016");\n'
+    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libBTagSFUtil.so");\n'
     for lib in libraries:
-        config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/' + lib + ' + .so");\n'
+        config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/' + lib + ' + .so");\n'
         
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libAnalyzerTools.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libLQAnalysis.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSKTreeMaker.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libValidation.so");\n'
+    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libAnalyzerTools.so");\n'
+    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/lib'+flag+'Analysis.so");\n'
+    config+='   gSystem->Load("'+os.getenv("NALYZER_BATCHLIB_PATH")+tmplibdir+'/libSKTreeMaker.so");\n'
+    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libValidation.so");\n'
     
     config+='   gSystem->Load("libPyROOT.so");\n'
     config+='   \n'
     config+='   TString filename = "' + input + '";\n'
-    config+='   LQController analysis;\n'
+    config+='   '+flag+'Controller analysis;\n'
     if useSKinput == "True":        
-        config+='   analysis.SetLQInput(false);\n'
+        config+='   analysis.Set'+flag+'Input(false);\n'
     elif useSKinput == "true":
-        config+='   analysis.SetLQInput(false);\n'    
+        config+='   analysis.Set'+flag+'Input(false);\n'    
     else :
-        config+='   analysis.SetLQInput(true);\n'
+        config+='   analysis.Set'+flag+'Input(true);\n'
     config+='   analysis.SetJobName("' + sample + "_" + cycle+'");\n'
     config+='   analysis.SetTagName("' +tmplibdir +'");\n'
     config+='   analysis.SetInputList(TString(filename));\n'

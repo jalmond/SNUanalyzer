@@ -1,7 +1,7 @@
 // $Id: SKTreeValidation.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQSKTreeValidation Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: SNUSKTreeValidation Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *
@@ -15,7 +15,7 @@
 #include "BaseSelection.h"
 
 
-//// Needed to allow inheritance for use in LQCore/core classes
+//// Needed to allow inheritance for use in SNUCore/core classes
 ClassImp (SKTreeValidation);
 
 
@@ -141,13 +141,13 @@ void SKTreeValidation::FillCutFlow(TString cut, float weight){
   }
 }
 
-void SKTreeValidation::InitialiseAnalysis() throw( LQError ) {
+void SKTreeValidation::InitialiseAnalysis() throw( SNUError ) {
   
   /// Initialise histograms
   MakeHistograms();  
   //
   // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
-  // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
+  // You can also use m_logger << level << "comment" << int/double  << SNULogger::endmsg;
   //
   
   Message("Making clever hists for Z ->ll test code", INFO);
@@ -157,7 +157,7 @@ void SKTreeValidation::InitialiseAnalysis() throw( LQError ) {
 }
 
 
-void SKTreeValidation::ExecuteEvents()throw( LQError ){
+void SKTreeValidation::ExecuteEvents()throw( SNUError ){
 
   int mcperiod = GetMCPeriod();
 
@@ -178,8 +178,8 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   /// Apply the gen weight
   /// Acts on data to remove bad reconstructed event 
 
-  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-  m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
+  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << SNULogger::endmsg;
+  m_logger << DEBUG << "isData = " << isData << SNULogger::endmsg;
    
 
   bool makePUFile=false;
@@ -273,7 +273,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    if(mus.size() ==2) {
 	   
      counter("DiMu", weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));
-     //     m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+     //     m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << SNULogger::endmsg;
 
      if(!SameCharge(mus)){
        if(mus.at(0).Pt() > 20. && mus.at(1).Pt() > 20.){
@@ -388,7 +388,7 @@ void SKTreeValidation::counter(TString cut, float w){
 
 }
 
-void SKTreeValidation::EndCycle()throw( LQError ){
+void SKTreeValidation::EndCycle()throw( SNUError ){
   
   for ( map<TString,float>::iterator itmapcounter = mapcounter.begin(); itmapcounter != mapcounter.end(); itmapcounter++){
     cout << itmapcounter->first << " has count "<< itmapcounter->second << endl;
@@ -398,7 +398,7 @@ void SKTreeValidation::EndCycle()throw( LQError ){
 }
 
 
-void SKTreeValidation::BeginCycle() throw( LQError ){
+void SKTreeValidation::BeginCycle() throw( SNUError ){
   
   Message("In begin Cycle", INFO);
   
@@ -407,8 +407,8 @@ void SKTreeValidation::BeginCycle() throw( LQError ){
   //If you wish to output variables to output file use DeclareVariable
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
-  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  //  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //DeclareVariable(obj, label ); //-> will use default treename: SNUTree
+  //  DeclareVariable(out_electrons, "Signal_Electrons", "SNUTree");
   //  DeclareVariable(out_muons, "Signal_Muons");
 
   
@@ -875,7 +875,7 @@ void SKTreeValidation::MakeDiElectronValidationPlots(TString elid, float w, floa
   }
 }
   
-void SKTreeValidation::BeginEvent( )throw( LQError ){
+void SKTreeValidation::BeginEvent( )throw( SNUError ){
   
   Message("In BeginEvent() " , DEBUG);
 
@@ -897,7 +897,7 @@ void SKTreeValidation::MakeHistograms(){
 }
 
 
-void SKTreeValidation::ClearOutputVectors() throw(LQError) {
+void SKTreeValidation::ClearOutputVectors() throw(SNUError) {
 
   // This function is called before every execute event (NO need to call this yourself.
   

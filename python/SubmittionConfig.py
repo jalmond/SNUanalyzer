@@ -6,6 +6,7 @@ from datetime import timedelta
 from optparse import OptionParser
 from QuickHistCheck import *
 
+flag=os.getenv("Flag")
 
 path_jobpre="/data1/"
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
@@ -115,13 +116,13 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
                 os.system("mv "  + defFinaloutputdir+ "/"+ defcycle+"_"+defoutput_file_skim_tag+".root " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root")
                 if not os.path.exists( "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger ):
                     os.system("mkdir " +  "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger)
-                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt"   )
-                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
+                os.system("source "+os.getenv("ANALYZER_DIR")+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt"   )
+                os.system("source "+os.getenv("ANALYZER_DIR")+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
                 
 
                 if os.getenv("USER") == "jalmond":
-                    transout=defFinaloutputdirMC.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
-                    catpath=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
+                    transout=defFinaloutputdirMC.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
+                    catpath=os.getenv("ANALYZER_DIR")+"/bin/catconfig"
                     readcatpath=open(catpath,"r")
                     lxmachine=""
                     for rline in readcatpath:
@@ -198,12 +199,12 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
 
                 if not os.path.exists( "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger ):
                     os.system("mkdir " +  "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger)
-                os.system("source "+str(os.getenv("LQANALYZER_DIR"))+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle +"_data_" + defchannel+"_cat_"+defcatversion+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt" )  
-                os.system("source "+str(os.getenv("LQANALYZER_DIR"))+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle +"_data_" + defchannel+"_cat_"+defcatversion+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
+                os.system("source "+str(os.getenv("ANALYZER_DIR"))+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle +"_data_" + defchannel+"_cat_"+defcatversion+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt" )  
+                os.system("source "+str(os.getenv("ANALYZER_DIR"))+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle +"_data_" + defchannel+"_cat_"+defcatversion+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
 
                 if os.getenv("USER") == "jalmond":
-                    transout=defFinaloutputdirMC.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
-                    catpath=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
+                    transout=defFinaloutputdirMC.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
+                    catpath=os.getenv("ANALYZER_DIR")+"/bin/catconfig"
                     readcatpath=open(catpath,"r")
                     lxmachine=""
                     for rline in readcatpath:
@@ -257,7 +258,7 @@ def NewForat(ct):
 
 def GetNFiles( deftagger,defsample,defcycle,defskim):
 
-    if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
+    if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
         return 1000.
 
     nit=2
@@ -279,7 +280,7 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
         day=checkdate.strftime("%d")
         year=checkdate.strftime("%y")
 
-        file_jobsummary="/data1//LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
+        file_jobsummary="/data1//"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
 
         if not os.path.exists(file_jobsummary):
             return 1000.
@@ -316,7 +317,7 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
 
 def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundebug):
 
-    if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
+    if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
         return 1000.
     
 
@@ -342,7 +343,7 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
         day=checkdate.strftime("%d")
         year=checkdate.strftime("%y")
 
-        file_jobsummary="/data1//LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
+        file_jobsummary="/data1//"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
         if rundebug:
             file_debug = open("debug.txt","a")
             file_debug.write(file_jobsummary+"\n")
@@ -616,7 +617,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
 
     if rundebug:
         file_debug.write("deftagger " + deftagger + " defsample = " + defsample + " defskim = " + defskim + " defqueue = " + defqueue + "\n")
-    if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
+    if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
         return 20
        
     if ncores_job == 0:
@@ -926,7 +927,7 @@ def CheckJobHistory(info_type, defsample, defcycle, tagger,defskim):
         newformat=NewForat(cattag)
 
         #info_file_master = path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"
-        info_file= path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/PreMasterFile_"+os.getenv("CATVERSION")+ str(tagger)+".txt"
+        info_file= path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/PreMasterFile_"+os.getenv("CATVERSION")+ str(tagger)+".txt"
 
         #os.system("cp " + info_file_master + " " + info_file)
         read_info_file = open(info_file,"r")
@@ -1050,10 +1051,10 @@ def CrashHelpMessage(crashtype):
         crashmessage.append("   if(muons.at(0).Pt() > 20.) ... This will not crash")
         return crashmessage
     if crashtype == 1: 
-        crashmessage.append("Crash caused due to missing file. Check that file is located in $LQANALYZER_FILE_DIR directory (use ls $LQANALYZER_FILE_DIR).")
-        crashmessage.append("If file is located in $LQANALYZER_FILE_DIR do:")
-        crashmessage.append("cp $LQANALYZER_FILE_DIR/file  $FILEDIR")
-        crashmessage.append("If file is not located in $LQANALYZER_FILE_DIR email jalmond@cern.ch with crash message")
+        crashmessage.append("Crash caused due to missing file. Check that file is located in $ANALYZER_FILE_DIR directory (use ls $ANALYZER_FILE_DIR).")
+        crashmessage.append("If file is located in $ANALYZER_FILE_DIR do:")
+        crashmessage.append("cp $ANALYZER_FILE_DIR/file  $FILEDIR")
+        crashmessage.append("If file is not located in $ANALYZER_FILE_DIR email jalmond@cern.ch with crash message")
     if crashtype == 2:
         crashmessage.append("Crash caused due to Error in GetMuons input string")
     if crashtype == 3:
@@ -1151,7 +1152,7 @@ def GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
 
 def GetLogFilePath(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle):
     tmpname= GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle)
-    outlogname = str(os.getenv("LQANALYZER_LOG_PATH")) + "/" + tmpname + "/" + tmpname+"_Job_*"
+    outlogname = str(os.getenv("ANALYZER_LOG_PATH")) + "/" + tmpname + "/" + tmpname+"_Job_*"
     return outlogname
 
 def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle, mergedname):
@@ -1461,7 +1462,7 @@ parser.add_option("-x", "--xsec", dest="xsec", default=-1., help="How many event
 parser.add_option("-X", "--tagger", dest="tagger", default="123", help="random number string?")
 parser.add_option("-T", "--targetlumi", dest="targetlumi", default=-1., help="How many events in sample?")
 parser.add_option("-E", "--efflumi", dest="efflumi", default=-1., help="How many events in sample?")
-parser.add_option("-O", "--outputdir", dest="outputdir", default="${LQANALYZER_DIR}/data/output/", help="Where do you like output to go?")
+parser.add_option("-O", "--outputdir", dest="outputdir", default="${ANALYZER_DIR}/data/output/", help="Where do you like output to go?")
 parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove the work space?")
 parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
 parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
@@ -1558,7 +1559,7 @@ if getpass.getuser()  == "jalmond":
         os.system("mkdir " + Finaloutputdir)
 
 
-    catpath=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
+    catpath=os.getenv("ANALYZER_DIR")+"/bin/catconfig"
     readcatpath=open(catpath,"r")
     lxmachine=""
     for rline in readcatpath:
@@ -1571,8 +1572,8 @@ if getpass.getuser()  == "jalmond":
     print  "Making dir at lxplus"
     
     transout=Finaloutputdir
-    transout=transout.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/" ,"/afs/cern.ch/work/j/jalmond/CAT/")
-    transout=transout.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/" ,"/afs/cern.ch/work/j/jalmond/CAT/")
+    transout=transout.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer/data/output/CAT/" ,"/afs/cern.ch/work/j/jalmond/CAT/")
+    transout=transout.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer//data/output/CAT/" ,"/afs/cern.ch/work/j/jalmond/CAT/")
 
     os.system("ssh  jalmond@"+lxmachine+".cern.ch  mkdir " + transout )
     if "OPT" in skflag:
@@ -1603,7 +1604,7 @@ if getpass.getuser()  == "jalmond":
     os.system("ls " + cpath + " > check_snu_connection.txt")
     snu_connect = open("check_snu_connection.txt",'r')
     connected_lxplus=False
-    catpath=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
+    catpath=os.getenv("ANALYZER_DIR")+"/bin/catconfig"
     readcatpath=open(catpath,"r")
     lxmachine=""
     for rline in readcatpath:
@@ -1622,7 +1623,7 @@ if getpass.getuser()  == "jalmond":
         print "No connection to " + lxmachine
         sys.exit()                                                                                                                                                                 
 
-queuepath=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/ForceQueue.txt"
+queuepath=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/ForceQueue.txt"
 file_queuepath = open(queuepath,"r")
 QueueForced=False
 for line in file_queuepath:
@@ -1778,19 +1779,19 @@ else:
     os.system("mkdir " + an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
 
 ### Make directory for job stats
-statdir=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"+ os.getenv("USER")
+statdir=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"+ os.getenv("USER")
 if not os.path.exists(statdir):
     os.system("mkdir " +statdir)
 
 if channel == "":
     channel = NULL
 
-if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
-    os.system("cp  " + path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton.txt " + path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt")
+if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
+    os.system("cp  " + path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton.txt " + path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt")
 
 
-jobinfo_file_master = path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"
-jobinfo_file= path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/PreMasterFile_"+os.getenv("CATVERSION")+ str(tagger)+".txt"
+jobinfo_file_master = path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"
+jobinfo_file= path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/PreMasterFile_"+os.getenv("CATVERSION")+ str(tagger)+".txt"
 os.system("cp " + jobinfo_file_master + " " + jobinfo_file)
 
 
@@ -2304,7 +2305,7 @@ for nsample in range(0, len(sample)):
                 stdscr.addstr(int(x)+istatus_message, summary_block6,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_DIM) 
                 stdscr.refresh()
 
-                path_job=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_time_"+sample[x] + tagger + ".txt"
+                path_job=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_time_"+sample[x] + tagger + ".txt"
                 ismerging=True
                 while not os.path.exists(path_job):
                     if rundebug:
@@ -2456,9 +2457,9 @@ for nsample in range(0, len(sample)):
             stdscr.refresh()
 
     ##### New Code looks at submittnig jobs to batch queue        
-    logfile=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)+ "/statlog_"+ s + tagger + ".txt"
-    if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)):
-        os.system("mkdir " + path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger))
+    logfile=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)+ "/statlog_"+ s + tagger + ".txt"
+    if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)):
+        os.system("mkdir " + path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger))
 
     filestatlog=open(logfile,"w")
     filestatlog.write("user " +  os.getenv("USER")+ " \n")
@@ -2475,7 +2476,7 @@ for nsample in range(0, len(sample)):
     blankbuffer = "         "
     if not queue:
         queue="None"
-    command1= "python  " +  os.getenv("LQANALYZER_DIR")+  "/python/CATConfig.py -p " + s + "  -s " + str(channel) + "  -j " + str(njobs_for_submittion) + " -c  " + str(cycle)+ " -o " + str(logstep)+ "  -d " + str(data_lumi) + " -O " + str(Finaloutputdir) + "  -w " + str(remove_workspace)+ " -l  " + str(loglevel) + "  -k " + str(skipev) + "  -n " + str(number_of_events_per_job) + "  -e " + str(totalev) + "  -x " + str(xsec) + "  -T " + str(tar_lumi) + " -E " + str(eff_lumi) + "  -S " + str(useskinput) + " -R " + str(runevent)+ "  -N " + str(useCATv742ntuples) + " -L " + str(tmplist_of_extra_lib) + " -D " + str(DEBUG) + " -m " + str(useskim) + " -P  " + str(runnp) + " -Q " + str(runcf) + " -v " + str(catversion) + " -f " + str(skflag) + " -b " + str(usebatch) + "  -X " + str(tagger) +" -q " + str(queue) + " -J " + str(setjobs) + " -G " + str(runtau) + " -F " + str(tmpsubmit_allfiles) + " -g " + str(tmp_filename)
+    command1= "python  " +  os.getenv("ANALYZER_DIR")+  "/python/CATConfig.py -p " + s + "  -s " + str(channel) + "  -j " + str(njobs_for_submittion) + " -c  " + str(cycle)+ " -o " + str(logstep)+ "  -d " + str(data_lumi) + " -O " + str(Finaloutputdir) + "  -w " + str(remove_workspace)+ " -l  " + str(loglevel) + "  -k " + str(skipev) + "  -n " + str(number_of_events_per_job) + "  -e " + str(totalev) + "  -x " + str(xsec) + "  -T " + str(tar_lumi) + " -E " + str(eff_lumi) + "  -S " + str(useskinput) + " -R " + str(runevent)+ "  -N " + str(useCATv742ntuples) + " -L " + str(tmplist_of_extra_lib) + " -D " + str(DEBUG) + " -m " + str(useskim) + " -P  " + str(runnp) + " -Q " + str(runcf) + " -v " + str(catversion) + " -f " + str(skflag) + " -b " + str(usebatch) + "  -X " + str(tagger) +" -q " + str(queue) + " -J " + str(setjobs) + " -G " + str(runtau) + " -F " + str(tmpsubmit_allfiles) + " -g " + str(tmp_filename)
     command2=command1
     command2 = command2.replace("CATConfig.py", "localsubmit.py")
     command2_background=command2 + "&>  "+an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + s+".txt&"
@@ -2859,7 +2860,7 @@ while StillRunning:
                 stdscr.addstr(int(x)+istatus_message, summary_block6,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_DIM)
                 stdscr.addstr(int(x)+istatus_message, summary_block7 ,"|    ",curses.A_DIM)
                 stdscr.refresh()
-                path_job=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()  + "/" + str(tagger)+ "/statlog_time_"+sample[x] + tagger + ".txt"
+                path_job=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()  + "/" + str(tagger)+ "/statlog_time_"+sample[x] + tagger + ".txt"
                 ismerging=True
                 while not os.path.exists(path_job):
                     if ismerging:
@@ -3113,7 +3114,7 @@ for i in range(0, winx-remove_from_end):
 
 
 time.sleep(10.)
-path_stat_dir=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()  + "/" + str(tagger)+ "/"
+path_stat_dir=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()  + "/" + str(tagger)+ "/"
 os.system("rm -r " + path_stat_dir)
 
 
@@ -3326,9 +3327,9 @@ if DoSendEmail:
     SendEmail(job_summary,tagger,email_subject,useremail,quickdraw, listofplots)
 
     
-if os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tagger) :
-    print "Removing tmp library directory for job ["+os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tagger+"]"
-    os.system("rm -r "+ os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tagger)
+if os.path.exists(os.getenv("ANALYZER_BATCHLIB_PATH")+"/"+tagger) :
+    print "Removing tmp library directory for job ["+os.getenv("ANALYZER_BATCHLIB_PATH")+"/"+tagger+"]"
+    os.system("rm -r "+ os.getenv("ANALYZER_BATCHLIB_PATH")+"/"+tagger)
         
 
 

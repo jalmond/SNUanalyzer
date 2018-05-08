@@ -1,9 +1,9 @@
-catagpath=/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/
+catagpath=/data1/${Flag}Analyzer_rootfiles_for_analysis/CATTag/
 if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
 then
-    tagpath=/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATTag/
+    tagpath=/data4/LocalNtuples/${Flag}Analyzer_rootfiles_for_analysis/CATTag/
 else
-    tagpath=/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/
+    tagpath=/data1/${Flag}Analyzer_rootfiles_for_analysis/CATTag/
 fi
 
 if [[ $USER == "jalmond" ]];
@@ -11,7 +11,7 @@ if [[ $USER == "jalmond" ]];
     if [[ $CATTAG == "" ]];
 	then
 	echo "This is a new git checkout of the main branch. You need the tag setup to run code" 
-	cp $LQANALYZER_DIR/scripts/setup/tag_setup.sh $LQANALYZER_DIR/setup.sh
+	cp $ANALYZER_DIR/scripts/setup/tag_setup.sh $ANALYZER_DIR/setup.sh
 	export CATTAG=$CATVERSION$tag_numerator
     fi
 fi

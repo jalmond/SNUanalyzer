@@ -1,15 +1,15 @@
-#ifndef LQCycleBaseExec_H
-#define LQCycleBaseExec_H
+#ifndef SNUCycleBaseExec_H
+#define SNUCycleBaseExec_H
 
 // Local include(s):
-#include "LQCycleBaseBase.h"
+#include "SNUCycleBaseBase.h"
 #include "SKTreeFiller.h"
 
-class LQCycleBaseExec :   public virtual LQCycleBaseBase , public SKTreeFiller{
+class SNUCycleBaseExec :   public virtual SNUCycleBaseBase , public SKTreeFiller{
 
  public:
   /// Default constructor  
-  LQCycleBaseExec();
+  SNUCycleBaseExec();
 
   ///////////////////////////////////////////////////////////////////////////
   //                                                                       //
@@ -24,12 +24,12 @@ class LQCycleBaseExec :   public virtual LQCycleBaseBase , public SKTreeFiller{
    * algorithm based on properties 
    */
 
-  virtual void BeginCycle() throw( LQError );
+  virtual void BeginCycle() throw( SNUError );
 
   /**
    * Called before the  event. Gets the weight from the configured job
    **/
-  virtual void BeginEvent()throw( LQError );
+  virtual void BeginEvent()throw( SNUError );
   
   /// Function called for every event
   /**
@@ -37,35 +37,35 @@ class LQCycleBaseExec :   public virtual LQCycleBaseBase , public SKTreeFiller{
    * time it is called, all the input variables are filled with the
    * contents of the actual event.
    */
-  virtual void ExecuteEvents() throw( LQError );
+  virtual void ExecuteEvents() throw( SNUError );
 
   /**  
    *  Called at end of cycle
    *
    **/
-  virtual void EndCycle()throw( LQError );
-  virtual void EndEvent()throw( LQError );
+  virtual void EndCycle()throw( SNUError );
+  virtual void EndEvent()throw( SNUError );
   
   /**
    *   Interates through the ntuple
    *
    **/
-  virtual void SetUpEvent(Long64_t jevent, float ev_weight)throw( LQError );
+  virtual void SetUpEvent(Long64_t jevent, float ev_weight)throw( SNUError );
 
   /**
    *  call before each event. Specific function to clear output vectors
    *
    **/
 
-  virtual void ClearOutputVectors() throw( LQError );
+  virtual void ClearOutputVectors() throw( SNUError );
 
   /** 
    *  call al end of cycle: Will write all histograms to output file
    **/
 
-  virtual void WriteHistograms() throw( LQError );
+  virtual void WriteHistograms() throw( SNUError );
   
-  ClassDef(LQCycleBaseExec, 0 );
+  ClassDef(SNUCycleBaseExec, 0 );
 };
 
 #endif

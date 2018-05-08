@@ -7,7 +7,7 @@ using namespace std;
 
 #include "TLorentzVector.h"
 #include <vector>
-#include "LQEvent.h"
+#include "SNUEvent.h"
 #include "KFatJet.h"
 #include "KMuon.h"
 #include "KElectron.h"
@@ -16,7 +16,7 @@ using namespace std;
 class FatJetSelection : public BaseSelection {
 
  public:
-  FatJetSelection(LQEvent ev);
+  FatJetSelection(SNUEvent ev);
   ~FatJetSelection();
 
   FatJetSelection& operator= (const FatJetSelection& obj);

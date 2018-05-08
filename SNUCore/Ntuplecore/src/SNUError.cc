@@ -1,5 +1,5 @@
 // Local include(s):                                                                                                        
-#include "LQError.h"
+#include "SNUError.h"
 
 using namespace std;
 
@@ -11,7 +11,7 @@ using namespace std;
  *                                                                                                                          
  * @param severity The action request of the exception                                                                      
  */
-LQError::LQError( Severity severity ) throw()
+SNUError::SNUError( Severity severity ) throw()
   : exception(), ostringstream(), m_severity( severity ) {
 
 }
@@ -24,14 +24,14 @@ LQError::LQError( Severity severity ) throw()
  * exception object, but can throw the exception like this:                                                                 
  *                                                                                                                          
  * <code>                                                                                                                   
- *   throw LQError( "Skip this event", LQError::SkipEvent );                                                                  
+ *   throw SNUError( "Skip this event", SNUError::SkipEvent );                                                                  
  * </code>                                                                                                                  
  *                                                                                                                          
  * @param description Explanation for the occurance                                                                         
  * @param severity    The action request of the exception                                                                   
  */
 
-LQError::LQError( const char* description, Severity severity ) throw()
+SNUError::SNUError( const char* description, Severity severity ) throw()
   : exception(), ostringstream(), m_severity( severity ) {
 
   this->str( description );
@@ -45,8 +45,8 @@ LQError::LQError( const char* description, Severity severity ) throw()
  *                                                                                                                          
  * @param parent The object to clone                                                                                        
  */
-LQError::LQError( const LQError& parent ) throw()
-  : std::basic_ios< LQError::char_type, LQError::traits_type >(),
+SNUError::SNUError( const SNUError& parent ) throw()
+  : std::basic_ios< SNUError::char_type, SNUError::traits_type >(),
   exception(),
   ostringstream(), m_severity( parent.m_severity ) {
 
@@ -56,29 +56,29 @@ LQError::LQError( const LQError& parent ) throw()
 /**                                                                                                                         
  * Another "I don't do anything" destructor.                                                                                
  */
-LQError::~LQError() throw() {
+SNUError::~SNUError() throw() {
 
 }
-void LQError::SetDescription( const char* description ) throw() {
+void SNUError::SetDescription( const char* description ) throw() {
 
   this->str( description );
   return;
 
 }
 
-void LQError::SetSeverity( Severity severity ) throw() {
+void SNUError::SetSeverity( Severity severity ) throw() {
 
   m_severity = severity;
   return;
 
 }
-const char* LQError::what() const throw() {
+const char* SNUError::what() const throw() {
 
   return this->str().c_str();
 
 }
 
-LQError::Severity LQError::request() const throw() {
+SNUError::Severity SNUError::request() const throw() {
 
   return m_severity;
 

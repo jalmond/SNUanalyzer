@@ -1,7 +1,7 @@
 // $Id: ExampleAnalyzer.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQGetSignalEff Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: SNUGetSignalEff Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *d
@@ -14,7 +14,7 @@
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
-//// Needed to allow inheritance for use in LQCore/core classes
+//// Needed to allow inheritance for use in SNUCore/core classes
 ClassImp (GetSignalEff);
 
 
@@ -36,13 +36,13 @@ GetSignalEff::GetSignalEff() :  AnalyzerCore() {
 }
 
 
-void GetSignalEff::InitialiseAnalysis() throw( LQError ) {
+void GetSignalEff::InitialiseAnalysis() throw( SNUError ) {
   
   /// Initialise histograms
   MakeHistograms();  
   //
   // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
-  // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
+  // You can also use m_logger << level << "comment" << int/double  << SNULogger::endmsg;
   //
 
    Message("Making clever hists for Z ->ll test code", INFO);
@@ -65,7 +65,7 @@ void GetSignalEff::InitialiseAnalysis() throw( LQError ) {
 }
 
 
-void GetSignalEff::ExecuteEvents()throw( LQError ){
+void GetSignalEff::ExecuteEvents()throw( SNUError ){
   
 
   std::vector<snu::KJet> ALLjets =  GetJets("JET_NOCUT",0., 5.);
@@ -538,15 +538,15 @@ void GetSignalEff::MatchedJets(std::vector<snu::KJet> jets, std::vector<snu::KMu
 
 }
 
-void GetSignalEff::EndCycle()throw( LQError ){
+void GetSignalEff::EndCycle()throw( SNUError ){
   
   Message("In EndCycle" , INFO);
-  m_logger << DEBUG << "END OF CYCLE: isdata=" << isData <<  LQLogger::endmsg;
+  m_logger << DEBUG << "END OF CYCLE: isdata=" << isData <<  SNULogger::endmsg;
 
 }
 
 
-void GetSignalEff::BeginCycle() throw( LQError ){
+void GetSignalEff::BeginCycle() throw( SNUError ){
   
   Message("In begin Cycle", INFO);
   
@@ -555,8 +555,8 @@ void GetSignalEff::BeginCycle() throw( LQError ){
   //If you wish to output variables to output file use DeclareVariable
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
-  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  //  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //DeclareVariable(obj, label ); //-> will use default treename: SNUTree
+  //  DeclareVariable(out_electrons, "Signal_Electrons", "SNUTree");
   //  DeclareVariable(out_muons, "Signal_Muons");
 
   
@@ -835,7 +835,7 @@ if(cf==4){
 
 
 
-void GetSignalEff::BeginEvent( )throw( LQError ){
+void GetSignalEff::BeginEvent( )throw( SNUError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -858,7 +858,7 @@ void GetSignalEff::MakeHistograms(){
 }
 
 
-void GetSignalEff::ClearOutputVectors() throw(LQError) {
+void GetSignalEff::ClearOutputVectors() throw(SNUError) {
 
   // This function is called before every execute event (NO need to call this yourself.
   

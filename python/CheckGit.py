@@ -1,5 +1,7 @@
 import os 
 
+flag=os.getenv("Flag")
+
 os.system("git config user.github > log")
 file_log=open("log","r")
 gitname=""
@@ -13,7 +15,7 @@ if not gitname:
     print "No github name found. Please make sure ~/.gitconfig exists and user.github is set"
     sys.exit()
 
-os.system("https://github.com/"+gitname+"/LQanalyzer > log")
+os.system("https://github.com/"+gitname+"/"+flag+"analyzer > log")
 
 file_log=open("log","r")
 lqanalyzer_exists=True
@@ -23,5 +25,5 @@ for line in file_log:
 file_log.close()
 
 if not lqanalyzer_exists:
-    print "LQanalyzer is not forked in https://github.com/"+gitname
+    print flag+"analyzer is not forked in https://github.com/"+gitname
     

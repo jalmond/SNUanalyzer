@@ -15,7 +15,7 @@ class HNTriLeptonPlots;
 class EventBase;
 
 #include "BaseSelection.h"
-#include "LQCycleBase.h"
+#include "SNUCycleBase.h"
 #include "BTag/BTagSFUtil.h"
 #include "TNtupleD.h"
 #include "TNtuple.h"
@@ -26,7 +26,7 @@ class EventBase;
 #include "KLepton.h"
 
 
-class AnalyzerCore : public LQCycleBase {
+class AnalyzerCore : public SNUCycleBase {
   
  public:
  
@@ -43,9 +43,9 @@ class AnalyzerCore : public LQCycleBase {
   virtual ~AnalyzerCore();
 
   // SetUpEvent CORE function: accesses event in ntuple
-  virtual void SetUpEvent(Long64_t entry, float ev_weight) throw( LQError );
-  virtual void EndEvent()throw( LQError );
-  virtual void WriteHistograms()throw( LQError );
+  virtual void SetUpEvent(Long64_t entry, float ev_weight) throw( SNUError );
+  virtual void EndEvent()throw( SNUError );
+  virtual void WriteHistograms()throw( SNUError );
 
 
   void setTDRStyle();
@@ -233,7 +233,7 @@ class AnalyzerCore : public LQCycleBase {
   //
   // Useful message function 
   //
-  void Message(TString message, LQMsgType type=INFO);
+  void Message(TString message, SNUMsgType type=INFO);
 
 
   //

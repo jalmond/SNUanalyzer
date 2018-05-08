@@ -2,6 +2,8 @@ def CleanUpJobLogs(path):
     import os, getpass,sys
     print "Cleaning up " + path
     
+    flag=os.getenv("Flag")
+
 
     logspace1 = path
     if (os.path.exists(logspace1)):
@@ -142,8 +144,8 @@ def CleanUpLogs(path):
                                 if "CLUSTERLOG" in entries[8]:
                                     getjobid=entries[8]
                                     getjobid=getjobid.replace("CLUSTERLOG","")
-                                    if os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+getjobid):
-                                        os.system("rm -r " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+getjobid)
+                                    if os.path.exists(os.getenv("ANALYZER_BATCHLIB_PATH")+"/"+getjobid):
+                                        os.system("rm -r " + os.getenv("ANALYZER_BATCHLIB_PATH")+"/"+getjobid)
 
                     nfiles=0
                     if (os.path.exists(logspace1 + "/" + entries[8] +"/output/")):
@@ -174,8 +176,8 @@ def CleanUpLogs(path):
                                 if "CLUSTERLOG"in entries[8]:
                                     getjobid=entries[8]
                                     getjobid=getjobid.replace("CLUSTERLOG","")
-                                    if os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+getjobid):
-                                        os.system("rm -r "+ os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+getjobid)
+                                    if os.path.exists(os.getenv("ANALYZER_BATCHLIB_PATH")+"/"+getjobid):
+                                        os.system("rm -r "+ os.getenv("ANALYZER_BATCHLIB_PATH")+"/"+getjobid)
 
                     elif int(date_file) < (int(date)-int(days_to_keep)):
                         if not is_deleted:
@@ -184,6 +186,6 @@ def CleanUpLogs(path):
                             if "CLUSTERLOG"in entries[8]:
                                 getjobid=entries[8]
                                 getjobid=getjobid.replace("CLUSTERLOG","")
-                                if os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+getjobid):
-                                    os.system("rm -r "+ os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+getjobid)
+                                if os.path.exists(os.getenv("ANALYZER_BATCHLIB_PATH")+"/"+getjobid):
+                                    os.system("rm -r "+ os.getenv("ANALYZER_BATCHLIB_PATH")+"/"+getjobid)
                                         

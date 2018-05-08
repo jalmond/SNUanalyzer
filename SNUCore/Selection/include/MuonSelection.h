@@ -15,7 +15,7 @@ class MuonSelection : public BaseSelection {
 
   Bool_t MuonID;
 
-  MuonSelection(LQEvent ev);
+  MuonSelection(SNUEvent ev);
   ~MuonSelection();
   
   MuonSelection& operator= (const MuonSelection& obj);

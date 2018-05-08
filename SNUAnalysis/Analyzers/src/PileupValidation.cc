@@ -1,7 +1,7 @@
 // $Id: ExampleAnalyzer.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQPileupValidation Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: SNUPileupValidation Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *d
@@ -14,7 +14,7 @@
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
-//// Needed to allow inheritance for use in LQCore/core classes
+//// Needed to allow inheritance for use in SNUCore/core classes
 ClassImp (PileupValidation);
 
 
@@ -40,13 +40,13 @@ PileupValidation::PileupValidation() :  AnalyzerCore() {
 }
 
 
-void PileupValidation::InitialiseAnalysis() throw( LQError ) {
+void PileupValidation::InitialiseAnalysis() throw( SNUError ) {
   
   /// Initialise histograms
   MakeHistograms();  
   //
   // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
-  // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
+  // You can also use m_logger << level << "comment" << int/double  << SNULogger::endmsg;
   //
 
    Message("Making clever hists for Z ->ll test code", INFO);
@@ -59,11 +59,11 @@ void PileupValidation::InitialiseAnalysis() throw( LQError ) {
 }
 
 
-void PileupValidation::ExecuteEvents()throw( LQError ){
+void PileupValidation::ExecuteEvents()throw( SNUError ){
   
   bool makepufile=false;
-  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-  m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
+  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << SNULogger::endmsg;
+  m_logger << DEBUG << "isData = " << isData << SNULogger::endmsg;
   
   if(!isData) weight*= MCweight;
   counter("Z_0weight", 1.);
@@ -347,10 +347,10 @@ void PileupValidation::counter(TString cut, float w){
 }
 
 
-void PileupValidation::EndCycle()throw( LQError ){
+void PileupValidation::EndCycle()throw( SNUError ){
   
   Message("In EndCycle" , INFO);
-  m_logger << DEBUG << "END OF CYCLE: isdata=" << isData <<  LQLogger::endmsg;
+  m_logger << DEBUG << "END OF CYCLE: isdata=" << isData <<  SNULogger::endmsg;
 
   for ( map<TString,float>::iterator itmapcounter = mapcounter.begin(); itmapcounter != mapcounter.end(); itmapcounter++){
     cout << itmapcounter->first << " has count "<< itmapcounter->second << endl;
@@ -359,7 +359,7 @@ void PileupValidation::EndCycle()throw( LQError ){
 }
 
 
-void PileupValidation::BeginCycle() throw( LQError ){
+void PileupValidation::BeginCycle() throw( SNUError ){
   
   Message("In begin Cycle", INFO);
   
@@ -368,8 +368,8 @@ void PileupValidation::BeginCycle() throw( LQError ){
   //If you wish to output variables to output file use DeclareVariable
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
-  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  //  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //DeclareVariable(obj, label ); //-> will use default treename: SNUTree
+  //  DeclareVariable(out_electrons, "Signal_Electrons", "SNUTree");
   //  DeclareVariable(out_muons, "Signal_Muons");
 
   
@@ -385,7 +385,7 @@ PileupValidation::~PileupValidation() {
 
 
 
-void PileupValidation::BeginEvent( )throw( LQError ){
+void PileupValidation::BeginEvent( )throw( SNUError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -408,7 +408,7 @@ void PileupValidation::MakeHistograms(){
 }
 
 
-void PileupValidation::ClearOutputVectors() throw(LQError) {
+void PileupValidation::ClearOutputVectors() throw(SNUError) {
 
   // This function is called before every execute event (NO need to call this yourself.
   

@@ -1,10 +1,10 @@
-#include "../include/LQEvent.h"
+#include "../include/SNUEvent.h"
 
 using namespace snu;
 using namespace std;
 
 
-LQEvent::LQEvent(std::vector<snu::KMuon> muons, std::vector<snu::KElectron> el, std::vector<snu::KPhoton> ph,  std::vector<snu::KJet> jets,   std::vector<snu::KFatJet> fatjets, std::vector<snu::KGenJet> genjets,  std::vector<snu::KTruth> truth, snu::KTrigger tr, snu::KEvent ev) {
+SNUEvent::SNUEvent(std::vector<snu::KMuon> muons, std::vector<snu::KElectron> el, std::vector<snu::KPhoton> ph,  std::vector<snu::KJet> jets,   std::vector<snu::KFatJet> fatjets, std::vector<snu::KGenJet> genjets,  std::vector<snu::KTruth> truth, snu::KTrigger tr, snu::KEvent ev) {
 
   k_muons = muons;
   k_electrons = el;
@@ -18,7 +18,7 @@ LQEvent::LQEvent(std::vector<snu::KMuon> muons, std::vector<snu::KElectron> el, 
   
 }
 
-LQEvent::LQEvent() {
+SNUEvent::SNUEvent() {
   k_muons.clear();
   k_electrons.clear();
   k_photons.clear();
@@ -31,9 +31,9 @@ LQEvent::LQEvent() {
   
 }
 
-LQEvent::~LQEvent() {}
+SNUEvent::~SNUEvent() {}
 
-void LQEvent::reset(){
+void SNUEvent::reset(){
   k_muons.clear();
   k_electrons.clear();
   k_photons.clear();
@@ -46,7 +46,7 @@ void LQEvent::reset(){
 }
 
 
-LQEvent::LQEvent(const LQEvent& evb){ 
+SNUEvent::SNUEvent(const SNUEvent& evb){ 
   
   k_muons = evb.GetMuons();
   k_electrons = evb.GetElectrons();
@@ -60,7 +60,7 @@ LQEvent::LQEvent(const LQEvent& evb){
 }
 
 
-LQEvent& LQEvent::operator= (const LQEvent& evb)
+SNUEvent& SNUEvent::operator= (const SNUEvent& evb)
 {
   if (this != &evb) {
     k_muons = evb.GetMuons();
@@ -77,6 +77,6 @@ LQEvent& LQEvent::operator= (const LQEvent& evb)
 }
 
 
-void LQEvent::SetEvent(snu::KEvent ev){
+void SNUEvent::SetEvent(snu::KEvent ev){
   k_event=ev;
 }

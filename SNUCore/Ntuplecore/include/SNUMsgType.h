@@ -1,7 +1,7 @@
-#ifndef LQMsgType_H
-#define LQMsgType_H
+#ifndef SNUMsgType_H
+#define SNUMsgType_H
 
-enum LQMsgType {
+enum SNUMsgType {
   VERBOSE = 1, /**< Type for the most detailed messages. Only for serious debugging. */
   DEBUG = 2,   /**< Type for debugging messages. A few messages per event allowed. */
   INFO = 3,    /**< Type for normal information messages. No messages in event processing! */
@@ -12,7 +12,7 @@ enum LQMsgType {
 };
 
 
-#endif // LQCore/core/LQMsgType_H
+#endif // SNUCore/core/SNUMsgType_H
 
 
 

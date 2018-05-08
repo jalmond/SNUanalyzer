@@ -3,8 +3,8 @@
 
 using namespace snu;
 
-ElectronSelection::ElectronSelection(LQEvent ev) :  BaseSelection() {
-  k_lqevent = ev;
+ElectronSelection::ElectronSelection(SNUEvent ev) :  BaseSelection() {
+  k_snuevent = ev;
   ElectronID = ELECTRON_POG_TIGHT;
 
 };
@@ -15,7 +15,7 @@ ElectronSelection::~ElectronSelection() {};
 void ElectronSelection::BasicSelection(std::vector<KElectron>& leptonColl , bool m_debug) {
   
   /// For filling SKTrees
-  std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+  std::vector<KElectron> allelectrons = k_snuevent.GetElectrons();
 
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     
@@ -32,7 +32,7 @@ void ElectronSelection::BasicSelection(std::vector<KElectron>& leptonColl , bool
 
 void ElectronSelection::SkimSelection(std::vector<KElectron>& leptonColl, bool m_debug) {
   
-  std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+  std::vector<KElectron> allelectrons = k_snuevent.GetElectrons();
   
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
 
@@ -134,7 +134,7 @@ void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, ID e
 }
   
 void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, TString elid, TString el_id,bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin,double ptcut, double etacut){
-  std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+  std::vector<KElectron> allelectrons = k_snuevent.GetElectrons();
 
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     
@@ -149,7 +149,7 @@ void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, TStr
 
 void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, TString elid,vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf, double ptcut, double etacut){
   
-  std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+  std::vector<KElectron> allelectrons = k_snuevent.GetElectrons();
   
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     
@@ -165,7 +165,7 @@ void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, TStr
 
 void ElectronSelection::Selection(std::vector<KElectron>& leptonColl, TString Option){
 
-  std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+  std::vector<KElectron> allelectrons = k_snuevent.GetElectrons();
 
   int  SystDir=0;
   bool Syst_ElEn=false, DebugPrint=false;
@@ -658,7 +658,7 @@ bool ElectronSelection::PassUserID(snu::KElectron el, TString id, TString el_id,
 ElectronSelection& ElectronSelection::operator= (const ElectronSelection& ms) {
   if(this != &ms){    
     BaseSelection::operator = (ms); 
-    k_lqevent = ms.k_lqevent;  
+    k_snuevent = ms.k_snuevent;  
     ElectronID = ms.ElectronID;
 
   }
@@ -667,7 +667,7 @@ ElectronSelection& ElectronSelection::operator= (const ElectronSelection& ms) {
 
 ElectronSelection::ElectronSelection(const ElectronSelection& ms): 
   BaseSelection(ms){
-  k_lqevent = ms.k_lqevent;
+  k_snuevent = ms.k_snuevent;
   ElectronID = ms.ElectronID;
 
 };

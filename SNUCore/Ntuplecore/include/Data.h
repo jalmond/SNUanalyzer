@@ -16,7 +16,7 @@
 #include <TROOT.h>
 
 
-#include "LQCycleBaseNTuple.h"
+#include "SNUCycleBaseNTuple.h"
 
 // Forward declaration(s):
 class TTree;
@@ -38,7 +38,7 @@ namespace snu{
 
 
 
-class Data : public LQCycleBaseNTuple {
+class Data : public SNUCycleBaseNTuple {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
@@ -53,7 +53,7 @@ public :
    Data();
    ~Data();
 
-   void      GetEvent(Long64_t entry)throw( LQError );
+   void      GetEvent(Long64_t entry)throw( SNUError );
    Int_t    GetEntry(Long64_t entry);
    Int_t    Cut(Long64_t entry);
    Long64_t LoadTree(Long64_t entry);
@@ -87,17 +87,17 @@ public :
    void ConnectTrigger();
    void ConnectAllBranches();
    void ConnectMET();
-   void SetLQNtupleInputType(bool lq);
+   void SetSNUNtupleInputType(bool lq);
    void SetVersion(int ver);
 
-   std::string GetCatVersion(bool runLQ);
+   std::string GetCatVersion(bool runSNU);
    void SetCatVersion(std::string cv);
    void SetTargetLumi(float tlumi);
 
-   void SetLQNtupleInputType(int dataflag);
+   void SetSNUNtupleInputType(int dataflag);
    void SetFlags(std::vector<TString> v_flags);
 
-   bool LQinput;
+   bool SNUinput;
    Long64_t nentries;
    int k_cat_version;
    // Declaration of leaf types

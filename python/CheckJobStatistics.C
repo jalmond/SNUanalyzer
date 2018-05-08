@@ -22,6 +22,8 @@ TH1F* MakeMonthHist(TString mon, int nday);
 
 void CheckJobStatistics(){
 
+  TString flag=getenv("Flag");
+
   std::vector<std::pair<TString,TString> > monthyears;
   monthyears.reserve(2);
   std::pair<TString,TString> pair1= std::make_pair("2016","Nov");
@@ -29,7 +31,7 @@ void CheckJobStatistics(){
   
   for(std::vector<std::pair<TString,TString> >::iterator it = monthyears.begin(); it != monthyears.end(); it++){
     
-    ifstream muonselconfig(("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+it->second+"_"+ it->first+".txt").Data());
+    ifstream muonselconfig(("/data1/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+it->second+"_"+ it->first+".txt").Data());
     if(!muonselconfig) {
       cerr << "Did not find, exiting ..." << endl;
       exit(EXIT_FAILURE);

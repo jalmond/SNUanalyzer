@@ -1,7 +1,7 @@
-cd $LQANALYZER_DIR/LQAnalysis/AnalyzerTools/rochcor2016/conf/;
+cd $ANALYZER_DIR/${Flag}Analysis/AnalyzerTools/rochcor2016/conf/;
 make clean -f Makefile.StandAlone; 
-if [[ -f ${LQANALYZER_LIB_PATH}/librochcor2016.so  ]];
+if [[ -f ${ANALYZER_LIB_PATH}/librochcor2016.so  ]];
     then
-    rm ${LQANALYZER_LIB_PATH}/librochcor2016.so
+    rm ${ANALYZER_LIB_PATH}/librochcor2016.so
 fi
-cd $LQANALYZER_DIR
+cd $ANALYZER_DIR

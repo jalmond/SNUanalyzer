@@ -7,11 +7,11 @@ INCDIR  = include
 
 # Overwrite the default rule defined in Makefile.common                                                                                                                      
 # Include the generic compilation rules
-include $(LQANALYZER_DIR)/Makefile.common
-INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Ntuplecore/include/
-INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Selection/include/
-INCLUDES += -I$(LQANALYZER_DIR)/LQCore/SKTree/include/
-INCLUDES += -I$(LQANALYZER_DIR)/LQCore/AnalysisCore/include/
+include $(ANALYZER_DIR)/Makefile.common
+INCLUDES += -I$(ANALYZER_DIR)/${Flag}Core/Ntuplecore/include/
+INCLUDES += -I$(ANALYZER_DIR)/${Flag}Core/Selection/include/
+INCLUDES += -I$(ANALYZER_DIR)/${Flag}Core/SKTree/include/
+INCLUDES += -I$(ANALYZER_DIR)/${Flag}Core/AnalysisCore/include/
 INCLUDES += -I${ROCHDIR}
 #INCLUDES += -I$(LQANALYZER_DIR)
 

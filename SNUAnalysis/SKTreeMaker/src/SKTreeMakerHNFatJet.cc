@@ -1,8 +1,8 @@
 
 // $Id: SKTreeMakerHNFatJet.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: SNUAnalyzer Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *
@@ -15,7 +15,7 @@
 #include "EventBase.h"                                                                                                                           
 
 
-//// Needed to allow inheritance for use in LQCore/core classes
+//// Needed to allow inheritance for use in SNUCore/core classes
 ClassImp (SKTreeMakerHNFatJet);
 
 
@@ -33,7 +33,7 @@ SKTreeMakerHNFatJet::SKTreeMakerHNFatJet() :  AnalyzerCore(), out_muons(0), out_
   
 }
 
-void SKTreeMakerHNFatJet::ExecuteEvents()throw( LQError ){
+void SKTreeMakerHNFatJet::ExecuteEvents()throw( SNUError ){
   
 
   bool _singleEG =(k_channel.Contains("SingleElectron"));
@@ -43,10 +43,10 @@ void SKTreeMakerHNFatJet::ExecuteEvents()throw( LQError ){
   TString analysis_trigger_eg="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
   TString analysis_trigger_muon="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
   TString analysis_trigger_tkmuon="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v";
-  if(isData && _singleEG && PassTrigger(analysis_trigger_eg)) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-  if(isData && _singleMuon && (PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon) )) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-  if(isData && _doubleEG && !PassTrigger(analysis_trigger_eg))  throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-  if(isData && _doubleMuon && !(PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon) )) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+  if(isData && _singleEG && PassTrigger(analysis_trigger_eg)) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
+  if(isData && _singleMuon && (PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon) )) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
+  if(isData && _doubleEG && !PassTrigger(analysis_trigger_eg))  throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
+  if(isData && _doubleMuon && !(PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon) )) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
 															    
 
   //////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ void SKTreeMakerHNFatJet::ExecuteEvents()throw( LQError ){
   int nlep = skim_electrons.size() + skim_muons.size();
 
   /// select events  with 2 leptons with pt > 15                                                                                                                                        
-  if(! ((nlep > 1) )) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+  if(! ((nlep > 1) )) throw SNUError( "Not Lepton Event",  SNUError::SkipEvent );
 
   bool pass15gev=false;
 
@@ -120,7 +120,7 @@ void SKTreeMakerHNFatJet::ExecuteEvents()throw( LQError ){
 
     if(mupt > 10.)  pass15gev= true;
   }
-  if(!pass15gev) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+  if(!pass15gev) throw SNUError( "Not Lepton Event",  SNUError::SkipEvent );
 
 
   std::vector<snu::KElectron> elColl = GetElectrons("ELECTRON_HN_VETO");
@@ -128,9 +128,9 @@ void SKTreeMakerHNFatJet::ExecuteEvents()throw( LQError ){
   
   std::vector<snu::KFatJet> fatjetcoll = GetFatJets("FATJET_NOCUT");
 
-  if(fatjetcoll.size() ==0) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+  if(fatjetcoll.size() ==0) throw SNUError( "Not Lepton Event",  SNUError::SkipEvent );
 
-  if((muColl.size() + elColl.size()) != 2) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+  if((muColl.size() + elColl.size()) != 2) throw SNUError( "Not Lepton Event",  SNUError::SkipEvent );
 
 
   FillCutFlow("TriLep", 1);
@@ -144,18 +144,18 @@ void SKTreeMakerHNFatJet::ExecuteEvents()throw( LQError ){
 
 
 
-void SKTreeMakerHNFatJet::EndCycle()throw( LQError ){
+void SKTreeMakerHNFatJet::EndCycle()throw( SNUError ){
   
   Message("In EndCycle" , INFO);
 }
 
 
-void SKTreeMakerHNFatJet::BeginCycle() throw( LQError ){
+void SKTreeMakerHNFatJet::BeginCycle() throw( SNUError ){
   
   Message("In begin Cycle", INFO);
 
-  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  DeclareVariable(out_electrons, "KElectrons", "LQTree");
+  //DeclareVariable(obj, label ); //-> will use default treename: SNUTree
+  DeclareVariable(out_electrons, "KElectrons", "SNUTree");
   DeclareVariable(out_photons, "KPhotons");
 
   DeclareVariable(out_muons, "KMuons");
@@ -255,7 +255,7 @@ void SKTreeMakerHNFatJet::FillCutFlow(TString cut, float weight){
 
 
 
-void SKTreeMakerHNFatJet::BeginEvent( )throw( LQError ){
+void SKTreeMakerHNFatJet::BeginEvent( )throw( SNUError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -263,7 +263,7 @@ void SKTreeMakerHNFatJet::BeginEvent( )throw( LQError ){
 }
 
 
-void SKTreeMakerHNFatJet::ClearOutputVectors() throw (LQError){
+void SKTreeMakerHNFatJet::ClearOutputVectors() throw (SNUError){
   //
   // Reset all variables declared in Declare Variable
   //

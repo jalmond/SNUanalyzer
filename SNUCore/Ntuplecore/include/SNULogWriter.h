@@ -1,5 +1,5 @@
-#ifndef LQLogWriter_H
-#define LQLogWriter_H
+#ifndef SNULogWriter_H
+#define SNULogWriter_H
 
 
 // STL include(s):
@@ -7,7 +7,7 @@
 #include <map>
 
 // Local include(s):
-#include "LQMsgType.h"
+#include "SNUMsgType.h"
 
 
 /**
@@ -20,37 +20,37 @@
  *          one possibility would be to write messages to a file
  *          for batch running later on. (Just an idea...)
  *
- *     @see LQLogger
+ *     @see SNULogger
  * @version $Revision: 1 $
  */
 
-class LQLogWriter {
+class SNULogWriter {
 
  public:
   /// Function for accessing the single object
-  static LQLogWriter* Instance();
+  static SNULogWriter* Instance();
   /// Default destructor
-  ~LQLogWriter();
+  ~SNULogWriter();
 
   /// Function writing a message to the output
-  void Write( LQMsgType type, const std::string& line ) const;
+  void Write( SNUMsgType type, const std::string& line ) const;
 
   /// Set the message type above which messages are printed
-  void SetMinType( LQMsgType type );
+  void SetMinType( SNUMsgType type );
   /// Get the message type above which messages are printed
-  LQMsgType GetMinType() const;
+  SNUMsgType GetMinType() const;
 
  protected:
   /// Protected default constructor
-  LQLogWriter();
+  SNULogWriter();
 
  private:
-  static LQLogWriter* m_instance;
+  static SNULogWriter* m_instance;
 
-  std::map< LQMsgType, std::string > m_typeMap;
-  std::map< LQMsgType, std::string > m_colorMap;
-  LQMsgType                          m_minType;
+  std::map< SNUMsgType, std::string > m_typeMap;
+  std::map< SNUMsgType, std::string > m_colorMap;
+  SNUMsgType                          m_minType;
 
-}; // class LQLogWriter
+}; // class SNULogWriter
 
-#endif //LQLogWriter_H
+#endif //SNULogWriter_H

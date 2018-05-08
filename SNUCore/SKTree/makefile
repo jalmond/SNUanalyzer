@@ -20,11 +20,11 @@ INCDIR  = include
 SKTreedefault: default rootmap SKTreeUnit
 
 # Include the generic compilation rules
-include $(LQANALYZER_DIR)/Makefile.common
+include $(ANALYZER_DIR)/Makefile.common
 
 SKTreeUnit: SKTreeUnit.o $(SHLIBFILE)
 	@echo "Linking " $@
-	@$(LD) $(LDFLAGS)  -O2 $(OBJDIR)/SKTreeUnit.o -L$(LQANALYZER_LIB_PATH) \
+	@$(LD) $(LDFLAGS)  -O2 $(OBJDIR)/SKTreeUnit.o -L$(ANALYZER_LIB_PATH) \
                 $(ROOTLIBS) -lSKTree -o $@
 
 SKTreeUnit.o: SKTreeUnit.cc include/KParticle.h
@@ -33,9 +33,9 @@ SKTreeUnit.o: SKTreeUnit.cc include/KParticle.h
 	@$(CXX) $(CXXFLAGS) -O2 -c $< -o $(OBJDIR)/$(notdir $@) $(INCLUDES)
 
 #install the rootmap file
-rootmap: $(LQANALYZER_DIR)/LQCore/SKTree/util/SKTree.rootmap
+rootmap: $(ANALYZER_DIR)/${Flag}Core/SKTree/util/SKTree.rootmap
 	@echo "Installing rootmap " $<
-	(cp $< $(LQANALYZER_LIB_PATH)/.)
+	(cp $< $(ANALYZER_LIB_PATH)/.)
 
 
 

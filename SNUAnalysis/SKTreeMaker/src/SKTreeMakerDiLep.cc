@@ -1,8 +1,8 @@
 
 // $Id: SKTreeMakerDiLep.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: SNUAnalyzer Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *
@@ -15,7 +15,7 @@
 #include "EventBase.h"                                                                                                                           
 
 
-//// Needed to allow inheritance for use in LQCore/core classes
+//// Needed to allow inheritance for use in SNUCore/core classes
 ClassImp (SKTreeMakerDiLep);
 
 
@@ -33,7 +33,7 @@ SKTreeMakerDiLep::SKTreeMakerDiLep() :  AnalyzerCore(), out_muons(0), out_electr
   
 }
 
-void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
+void SKTreeMakerDiLep::ExecuteEvents()throw( SNUError ){
   
 
   //////////////////////////////////////////////////////
@@ -45,8 +45,8 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   TString analysis_trigger_eg="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
   TString analysis_trigger_muon="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
   TString analysis_trigger_tkmuon="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v";
-  if(isData && _singleEG && PassTrigger(analysis_trigger_eg)) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-  if(isData && _singleMuon && (PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon) )) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+  if(isData && _singleEG && PassTrigger(analysis_trigger_eg)) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
+  if(isData && _singleMuon && (PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon) )) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
 
   //######   MUON SELECTION ###############
   Message("Selecting Muons", DEBUG);
@@ -100,7 +100,7 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   int nlep = skim_electrons.size() + skim_muons.size();
     
   /// select events  with 2 leptons with pt > 15
-  if(! ((nlep > 1) )) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+  if(! ((nlep > 1) )) throw SNUError( "Not Lepton Event",  SNUError::SkipEvent );
   
   bool pass15gev=false;
   
@@ -114,7 +114,7 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
 
     if(mupt > 14.)  pass15gev= true;
   }
-  if(!pass15gev) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+  if(!pass15gev) throw SNUError( "Not Lepton Event",  SNUError::SkipEvent );
 
 
   FillCutFlow("DiLep", 1);
@@ -128,18 +128,18 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
 
 
 
-void SKTreeMakerDiLep::EndCycle()throw( LQError ){
+void SKTreeMakerDiLep::EndCycle()throw( SNUError ){
   
   Message("In EndCycle" , INFO);
 }
 
 
-void SKTreeMakerDiLep::BeginCycle() throw( LQError ){
+void SKTreeMakerDiLep::BeginCycle() throw( SNUError ){
   
   Message("In begin Cycle", INFO);
 
-  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  DeclareVariable(out_electrons, "KElectrons", "LQTree");
+  //DeclareVariable(obj, label ); //-> will use default treename: SNUTree
+  DeclareVariable(out_electrons, "KElectrons", "SNUTree");
   DeclareVariable(out_photons, "KPhotons");
 
   DeclareVariable(out_muons, "KMuons");
@@ -241,7 +241,7 @@ void SKTreeMakerDiLep::FillCutFlow(TString cut, float weight){
 
 
 
-void SKTreeMakerDiLep::BeginEvent( )throw( LQError ){
+void SKTreeMakerDiLep::BeginEvent( )throw( SNUError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -249,7 +249,7 @@ void SKTreeMakerDiLep::BeginEvent( )throw( LQError ){
 }
 
 
-void SKTreeMakerDiLep::ClearOutputVectors() throw (LQError){
+void SKTreeMakerDiLep::ClearOutputVectors() throw (SNUError){
   //
   // Reset all variables declared in Declare Variable
   //

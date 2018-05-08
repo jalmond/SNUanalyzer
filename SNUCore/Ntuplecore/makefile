@@ -15,21 +15,21 @@ DEPDIR  = $(OBJDIR)/dep
 SRCDIR  = src
 INCDIR  = include
 
-coredefault: default $(LQANALYZER_BIN_PATH)/run_lqanalyzer   
+coredefault: default $(ANALYZER_BIN_PATH)/run_lqanalyzer   
 
 # Include the generic compilation rules
-include $(LQANALYZER_DIR)/Makefile.common
+include $(ANALYZER_DIR)/Makefile.common
 
-INCLUDES += -I$(LQANALYZER_DIR)/LQCore/SKTree/include/
-INCLUDES += -I$(LQANALYZER_DIR)/LQCycle/include/
-INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Plotting/include/
-INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Selection/include/
-INCLUDES += -I$(LQANALYZER_DIR)/LQCore/AnalysisCore/include/
+INCLUDES += -I$(ANALYZER_DIR)/${Flag}Core/SKTree/include/
+INCLUDES += -I$(ANALYZER_DIR)/${Flag}Cycle/include/
+INCLUDES += -I$(ANALYZER_DIR)/${Flag}Core/Plotting/include/
+INCLUDES += -I$(ANALYZER_DIR)/${Flag}Core/Selection/include/
+INCLUDES += -I$(ANALYZER_DIR)/${Flag}Core/AnalysisCore/include/
 
 
-$(LQANALYZER_BIN_PATH)/run_lqanalyzer: run_lqanalyzer.o $(SHLIBFILE)                                                                           
+$(ANALYZER_BIN_PATH)/run_lqanalyzer: run_lqanalyzer.o $(SHLIBFILE)                                                                           
 	@echo "Linking " $(LD) $(LDFLAGS) $@                                                                                                                     
-	@$(LD) $(LDFLAGS) $(OBJDIR)/run_lqanalyzer.o -L$(LQANALYZER_LIB_PATH) -lNtuplecore -lSKTree -lHist -lAnalysisCore   \
+	@$(LD) $(LDFLAGS) $(OBJDIR)/run_lqanalyzer.o -L$(ANALYZER_LIB_PATH) -lNtuplecore -lSKTree -lHist -lAnalysisCore   \
 		$(ROOTLIBS) -lPyROOT  -o $@ 
 
 run_lqanalyzer.o: app/run_lqanalyzer.cxx                                                                                                       

@@ -10,7 +10,7 @@
 class GenSelection : public BaseSelection {
 
  public:
-  GenSelection(LQEvent ev);
+  GenSelection(SNUEvent ev);
   GenSelection();
   ~GenSelection();
 

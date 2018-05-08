@@ -2,8 +2,8 @@
 
 using namespace snu;
 
-PhotonSelection::PhotonSelection(LQEvent ev) : BaseSelection() {
-  k_lqevent = ev;
+PhotonSelection::PhotonSelection(SNUEvent ev) : BaseSelection() {
+  k_snuevent = ev;
   PhotonID= PHOTON_POG_LOOSE;
 };
 
@@ -13,7 +13,7 @@ PhotonSelection::~PhotonSelection() {};
 void PhotonSelection::BasicSelection(std::vector<KPhoton>& photonColl , bool m_debug) {
   
   /// For filling SKTrees
-  std::vector<snu::KPhoton> allphotons = k_lqevent.GetPhotons();
+  std::vector<snu::KPhoton> allphotons = k_snuevent.GetPhotons();
 
   for (std::vector<snu::KPhoton>::iterator ph = allphotons.begin(); ph!=allphotons.end(); ph++){
    
@@ -30,7 +30,7 @@ void PhotonSelection::BasicSelection(std::vector<KPhoton>& photonColl , bool m_d
 
 void PhotonSelection::SkimSelection(std::vector<KPhoton>& photonColl, bool m_debug) {
   
-  std::vector<KPhoton> allphotons = k_lqevent.GetPhotons();
+  std::vector<KPhoton> allphotons = k_snuevent.GetPhotons();
   
   for (std::vector<KPhoton>::iterator ph = allphotons.begin(); ph!=allphotons.end(); ph++){
     
@@ -47,7 +47,7 @@ void PhotonSelection::SkimSelection(std::vector<KPhoton>& photonColl, bool m_deb
 
 void PhotonSelection::PogID(std::vector<KPhoton>& photonColl, TString ID){
 
-  std::vector<KPhoton> allphotons = k_lqevent.GetPhotons();
+  std::vector<KPhoton> allphotons = k_snuevent.GetPhotons();
 
   for (std::vector<KPhoton>::iterator ph = allphotons.begin(); ph!=allphotons.end(); ph++){
     
@@ -73,7 +73,7 @@ void PhotonSelection::PogID(std::vector<KPhoton>& photonColl, TString ID){
 
 void PhotonSelection::Selection(std::vector<KPhoton>& photonColl , bool m_debug) {
   
-  std::vector<KPhoton> allphotons = k_lqevent.GetPhotons();
+  std::vector<KPhoton> allphotons = k_snuevent.GetPhotons();
   
   for (std::vector<KPhoton>::iterator ph = allphotons.begin(); ph!=allphotons.end(); ph++){
     
@@ -129,7 +129,7 @@ bool PhotonSelection::PassUserID(ID id, snu::KPhoton ph){
 PhotonSelection& PhotonSelection::operator= (const PhotonSelection& ms) {
   if(this != &ms){    
     BaseSelection::operator = (ms); 
-    k_lqevent = ms.k_lqevent;  
+    k_snuevent = ms.k_snuevent;  
     PhotonID= ms.PhotonID;
   }
   return *this;
@@ -138,7 +138,7 @@ PhotonSelection& PhotonSelection::operator= (const PhotonSelection& ms) {
 PhotonSelection::PhotonSelection(const PhotonSelection& ms): 
   BaseSelection(ms)
 {
-  k_lqevent = ms.k_lqevent;
+  k_snuevent = ms.k_snuevent;
   PhotonID= ms.PhotonID;
 };
 

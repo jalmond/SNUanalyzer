@@ -11,13 +11,13 @@ class SKTreeValidation : public AnalyzerCore {
   ~SKTreeValidation();
 
   /// Functions from core
-  virtual void BeginCycle() throw( LQError );
-  virtual void BeginEvent()throw( LQError );
-  virtual void ExecuteEvents()throw( LQError );
-  virtual void EndCycle()throw( LQError );
-  virtual void ClearOutputVectors()throw( LQError );
+  virtual void BeginCycle() throw( SNUError );
+  virtual void BeginEvent()throw( SNUError );
+  virtual void ExecuteEvents()throw( SNUError );
+  virtual void EndCycle()throw( SNUError );
+  virtual void ClearOutputVectors()throw( SNUError );
   
-  void InitialiseAnalysis() throw( LQError );
+  void InitialiseAnalysis() throw( SNUError );
   void MakeHistograms();
   void MakeDiMuonValidationPlots(TString muid, float w, float pu_weight,  std::vector<TString> trignames,TString elid, TString jetid, TString tag, bool smearjets, int mcperiod);
   void MakeMuonValidationPlots(TString muid, float w, float pu_weight,  std::vector<TString> trignames,TString elid, TString jetid, TString tag);

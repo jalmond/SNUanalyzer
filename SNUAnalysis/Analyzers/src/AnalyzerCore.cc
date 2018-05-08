@@ -1,6 +1,6 @@
 /***************************************************************************
- * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: SNUAnalyzer Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *
@@ -25,7 +25,7 @@
 #include <TFile.h>
 #include "TStyle.h"
 
-AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false), k_reset_period(false), a_mcperiod(-1),comp_file_firstev(true) {
+AnalyzerCore::AnalyzerCore() : SNUCycleBase(), n_cutflowcuts(0), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false), k_reset_period(false), a_mcperiod(-1),comp_file_firstev(true) {
 
   k_debugmode=false;
   IDSetup=false;  
@@ -59,7 +59,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   
   //mcdata_correction = new MCDataCorrections();
   
-  string lqdir =  getenv("LQANALYZER_DIR");
+  string snudir =  getenv("ANALYZER_DIR");
 
   string username = getenv("USER");
 
@@ -121,11 +121,11 @@ map<int, int> AnalyzerCore::CheckEventComparisonList(TString user, TString label
     map<int, int> list1;
     map<int, int> list2;
 
-    cout << "CheckEventComparisonList " <<  "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user+"/" + label + ".txt" << endl;
+    cout << "CheckEventComparisonList " <<  "/data1/SNUAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user+"/" + label + ".txt" << endl;
     if(1){
-      ifstream comp(( "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user+"/" + label + ".txt"));
+      ifstream comp(( "/data1/SNUAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user+"/" + label + ".txt"));
       if(!comp) {
-	cout << "file " << "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user+"/" + label + ".txt not found" << endl;
+	cout << "file " << "/data1/SNUAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user+"/" + label + ".txt not found" << endl;
 	exit(EXIT_FAILURE);
       }
       
@@ -151,9 +151,9 @@ map<int, int> AnalyzerCore::CheckEventComparisonList(TString user, TString label
       }
     }
     if(1){
-      ifstream comp(( "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user2+"/" + label2 + ".txt"));
+      ifstream comp(( "/data1/SNUAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user2+"/" + label2 + ".txt"));
       if(!comp) {
-	cout << "file " << "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user2+"/" + label2 + ".txt not found" << endl;
+	cout << "file " << "/data1/SNUAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user2+"/" + label2 + ".txt not found" << endl;
 	exit(EXIT_FAILURE);
       }
       
@@ -198,11 +198,11 @@ void AnalyzerCore::FillEventComparisonFile(TString label){
   
   //// Make TEX file                                                                                                                                                        
   ofstream ofile_tex;
-  string lqdir = getenv("LQANALYZER_DIR");
+  string snudir = getenv("ANALYZER_DIR");
 
   label = label + k_tag_name +"_" +k_sample_name;
   //label = label + k_sample_name;
-  string compfile = "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  string(getenv("USER")) + "/"+string(label)+ ".txt";     
+  string compfile = "/data1/SNUAnalyzer_rootfiles_for_analysis/EventComparisons/"+  string(getenv("USER")) + "/"+string(label)+ ".txt";     
 
   //if(comp_file_firstev)    ofile_tex.open(compfile.c_str());
   // else
@@ -363,20 +363,20 @@ void AnalyzerCore::SetupLuminosityMap(bool initialsetup, TString forceperiod){
     singleperiod=forceperiod;
     trigger_lumi_map_cat2016.clear();
   }
-  string lqdir = getenv("LQANALYZER_DIR");
+  string snudir = getenv("ANALYZER_DIR");
   
   if(singleperiod.Contains("None")){
-    lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+".txt";
+    lumitriggerpath=snudir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+".txt";
   }
   else{
-    if(singleperiod== "B")   lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_272007_275376.txt";
-    else if(singleperiod=="C")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_275657_276283.txt";
-    else if(singleperiod=="D")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276315_276811.txt";
-    else if(singleperiod=="E")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276831_277420.txt";
-    else if(singleperiod=="F")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_277772_278808.txt";
-    else if(singleperiod=="G")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_280919_284044.txt";
-    else if(singleperiod.Contains("H"))lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_278820_280385.txt";
-    else if(singleperiod=="GH")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_280919_280385.txt";
+    if(singleperiod== "B")   lumitriggerpath=snudir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_272007_275376.txt";
+    else if(singleperiod=="C")lumitriggerpath=snudir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_275657_276283.txt";
+    else if(singleperiod=="D")lumitriggerpath=snudir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276315_276811.txt";
+    else if(singleperiod=="E")lumitriggerpath=snudir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276831_277420.txt";
+    else if(singleperiod=="F")lumitriggerpath=snudir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_277772_278808.txt";
+    else if(singleperiod=="G")lumitriggerpath=snudir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_280919_284044.txt";
+    else if(singleperiod.Contains("H"))lumitriggerpath=snudir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_278820_280385.txt";
+    else if(singleperiod=="GH")lumitriggerpath=snudir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_280919_280385.txt";
     else {  cerr << "Wrong period setting in SetupLuminosityMap"<< endl;  exit(EXIT_FAILURE);}
   }
   ifstream triglumi2016(lumitriggerpath.Data());
@@ -1587,7 +1587,7 @@ std::map<TString,BTagSFUtil*> AnalyzerCore::SetupBTagger(std::vector<TString> ta
   //// https://twiki.cern.ch/twiki/bin/view/CMS/BTagSFMethods
   
 
-  /// If users want to use another method please add additional function and modify BTag/ dir in LQLAnalysis/src/
+  /// If users want to use another method please add additional function and modify BTag/ dir in SNULAnalysis/src/
 
   std::map<TString,BTagSFUtil*>  tmpmap;
   for(std::vector<TString>::const_iterator it = taggers.begin(); it != taggers.end(); it++){
@@ -2287,8 +2287,8 @@ float AnalyzerCore::WeightByTrigger(vector<TString> triggernames, float tlumi){
     if(WeightByTrigger(triggernames.at(i), tlumi) > trigps) trigps = WeightByTrigger(triggernames.at(i),tlumi) ;
   }
 
-  //if(trigps  > 1.) {m_logger << ERROR << "Error in getting weight for trigger prescale. It cannot be > 1, this means trigger lumi >> total lumi"  << LQLogger::endmsg; exit(0);}
-  if(trigps  < 0.) {m_logger << ERROR << "Error in getting weight for trigger " << triggernames.at(0) << " prescale. It cannot be < 0, this means trigger lumi >> total lumi"  << LQLogger::endmsg; exit(0);}
+  //if(trigps  > 1.) {m_logger << ERROR << "Error in getting weight for trigger prescale. It cannot be > 1, this means trigger lumi >> total lumi"  << SNULogger::endmsg; exit(0);}
+  if(trigps  < 0.) {m_logger << ERROR << "Error in getting weight for trigger " << triggernames.at(0) << " prescale. It cannot be < 0, this means trigger lumi >> total lumi"  << SNULogger::endmsg; exit(0);}
   
   return trigps;
  
@@ -2314,7 +2314,7 @@ float AnalyzerCore::WeightByTrigger(TString triggername, float tlumi){
     float corr_trig = GetTriggerPrescaleCorrection(triggername);
     if(triggername.Contains(mit->first)) return (corr_trig*mit->second / tlumi);
   }
-  m_logger << ERROR << "Error in getting weight for trigger  " << triggername << "  prescale. Trigname is not correct or not in map"  << LQLogger::endmsg; exit(0);
+  m_logger << ERROR << "Error in getting weight for trigger  " << triggername << "  prescale. Trigname is not correct or not in map"  << SNULogger::endmsg; exit(0);
 
   return 1.;
 }
@@ -2440,23 +2440,23 @@ void AnalyzerCore::SetupID(){
     }
   }
 
-  string lqdir =  getenv("LQANALYZER_DIR");
+  string snudir =  getenv("ANALYZER_DIR");
 
   string username = getenv("USER");
 
-  SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/muons.sel");
-  SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/user_muons.sel");
+  SetupSelectionMuon(snudir + "/CATConfig/SelectionConfig/muons.sel");
+  SetupSelectionMuon(snudir + "/CATConfig/SelectionConfig/user_muons.sel");
 
-  SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/electrons.sel");
-  SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/user_electrons.sel");
-  //if(k_classname.Contains("HNDiElectron"))SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
-  //if(k_classname.Contains("FakeRateCalculator_El")) SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
-  //if(k_classname.Contains("ElectronTypes")) SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
-  SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/jets.sel");
-  SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/user_jets.sel");
+  SetupSelectionElectron(snudir + "/CATConfig/SelectionConfig/electrons.sel");
+  SetupSelectionElectron(snudir + "/CATConfig/SelectionConfig/user_electrons.sel");
+  //if(k_classname.Contains("HNDiElectron"))SetupSelectionElectron(snudir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
+  //if(k_classname.Contains("FakeRateCalculator_El")) SetupSelectionElectron(snudir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
+  //if(k_classname.Contains("ElectronTypes")) SetupSelectionElectron(snudir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
+  SetupSelectionJet(snudir + "/CATConfig/SelectionConfig/jets.sel");
+  SetupSelectionJet(snudir + "/CATConfig/SelectionConfig/user_jets.sel");
 
-  SetupSelectionFatJet(lqdir + "/CATConfig/SelectionConfig/fatjets.sel");
-  SetupSelectionFatJet(lqdir + "/CATConfig/SelectionConfig/user_fatjets.sel");
+  SetupSelectionFatJet(snudir + "/CATConfig/SelectionConfig/fatjets.sel");
+  SetupSelectionFatJet(snudir + "/CATConfig/SelectionConfig/user_fatjets.sel");
 
   IDSetup=true;
   if(k_debugmode){
@@ -2509,7 +2509,7 @@ void AnalyzerCore::SetupDDBkg(){
   /// not needed for sktreemaker
   // save time as code does not need to setup and save files
   
-  string lqdir =  getenv("LQANALYZER_DIR");
+  string snudir =  getenv("ANALYZER_DIR");
 
   // List of working points                                                                                                                                                                                                                                                  
 
@@ -2530,9 +2530,9 @@ void AnalyzerCore::SetupDDBkg(){
     MapBTagSF = SetupBTagger(vtaggers,v_wps);
     
     if(1){
-      ifstream runlumi((lqdir + "/data/Luminosity/"+getenv("yeartag")+"/lumi_catversion_" + getenv("CATVERSION")+".txt").c_str());
+      ifstream runlumi((snudir + "/data/Luminosity/"+getenv("yeartag")+"/lumi_catversion_" + getenv("CATVERSION")+".txt").c_str());
       if(!runlumi) {
-	cerr << "Did not find "+lqdir + "/data/Luminosity/"+getenv("yeartag")+"/lumi_catversion_" + getenv("CATVERSION")+".txt'), exiting ..." << endl;
+	cerr << "Did not find "+snudir + "/data/Luminosity/"+getenv("yeartag")+"/lumi_catversion_" + getenv("CATVERSION")+".txt'), exiting ..." << endl;
 	exit(EXIT_FAILURE);
       }
       string lline;
@@ -2583,7 +2583,7 @@ void AnalyzerCore::SetupDDBkg(){
 
 }
 
-void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) {
+void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( SNUError ) {
   
   if(!IDSetup)   SetupID();
   if(!setupDDBkg)SetupDDBkg();
@@ -2595,18 +2595,18 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
 
 
   Message("In SetUpEvent(Long64_t entry) " , DEBUG);
-  m_logger << DEBUG << "This is entry " << entry << LQLogger::endmsg;
-  if (!fChain) throw LQError( "Chain is not initialized",  LQError::SkipCycle );     
+  m_logger << DEBUG << "This is entry " << entry << SNULogger::endmsg;
+  if (!fChain) throw SNUError( "Chain is not initialized",  SNUError::SkipCycle );     
   
-  if(LQinput){
+  if(SNUinput){
 
-    m_logger << DEBUG << "k_isdata = " << k_isdata << " and isData = " << isData << LQLogger::endmsg;
-    if(k_isdata != isData) throw LQError( "!!! Event is confused. It does not know if it is data or MC", LQError::SkipCycle );
+    m_logger << DEBUG << "k_isdata = " << k_isdata << " and isData = " << isData << SNULogger::endmsg;
+    if(k_isdata != isData) throw SNUError( "!!! Event is confused. It does not know if it is data or MC", SNUError::SkipCycle );
   }
   else isData = k_isdata;
   
   if (!(entry % output_interval)) {
-    m_logger << INFO <<  "Processing entry " << entry <<  "/" << nentries << LQLogger::endmsg;
+    m_logger << INFO <<  "Processing entry " << entry <<  "/" << nentries << SNULogger::endmsg;
 
   }
   
@@ -2650,13 +2650,13 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
       SetCorrectedMomentum(muons, gen);
     }
   }
-  LQEvent lqevent(muons, GetAllElectrons(), photons, skjets,skfatjets, skgenjets, gen, triggerinfo,eventinfo);
+  SNUEvent snuevent(muons, GetAllElectrons(), photons, skjets,skfatjets, skgenjets, gen, triggerinfo,eventinfo);
   
 
   //  eventbase is master class to use in analysis 
   //
   
-  eventbase = new EventBase(lqevent);
+  eventbase = new EventBase(snuevent);
   
   /*eventbase->GetElectronSel()->SetIDSMap(selectionIDMapsElectron);
     eventbase->GetElectronSel()->SetIDFMap(selectionIDMapfElectron);*/
@@ -2767,12 +2767,12 @@ bool AnalyzerCore::IsSignal(){
 void AnalyzerCore::ClassInfo(){
   
   /*if(eventinfo.CatVersion().empty()){ 
-    m_logger << INFO << "Catuple version is v7-4-X. Only basic infomation is available." << LQLogger::endmsg;
+    m_logger << INFO << "Catuple version is v7-4-X. Only basic infomation is available." << SNULogger::endmsg;
     
   }
     
   else if(TString(eventinfo.CatVersion()).Contains("v7-6-2")){
-    m_logger << INFO <<  "Running on catuples version " << eventinfo.CatVersion() << LQLogger::endmsg;
+    m_logger << INFO <<  "Running on catuples version " << eventinfo.CatVersion() << SNULogger::endmsg;
     
     
     }*/
@@ -3181,7 +3181,7 @@ float AnalyzerCore::GetVirtualMassConv(int cmindex,int nconvindx){
 
 void AnalyzerCore::TruthPrintOut(){
   if(isData) return;
-  m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << SNULogger::endmsg;
   cout << "Particle Index |  PdgId  | GenStatus   | Mother PdgId |  Part_Eta | Part_Pt | Part_Phi | Mother Index |   " << endl;
 
 
@@ -3204,7 +3204,7 @@ void AnalyzerCore::TruthPrintOut(){
 
 void AnalyzerCore::TruthPrintOut(snu::KMuon muon){
   if(isData) return;
-  m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << SNULogger::endmsg;
   cout << "Particle Index |  PdgId  | GenStatus   | Mother PdgId |  Part_Eta | Part_Pt | Part_Phi | Mother Index |   " << endl;
 
 
@@ -3231,7 +3231,7 @@ void AnalyzerCore::TruthPrintOut(snu::KMuon muon){
 
 void AnalyzerCore::TruthPrintOut(snu::KElectron electron){
   if(isData) return;
-  m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << SNULogger::endmsg;
   cout << "Particle Index |  PdgId  | GenStatus   | Mother PdgId |  Part_Eta | Part_Pt | Part_Phi | Mother Index |   " << endl;
 
 
@@ -3263,7 +3263,7 @@ bool AnalyzerCore::isPrompt(long pdgid) {
   else return false;
 }
 
-void AnalyzerCore::EndEvent()throw( LQError ){
+void AnalyzerCore::EndEvent()throw( SNUError ){
   
   if(self_configured && !fake_configured) {
     cerr << "Setting up own fake files but no hists given" << endl;
@@ -3461,8 +3461,8 @@ void AnalyzerCore::PrintTruth(){
 }
 
 
-void AnalyzerCore::Message(TString message, LQMsgType type){
-  m_logger <<  type << message << LQLogger::endmsg;
+void AnalyzerCore::Message(TString message, SNUMsgType type){
+  m_logger <<  type << message << SNULogger::endmsg;
 }
 
 
@@ -3551,16 +3551,16 @@ void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx,  float xbins[], i
 
 
 void AnalyzerCore::FillHist(TString histname, float value, float w, float xbins[], int nbins , TString label){
-  m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
+  m_logger << DEBUG << "FillHist : " << histname << SNULogger::endmsg;
 
   if(GetHist(histname)) GetHist(histname)->Fill(value, w);
   
   else{
     if (nbins < 0) {
-      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << LQLogger::endmsg;
+      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << SNULogger::endmsg;
       exit(0);
     }
-    m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
+    m_logger << DEBUG << "Making the histogram" << SNULogger::endmsg;
     MakeHistograms(histname, nbins, xbins, label);
     if(GetHist(histname)) GetHist(histname)->GetXaxis()->SetTitle(label);
     if(GetHist(histname)) GetHist(histname)->Fill(value, w);
@@ -3616,14 +3616,14 @@ void AnalyzerCore::FillHistPerLumi(TString histname, float value, float w, float
 
 void AnalyzerCore::FillHist(TString histname, float value, float w, float xmin, float xmax, int nbins , TString label){
   
-  m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
+  m_logger << DEBUG << "FillHist : " << histname << SNULogger::endmsg;
   if(GetHist(histname)) GetHist(histname)->Fill(value, w);  
   else{
     if (nbins < 0) {
-      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << LQLogger::endmsg;
+      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << SNULogger::endmsg;
       exit(0);
     }
-    m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
+    m_logger << DEBUG << "Making the histogram" << SNULogger::endmsg;
     MakeHistograms(histname, nbins, xmin, xmax, label);
     if(GetHist(histname)) GetHist(histname)->GetXaxis()->SetTitle(label);
     if(GetHist(histname)) GetHist(histname)->Fill(value, w);
@@ -3633,14 +3633,14 @@ void AnalyzerCore::FillHist(TString histname, float value, float w, float xmin, 
 
 void AnalyzerCore::FillHist(TString histname, float value1, float value2, float w, float xmin, float xmax, int nbinsx, float ymin, float ymax, int nbinsy , TString label, TString labely){
 
-  m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
+  m_logger << DEBUG << "FillHist : " << histname << SNULogger::endmsg;
   if(GetHist2D(histname)) GetHist2D(histname)->Fill(value1,value2, w);
   else{
     if (nbinsx < 0) {
-      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << LQLogger::endmsg;
+      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << SNULogger::endmsg;
       exit(0);
     }
-    m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
+    m_logger << DEBUG << "Making the histogram" << SNULogger::endmsg;
     MakeHistograms2D(histname, nbinsx, xmin, xmax,nbinsy, ymin, ymax , label, labely);
     if(GetHist2D(histname)) GetHist2D(histname)->GetXaxis()->SetTitle(label);
     if(GetHist2D(histname)) GetHist2D(histname)->GetYaxis()->SetTitle(labely);
@@ -3650,15 +3650,15 @@ void AnalyzerCore::FillHist(TString histname, float value1, float value2, float 
 }
 
 void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float w, float xbins[], int nxbins, float ybins[], int nybins , TString label, TString labely){
-  m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
+  m_logger << DEBUG << "FillHist : " << histname << SNULogger::endmsg;
   if(GetHist2D(histname)) GetHist2D(histname)->Fill(valuex,valuey, w);
 
   else{
     if (nxbins < 0) {
-      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << LQLogger::endmsg;
+      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << SNULogger::endmsg;
       exit(0);
     }
-    m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
+    m_logger << DEBUG << "Making the histogram" << SNULogger::endmsg;
     MakeHistograms2D(histname, nxbins, xbins, nybins, ybins , label,labely);
     if(GetHist2D(histname)) GetHist2D(histname)->GetXaxis()->SetTitle(label);
     
@@ -3670,14 +3670,14 @@ void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float 
 
 void AnalyzerCore::FillHist(TString histname, float value1, float value2,float value3, float w, float xmin, float xmax, int nbinsx, float ymin, float ymax, int nbinsy , float zmin, float zmax, int nbinxz, TString label){
 
-  m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
+  m_logger << DEBUG << "FillHist : " << histname << SNULogger::endmsg;
   if(GetHist3D(histname)) GetHist3D(histname)->Fill(value1,value2,value3, w);
   else{
     if (nbinsx < 0) {
-      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << LQLogger::endmsg;
+      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << SNULogger::endmsg;
       exit(0);
     }
-    m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
+    m_logger << DEBUG << "Making the histogram" << SNULogger::endmsg;
     MakeHistograms3D(histname, nbinsx, xmin, xmax,nbinsy, ymin, ymax , nbinxz, zmin, zmax,label);
     if(GetHist3D(histname)) GetHist3D(histname)->GetXaxis()->SetTitle(label);
     if(GetHist3D(histname)) GetHist3D(histname)->Fill(value1,value2,value3, w);
@@ -3693,7 +3693,7 @@ void AnalyzerCore::FillHist(TString histname, float value, float w , TString lab
     GetHist(histname)->GetXaxis()->SetTitle(label);
   }
   
-  else m_logger << INFO << histname << " was NOT found. Will add the histogram to the hist map on first event." << LQLogger::endmsg;
+  else m_logger << INFO << histname << " was NOT found. Will add the histogram to the hist map on first event." << SNULogger::endmsg;
   
   
   return;
@@ -3704,9 +3704,9 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KMuon> mu
   if(type==muhist){
     map<TString, MuonPlots*>::iterator mupit = mapCLhistMu.find(hist);
     if(mupit != mapCLhistMu.end()) mupit->second->Fill(w,muons);
-    else m_logger << INFO  << hist << " not found in mapCLhistMu" << LQLogger::endmsg;
+    else m_logger << INFO  << hist << " not found in mapCLhistMu" << SNULogger::endmsg;
   }
-  else  m_logger << INFO  << "Type not set to muhist, is this a mistake?" << LQLogger::endmsg;
+  else  m_logger << INFO  << "Type not set to muhist, is this a mistake?" << SNULogger::endmsg;
 
 }
 
@@ -3716,9 +3716,9 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KElectron
   if(type==elhist){
     map<TString, ElectronPlots*>::iterator elpit = mapCLhistEl.find(hist);
     if(elpit !=mapCLhistEl.end()) elpit->second->Fill(w,electrons);
-    else m_logger << INFO  << hist << " not found in mapCLhistEl" <<LQLogger::endmsg;
+    else m_logger << INFO  << hist << " not found in mapCLhistEl" <<SNULogger::endmsg;
   }
-  else  m_logger << INFO  << "Type not set to elhist, is this a mistake?" << LQLogger::endmsg;
+  else  m_logger << INFO  << "Type not set to elhist, is this a mistake?" << SNULogger::endmsg;
 }
 
 void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KJet> jets, double w){
@@ -3726,9 +3726,9 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KJet> jet
   if(type==jethist){
     map<TString, JetPlots*>::iterator jetpit = mapCLhistJet.find(hist);
     if(jetpit !=mapCLhistJet.end()) jetpit->second->Fill(w,jets);
-    else m_logger << INFO  << hist << " not found in mapCLhistJet" <<LQLogger::endmsg;
+    else m_logger << INFO  << hist << " not found in mapCLhistJet" <<SNULogger::endmsg;
   }
-  else  m_logger << INFO  <<"Type not set to jethist, is this a mistake?" << LQLogger::endmsg;
+  else  m_logger << INFO  <<"Type not set to jethist, is this a mistake?" << SNULogger::endmsg;
 
 }
 void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w, int nbjet){
@@ -3878,13 +3878,13 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
       sigpit_em->second->Fill(ev, muons, electrons, jets,w);
     }
   }
- else  m_logger << INFO  <<"Type not set to sighist, is this a mistake?" << LQLogger::endmsg;
+ else  m_logger << INFO  <<"Type not set to sighist, is this a mistake?" << SNULogger::endmsg;
 
 
 }
 
 
-void AnalyzerCore::WriteHistograms() throw (LQError){
+void AnalyzerCore::WriteHistograms() throw (SNUError){
   // This function is called after the cycle is ran. It wrues all histograms to the output file. This function is not used by user. But by the contrioller code.
   WriteHists();
   WriteCLHists();
@@ -4043,7 +4043,7 @@ TH1* AnalyzerCore::GetHist(TString hname){
   TH1* h = NULL;
   std::map<TString, TH1*>::iterator mapit = maphist.find(hname);
   if(mapit != maphist.end()) return mapit->second;
-  else m_logger << DEBUG  << hname << " was not found in map" << LQLogger::endmsg;
+  else m_logger << DEBUG  << hname << " was not found in map" << SNULogger::endmsg;
 
   return h;
 }
@@ -4055,7 +4055,7 @@ TH2* AnalyzerCore::GetHist2D(TString hname){
   TH2* h = NULL;
   std::map<TString, TH2*>::iterator mapit = maphist2D.find(hname);
   if(mapit != maphist2D.end()) return mapit->second;
-  else m_logger << DEBUG  << hname << " was not found in map" << LQLogger::endmsg;
+  else m_logger << DEBUG  << hname << " was not found in map" << SNULogger::endmsg;
 
   return h;
 }
@@ -4066,7 +4066,7 @@ TH3* AnalyzerCore::GetHist3D(TString hname){
   TH3* h = NULL;
   std::map<TString, TH3*>::iterator mapit = maphist3D.find(hname);
   if(mapit != maphist3D.end()) return mapit->second;
-  else m_logger << DEBUG  << hname << " was not found in map" << LQLogger::endmsg;
+  else m_logger << DEBUG  << hname << " was not found in map" << SNULogger::endmsg;
 
   return h;
 }
@@ -4077,17 +4077,17 @@ TH3* AnalyzerCore::GetHist3D(TString hname){
 void AnalyzerCore::FillCutFlow(TString cut, float weight){
 
   bool cut_exists=false;
-  m_logger << DEBUG  << "FillCutFlow" <<  LQLogger::endmsg;
+  m_logger << DEBUG  << "FillCutFlow" <<  SNULogger::endmsg;
   for(unsigned int i=0; i < cutflow_list.size();  i++){
     if (cut == cutflow_list.at(i)) cut_exists=true;
   }
 
   if (!cut_exists){
-    m_logger << DEBUG  << "FillCutFlow: " << cut <<  LQLogger::endmsg;
+    m_logger << DEBUG  << "FillCutFlow: " << cut <<  SNULogger::endmsg;
 
     n_cutflowcuts=n_cutflowcuts+1;
     if(GetHist("cutflow")) {
-      m_logger << DEBUG  << "FillCutFlow: mod " << cut <<  LQLogger::endmsg;
+      m_logger << DEBUG  << "FillCutFlow: mod " << cut <<  SNULogger::endmsg;
 
       map<TString, TH1*>::iterator it = maphist.find("cutflow");
       vector<float> counters;
@@ -4106,7 +4106,7 @@ void AnalyzerCore::FillCutFlow(TString cut, float weight){
       
     }
     else{
-      m_logger << DEBUG  << "FillCutFlow:Fill " << cut <<  LQLogger::endmsg;
+      m_logger << DEBUG  << "FillCutFlow:Fill " << cut <<  SNULogger::endmsg;
       AnalyzerCore::MakeHistograms("cutflow", n_cutflowcuts,0.,float(n_cutflowcuts));
       GetHist("cutflow")->GetXaxis()->SetBinLabel(1,cut);
       GetHist("cutflow")->Fill(cut,weight);
@@ -4134,35 +4134,35 @@ bool AnalyzerCore::PassMETFilter(){
   //https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#MiniAOD_8011_ICHEP_dataset
 
   if (!eventbase->GetEvent().PassTightHalo2016Filter()) {
-    pass = false;    m_logger << DEBUG << "Event Fails PassTightHalo2016Filter " << LQLogger::endmsg;
+    pass = false;    m_logger << DEBUG << "Event Fails PassTightHalo2016Filter " << SNULogger::endmsg;
   }
   if (!eventbase->GetEvent().PassHBHENoiseFilter()) {
     pass = false;
-    m_logger << DEBUG << "Event Fails PassHBHENoiseFilter " << LQLogger::endmsg;
+    m_logger << DEBUG << "Event Fails PassHBHENoiseFilter " << SNULogger::endmsg;
   }
   if (!eventbase->GetEvent().PassHBHENoiseIsoFilter()) {
     pass = false;
-    m_logger << DEBUG << "Event Fails PassHBHENoiseIsoFilter " << LQLogger::endmsg;
+    m_logger << DEBUG << "Event Fails PassHBHENoiseIsoFilter " << SNULogger::endmsg;
   }
   if(!eventbase->GetEvent().PassEcalDeadCellTriggerPrimitiveFilter()) {
     pass = false;
-    m_logger << DEBUG << "Event Fails PassEcalDeadCellTriggerPrimitiveFilter" << LQLogger::endmsg;
+    m_logger << DEBUG << "Event Fails PassEcalDeadCellTriggerPrimitiveFilter" << SNULogger::endmsg;
   }
   
   if(!eventbase->GetEvent().PassBadChargedCandidateFilter()) {
     pass = false;
-    m_logger << DEBUG << "Event Fails PassBadChargedCandidateFilterr" << LQLogger::endmsg;
+    m_logger << DEBUG << "Event Fails PassBadChargedCandidateFilterr" << SNULogger::endmsg;
   }
 
   if(!eventbase->GetEvent().PassBadPFMuonFilter()) {
     pass = false;
-    m_logger << DEBUG << "Event Fails  PassBadPFMuonFilter" << LQLogger::endmsg;
+    m_logger << DEBUG << "Event Fails  PassBadPFMuonFilter" << SNULogger::endmsg;
   }
 
   if (isData){
     if(!eventbase->GetEvent().PassBadEESupercrystalFilter()) {
       pass = false;
-      m_logger << DEBUG << "Event FailsPassBadEESupercrystalFilter" << LQLogger::endmsg;
+      m_logger << DEBUG << "Event FailsPassBadEESupercrystalFilter" << SNULogger::endmsg;
     }
   }
   
@@ -4722,7 +4722,7 @@ void AnalyzerCore::MakeNtp(TString hname, TString myvar){
 void AnalyzerCore::FillNtp(TString hname, Double_t myinput[]){
 
   if (GetNtp(hname)) GetNtp(hname)->Fill(myinput);
-  else m_logger << INFO << hname << " was NOT found. Check you ntp. " << LQLogger::endmsg;
+  else m_logger << INFO << hname << " was NOT found. Check you ntp. " << SNULogger::endmsg;
 
   return;
 }
@@ -4749,7 +4749,7 @@ TNtupleD* AnalyzerCore::GetNtp(TString hname){
   TNtupleD* n = NULL;
   std::map<TString, TNtupleD*>::iterator mapit = mapntp.find(hname);
   if (mapit != mapntp.end()) return mapit->second;
-  else m_logger << INFO << hname << " was not found in map" << LQLogger::endmsg;
+  else m_logger << INFO << hname << " was not found in map" << SNULogger::endmsg;
 
   return n;
 }

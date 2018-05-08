@@ -7,24 +7,24 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 def SendEmail(catversion, catuser, rand_string, mailadd):
 
     email_user=mailadd
-    path_file_email=os.getenv("LQANALYZER_DIR")+"/scripts/email.sh"
+    path_file_email=os.getenv("ANALYZER_DIR")+"/scripts/email.sh"
     file_email=open(path_file_email,"w")
-    file_email.write('cat '+ os.getenv("LQANALYZER_DIR")+'/scripts/email.txt  | mail -s "Initialising email for user ' + str(catuser) +' in CATANALYZER" ' + str(email_user)+'')
+    file_email.write('cat '+ os.getenv("ANALYZER_DIR")+'/scripts/email.txt  | mail -s "Initialising email for user ' + str(catuser) +' in CATANALYZER" ' + str(email_user)+'')
     file_email.close()
 
-    filejobsummary = open(os.getenv("LQANALYZER_DIR")+"/scripts/email.txt","w")
+    filejobsummary = open(os.getenv("ANALYZER_DIR")+"/scripts/email.txt","w")
     filejobsummary.write("Dear User\n")
     filejobsummary.write("You are recieving this email since you are using setting up catanalyzer tag: and your email address is being add to the CatAnalyzer email list\n")
     filejobsummary.write("Please user the confirmation ID: " + rand_string +"\n" )
     filejobsummary.write("\n")
     filejobsummary.close()
     os.system("source " + path_file_email)
-    os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/email.sh")
-    os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/email.txt")
+    os.system("rm " + os.getenv("ANALYZER_DIR")+"/scripts/email.sh")
+    os.system("rm " + os.getenv("ANALYZER_DIR")+"/scripts/email.txt")
 
 
 def AddEmailToConfig(mail_add):
-    path_config=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
+    path_config=os.getenv("ANALYZER_DIR")+"/bin/catconfig"
     file_config = open(path_config,"r")
     
     config_content=[]
@@ -38,11 +38,11 @@ def AddEmailToConfig(mail_add):
             file_config.write("email = " + mail_add+"\n")
     file_config.close() 
 
-path_config=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
+path_config=os.getenv("ANALYZER_DIR")+"/bin/catconfig"
 
 
 if not os.path.exists(path_config):
-    os.system("cp " + os.getenv("LQANALYZER_MOD") + "/catconfig   " +  path_config)
+    os.system("cp " + os.getenv("ANALYZER_MOD") + "/catconfig   " +  path_config)
     print "File " + path_config + " does not exist. Remaking file"
 
 

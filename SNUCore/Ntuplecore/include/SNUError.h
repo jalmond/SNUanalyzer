@@ -1,11 +1,11 @@
-#ifndef LQError_H
-#define LQError_H
+#ifndef SNUError_H
+#define SNUError_H
 
 // STD include(s):                                                                                                          
 #include <exception>
 #include <sstream>
 
-class LQError : public std::exception,
+class SNUError : public std::exception,
                 public std::ostringstream {
              
  public:
@@ -24,14 +24,14 @@ class LQError : public std::exception,
   };
   
   /// Constructor specifying only a severity                                                                               
-  LQError( Severity severity = SkipEvent ) throw();
+  SNUError( Severity severity = SkipEvent ) throw();
   /// Constructor with description and severity                                                                            
-  LQError( const char* description, Severity severity = SkipEvent ) throw();
+  SNUError( const char* description, Severity severity = SkipEvent ) throw();
   /// Copy constructor                                                                                                     
-  LQError( const LQError& parent ) throw();
+  SNUError( const SNUError& parent ) throw();
   
   /// Destructor                                                                                                           
-  virtual ~LQError() throw();
+  virtual ~SNUError() throw();
   
   /// Set the description of the exception                                                                                 
   void SetDescription( const char* description ) throw();
@@ -46,11 +46,11 @@ class LQError : public std::exception,
   /// Function to get the std::ostream functionality                                                                       
   /**                                                                                                                      
    * A little template magic is needed to provide all the << operator                                                      
-   * functionalities of std::ostream to LQError. This function takes                                                        
-   * care of that. So in principle you should be able to use an LQError                                                     
+   * functionalities of std::ostream to SNUError. This function takes                                                        
+   * care of that. So in principle you should be able to use an SNUError                                                     
    * object as any other kind of std::ostream object.                                                                      
    */
-  template < class T > LQError& operator<< ( T arg ) {
+  template < class T > SNUError& operator<< ( T arg ) {
     ( * ( std::ostringstream* ) this ) << arg;
     return *this;
   }
@@ -63,5 +63,5 @@ class LQError : public std::exception,
    */
   Severity m_severity;
 
-}; // class LQError
+}; // class SNUError
 #endif

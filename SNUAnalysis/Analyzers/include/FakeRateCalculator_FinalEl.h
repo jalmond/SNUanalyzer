@@ -12,13 +12,13 @@ class FakeRateCalculator_FinalEl : public AnalyzerCore {
   ~FakeRateCalculator_FinalEl();
 
   /// Functions from core
-  virtual void BeginCycle() throw( LQError );
-  virtual void BeginEvent()throw( LQError );
-  virtual void ExecuteEvents()throw( LQError );
-  virtual void EndCycle()throw( LQError );
-  virtual void ClearOutputVectors()throw( LQError );
+  virtual void BeginCycle() throw( SNUError );
+  virtual void BeginEvent()throw( SNUError );
+  virtual void ExecuteEvents()throw( SNUError );
+  virtual void EndCycle()throw( SNUError );
+  virtual void ClearOutputVectors()throw( SNUError );
   
-  void InitialiseAnalysis() throw( LQError );
+  void InitialiseAnalysis() throw( SNUError );
   void MakeHistograms();
 
 

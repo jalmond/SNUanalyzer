@@ -1,7 +1,7 @@
 // $Id: RExampleAnalyzer.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQHNEMu Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: SNUHNEMu Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *d
@@ -15,7 +15,7 @@
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
-//// Needed to samevallow inheritance for use in LQCore/core classes
+//// Needed to samevallow inheritance for use in SNUCore/core classes
 ClassImp (HNEMu);
 
 
@@ -61,7 +61,7 @@ HNEMu::HNEMu() :  AnalyzerCore(),  out_electrons(0) {
 }
 
 
-void HNEMu::InitialiseAnalysis() throw( LQError ) {
+void HNEMu::InitialiseAnalysis() throw( SNUError ) {
   
   
   if(k_flags.size() > 0){
@@ -79,7 +79,7 @@ void HNEMu::InitialiseAnalysis() throw( LQError ) {
 
     //
     // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
-    // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
+    // You can also use m_logger << level << "comment" << int/double  << SNULogger::endmsg;
     //
     
     Message("Making clever hists for Z ->ll test code", INFO);
@@ -156,7 +156,7 @@ void HNEMu::DoCutFlow(float w){
 	  std::vector<snu::KMuon> muons_veto         = GetMuons("MUON_HN_VETO",true);
 	  if(muons_veto.size()!=2) {
 
-	    m_logger << INFO  << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+	    m_logger << INFO  << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << SNULogger::endmsg;
 	  }
 	    
           if(muons_veto.size() ==2){
@@ -213,7 +213,7 @@ void HNEMu::DoCutFlow(float w){
 }
 
 
-void HNEMu::ExecuteEvents()throw( LQError ){
+void HNEMu::ExecuteEvents()throw( SNUError ){
   
 
   if(IsSignal())GetTriggEfficiency(5.,"_5");
@@ -250,13 +250,13 @@ void HNEMu::ExecuteEvents()throw( LQError ){
 							 
 
       /// END SET UP OWN FAKE HISTS ////                                                                                                                                                                                                                                           
-      ConfigureFakeHists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Fake/DiLep/", fake_hists);
+      ConfigureFakeHists("/data1/SNUAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Fake/DiLep/", fake_hists);
     }
   }
   
 
-  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-  m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
+  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << SNULogger::endmsg;
+  m_logger << DEBUG << "isData = " << isData << SNULogger::endmsg;
 
   
   //// Set weight for MC (nevents / xsec (ish))
@@ -3129,10 +3129,10 @@ void HNEMu::counter(TString cut, float w){
 }
 
 
-void HNEMu::EndCycle()throw( LQError ){
+void HNEMu::EndCycle()throw( SNUError ){
   
   Message("In EndCycle" , INFO);
-  m_logger << DEBUG << "END OF CYCLE: isdata=" << isData <<  LQLogger::endmsg;
+  m_logger << DEBUG << "END OF CYCLE: isdata=" << isData <<  SNULogger::endmsg;
 
   for ( map<TString,float>::iterator itmapcounter = mapcounter.begin(); itmapcounter != mapcounter.end(); itmapcounter++){
     cout << itmapcounter->first << " has count "<< itmapcounter->second << endl;
@@ -3141,7 +3141,7 @@ void HNEMu::EndCycle()throw( LQError ){
 }
 
 
-void HNEMu::BeginCycle() throw( LQError ){
+void HNEMu::BeginCycle() throw( SNUError ){
   
   Message("In begin Cycle", INFO);
   
@@ -3156,8 +3156,8 @@ void HNEMu::BeginCycle() throw( LQError ){
   //If you wish to output variables to output file use DeclareVariable
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
-  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  //  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //DeclareVariable(obj, label ); //-> will use default treename: SNUTree
+  //  DeclareVariable(out_electrons, "Signal_Electrons", "SNUTree");
   //  DeclareVariable(out_muons, "Signal_Muons");
   
   return;
@@ -3172,7 +3172,7 @@ HNEMu::~HNEMu() {
 
 
 
-void HNEMu::BeginEvent( )throw( LQError ){
+void HNEMu::BeginEvent( )throw( SNUError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -3195,7 +3195,7 @@ void HNEMu::MakeHistograms(){
 }
 
 
-void HNEMu::ClearOutputVectors() throw(LQError) {
+void HNEMu::ClearOutputVectors() throw(SNUError) {
 
   // This function is called before every execute event (NO need to call this yourself.
   

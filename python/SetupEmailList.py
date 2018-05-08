@@ -1,8 +1,8 @@
 import os,sys
 
-path_emailconfig = os.getenv("LQANALYZER_MOD") +"emailconfig.txt"                                                                                                               
+path_emailconfig = os.getenv("ANALYZER_MOD") +"emailconfig.txt"                                                                                                               
 
-path_catconfig= os.getenv("LQANALYZER_DIR") + "/bin/catconfig"
+path_catconfig= os.getenv("ANALYZER_DIR") + "/bin/catconfig"
 
 file_catconfig= open(path_catconfig,"r")
 email_address=""

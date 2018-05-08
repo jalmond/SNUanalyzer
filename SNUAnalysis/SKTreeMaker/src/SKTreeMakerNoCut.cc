@@ -1,7 +1,7 @@
 // $Id: SKTreeMakerNoCut.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: SNUAnalyzer Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *
@@ -14,7 +14,7 @@
 #include "EventBase.h"                                                                                                                           
 
 
-//// Needed to allow inheritance for use in LQCore/core classes
+//// Needed to allow inheritance for use in SNUCore/core classes
 ClassImp (SKTreeMakerNoCut);
 
 
@@ -32,7 +32,7 @@ SKTreeMakerNoCut::SKTreeMakerNoCut() :  AnalyzerCore(), out_muons(0), out_electr
 
 }
 
-void SKTreeMakerNoCut::ExecuteEvents()throw( LQError ){
+void SKTreeMakerNoCut::ExecuteEvents()throw( SNUError ){
 
   //////////////////////////////////////////////////////
   //////////// Select objetcs
@@ -87,18 +87,18 @@ void SKTreeMakerNoCut::ExecuteEvents()throw( LQError ){
   
 
 
-void SKTreeMakerNoCut::EndCycle()throw( LQError ){
+void SKTreeMakerNoCut::EndCycle()throw( SNUError ){
   
   Message("In EndCycle" , INFO);
 }
 
 
-void SKTreeMakerNoCut::BeginCycle() throw( LQError ){
+void SKTreeMakerNoCut::BeginCycle() throw( SNUError ){
   
   Message("In begin Cycle", INFO);
 
-  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  DeclareVariable(out_electrons, "KElectrons", "LQTree");
+  //DeclareVariable(obj, label ); //-> will use default treename: SNUTree
+  DeclareVariable(out_electrons, "KElectrons", "SNUTree");
   DeclareVariable(out_photons, "KPhotons");
   DeclareVariable(out_muons, "KMuons");
   DeclareVariable(out_jets, "KJets");
@@ -191,7 +191,7 @@ void SKTreeMakerNoCut::FillCutFlow(TString cut, float weight){
 
 
 
-void SKTreeMakerNoCut::BeginEvent( )throw( LQError ){
+void SKTreeMakerNoCut::BeginEvent( )throw( SNUError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -199,7 +199,7 @@ void SKTreeMakerNoCut::BeginEvent( )throw( LQError ){
 }
 
 
-void SKTreeMakerNoCut::ClearOutputVectors() throw (LQError){
+void SKTreeMakerNoCut::ClearOutputVectors() throw (SNUError){
   //
   // Reset all variables declared in Declare Variable
   //

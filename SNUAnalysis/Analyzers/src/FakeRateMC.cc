@@ -1,6 +1,6 @@
 /****************************************************************************
- * @Project: LQFakeRateMC Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: SNUFakeRateMC Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: SNUCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *
@@ -14,7 +14,7 @@
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
-//// Needed to allow inheritance for use in LQCore/core classes
+//// Needed to allow inheritance for use in SNUCore/core classes
 ClassImp (FakeRateMC);
 
 
@@ -59,18 +59,18 @@ TDirectory* FakeRateMC::getTemporaryDirectory(void) const
   return tempDir;
 }
 
-void FakeRateMC::InitialiseAnalysis() throw( LQError ) {
+void FakeRateMC::InitialiseAnalysis() throw( SNUError ) {
   
   /// Initialise histograms
   MakeHistograms();  
   //
   // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
-  // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
+  // You can also use m_logger << level << "comment" << int/double  << SNULogger::endmsg;
   //
   
   TDirectory* origDir = gDirectory;
 
-  string analysisdir = getenv("LQANALYZER_DIR");
+  string analysisdir = getenv("SNUANALYZER_DIR");
 
   TFile* file_fake_elmc  = TFile::Open( (analysisdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_El_2016_mcdilep.root").c_str());
   TFile* file_fake_mumc  = TFile::Open( (analysisdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_Mu_2016_mcdilep.root").c_str());
@@ -106,7 +106,7 @@ void FakeRateMC::InitialiseAnalysis() throw( LQError ) {
 }
 
 
-void FakeRateMC::ExecuteEvents()throw( LQError ){
+void FakeRateMC::ExecuteEvents()throw( SNUError ){
     
   //// Initial event cuts
   /// MET FIleters 
@@ -1958,24 +1958,24 @@ int FakeRateMC::CloseJetTypeHAD(snu::KElectron el, std::vector<snu::KJet> jets){
 
 
 
-void FakeRateMC::EndCycle()throw( LQError ){
+void FakeRateMC::EndCycle()throw( SNUError ){
   
   Message("In EndCycle" , INFO);
-  m_logger<< INFO << "Number of events that pass 1 7GeV trigger = " << n_17_pass  << LQLogger::endmsg;
-  m_logger<< INFO << "Number of events that pass 17 GeV + jet trigger = " << n_17_jet_pass  << LQLogger::endmsg;
-  m_logger<< INFO << "Number of events that pass 17 GeV || jet trigger = " << n_17_17_jet_pass  << LQLogger::endmsg;
+  m_logger<< INFO << "Number of events that pass 1 7GeV trigger = " << n_17_pass  << SNULogger::endmsg;
+  m_logger<< INFO << "Number of events that pass 17 GeV + jet trigger = " << n_17_jet_pass  << SNULogger::endmsg;
+  m_logger<< INFO << "Number of events that pass 17 GeV || jet trigger = " << n_17_17_jet_pass  << SNULogger::endmsg;
 
 }
 
-void FakeRateMC::BeginCycle() throw( LQError ){
+void FakeRateMC::BeginCycle() throw( SNUError ){
   
   Message("In begin Cycle", INFO);
   
   //If you wish to output variables to output file use DeclareVariable
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
-  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  //DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //DeclareVariable(obj, label ); //-> will use default treename: SNUTree
+  //DeclareVariable(out_electrons, "Signal_Electrons", "SNUTree");
   //DeclareVariable(out_muons, "Signal_Muons");
 
 
@@ -1995,7 +1995,7 @@ FakeRateMC::~FakeRateMC() {
 
 
 
-void FakeRateMC::BeginEvent( )throw( LQError ){
+void FakeRateMC::BeginEvent( )throw( SNUError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -2018,7 +2018,7 @@ void FakeRateMC::MakeHistograms(){
 }
 
 
-void FakeRateMC::ClearOutputVectors() throw(LQError) {
+void FakeRateMC::ClearOutputVectors() throw(SNUError) {
 
   // This function is called before every execute event (NO need to call this yourself.
   

@@ -1,5 +1,5 @@
-#ifndef LQCycleBaseNTuple_H
-#define LQCycleBaseNTuple_H
+#ifndef SNUCycleBaseNTuple_H
+#define SNUCycleBaseNTuple_H
 
 class TTree;
 class TFile;
@@ -8,8 +8,8 @@ class TDirectory;
 class TBranch;
 
 #include <list>
-#include "LQError.h"
-#include "LQCycleBaseBase.h"
+#include "SNUError.h"
+#include "SNUCycleBaseBase.h"
 
 
 
@@ -17,11 +17,11 @@ class TBranch;
 class TH1F;
 
 
-class LQCycleBaseNTuple :  public virtual LQCycleBaseBase{
+class SNUCycleBaseNTuple :  public virtual SNUCycleBaseBase{
 
 public:
-  LQCycleBaseNTuple();
-  virtual ~LQCycleBaseNTuple();
+  SNUCycleBaseNTuple();
+  virtual ~SNUCycleBaseNTuple();
 
   TFile*                m_outputFile;
   std::vector< TTree* > m_outputTrees;
@@ -76,19 +76,19 @@ public:
   /// Declare an output variable
   template< class T >
     TBranch* DeclareVariable( T& obj, const char* name,
-			       const char* treeName = 0 ) throw( LQError );
+			       const char* treeName = 0 ) throw( SNUError );
 
  private:
   static const char* RootType( const char* typeid_type ) ;
 
-  ClassDef( LQCycleBaseNTuple, 1 );
+  ClassDef( SNUCycleBaseNTuple, 1 );
   
 };
 
 // Don't include the templated function(s) when we're generating
 // a dictionary:
 #ifndef __CINT__
-#include "LQCycleBaseNTuple.icc"
+#include "SNUCycleBaseNTuple.icc"
 #endif
 
 #endif

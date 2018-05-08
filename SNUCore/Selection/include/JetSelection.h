@@ -7,7 +7,7 @@ using namespace std;
 
 #include "TLorentzVector.h"
 #include <vector>
-#include "LQEvent.h"
+#include "SNUEvent.h"
 #include "KJet.h"
 #include "KMuon.h"
 #include "KElectron.h"
@@ -16,7 +16,7 @@ using namespace std;
 class JetSelection : public BaseSelection {
 
  public:
-  JetSelection(LQEvent ev);
+  JetSelection(SNUEvent ev);
   ~JetSelection();
 
   JetSelection& operator= (const JetSelection& obj);
