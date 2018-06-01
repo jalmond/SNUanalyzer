@@ -31,7 +31,7 @@ void CheckJobStatistics(){
   
   for(std::vector<std::pair<TString,TString> >::iterator it = monthyears.begin(); it != monthyears.end(); it++){
     
-    ifstream muonselconfig(("/data1/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+it->second+"_"+ it->first+".txt").Data());
+    ifstream muonselconfig(("/data1/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/JobSummary"+it->second+"_"+ it->first+".txt").Data());
     if(!muonselconfig) {
       cerr << "Did not find, exiting ..." << endl;
       exit(EXIT_FAILURE);

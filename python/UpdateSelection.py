@@ -1,6 +1,6 @@
 import os,filecmp,sys
     
-def GetCATAnalyzerMailList():
+def GetSNUAnalyzerMailList():
     maillist=[]
     path_emailconfig = os.getenv("ANALYZER_MOD")+"/emailconfig.txt"
     file_emailconfig = open(path_emailconfig,"r")
@@ -17,18 +17,18 @@ def GetCATAnalyzerMailList():
 def SendEmail(localsummary, mastersummary):
 
     email_user=""
-    maillist = GetCATAnalyzerMailList()
+    maillist = GetSNUAnalyzerMailList()
     for xmail in maillist:
         email_user=email_user+xmail+","
     email_user=email_user[:-1]
 
 
-    path_file_email="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/email.sh"
+    path_file_email="/data2/SNU_SKTreeOutput/" + os.getenv("USER")  + "/email.sh"
     file_email=open(path_file_email,"w")
-    file_email.write('cat /data2/CAT_SKTreeOutput/' + os.getenv("USER")  + '/email.txt | mail -s  "Update in selection file for 2016 Analysis:" '+str(email_user)+'') 
+    file_email.write('snu /data2/SNU_SKTreeOutput/' + os.getenv("USER")  + '/email.txt | mail -s  "Update in selection file for 2016 Analysis:" '+str(email_user)+'') 
     file_email.close()
 
-    filejobsummary = open("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/email.txt","w")
+    filejobsummary = open("/data2/SNU_SKTreeOutput/" + os.getenv("USER")  + "/email.txt","w")
 
     titleline=""
     for line in localsummary:
@@ -84,11 +84,11 @@ parser.add_option("-s", "--s", dest="s", default="123",help="tag")
 seltag=options.s
 
 path_master = os.getenv("ANALYZER_FILE_DIR")+ "/Selection/"
-path_local= os.getenv("ANALYZER_DIR") + "/CATConfig/SelectionConfig/"
+path_local= os.getenv("ANALYZER_DIR") + "/SNUConfig/SelectionConfig/"
 
 selfile=""
 seltmptag=""
-if  os.getenv("CATVERSION") == "v7-6-6":
+if  os.getenv("SNUVERSION") == "v7-6-6":
     seltmptag="_2015"
 if seltag == "electron":
     selfile="electrons"+seltmptag+".sel"

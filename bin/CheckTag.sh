@@ -1,27 +1,27 @@
-catagpath=/data1/${Flag}Analyzer_rootfiles_for_analysis/CATTag/
+snuagpath=/data1/${Flag}Analyzer_rootfiles_for_analysis/SNUTag/
 if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
 then
-    tagpath=/data4/LocalNtuples/${Flag}Analyzer_rootfiles_for_analysis/CATTag/
+    tagpath=/data4/LocalNtuples/${Flag}Analyzer_rootfiles_for_analysis/SNUTag/
 else
-    tagpath=/data1/${Flag}Analyzer_rootfiles_for_analysis/CATTag/
+    tagpath=/data1/${Flag}Analyzer_rootfiles_for_analysis/SNUTag/
 fi
 
 if [[ $USER == "jalmond" ]];
     then
-    if [[ $CATTAG == "" ]];
+    if [[ $SNUTAG == "" ]];
 	then
 	echo "This is a new git checkout of the main branch. You need the tag setup to run code" 
 	cp $ANALYZER_DIR/scripts/setup/tag_setup.sh $ANALYZER_DIR/setup.sh
-	export CATTAG=$CATVERSION$tag_numerator
+	export SNUTAG=$SNUVERSION$tag_numerator
     fi
 fi
-if [[ $CATTAG == "" ]];
+if [[ $SNUTAG == "" ]];
     then
-    echo "You are not running from a tag. You are running from Branch CatAnalyzer_13TeV"
+    echo "You are not running from a tag. You are running from Branch SnuAnalyzer_13TeV"
     exit 1
 fi
 
-if [[ $CATTAG == "v7-6-3.2" ]];
+if [[ $SNUTAG == "v7-6-3.2" ]];
     then
     echo "You are running on a tag with a bug in pileup weighting. update tag"
     exit 1
@@ -35,19 +35,19 @@ do
 	sline=$(echo $line | head -n1 | awk '{print $1}')
 	latest_tag=$sline
     fi
-done < $tagpath/LatestTag80X.txt
+done < $tagpath/LatestTag94X.txt
 
 
-if [[ $latest_tag == $CATTAG ]];then
+if [[ $latest_tag == $SNUTAG ]];then
     
     echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-    echo "Using latest tag "$CATTAG
+    echo "Using latest tag "$SNUTAG
     echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 else
     
     echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-    echo "Newer CATAnalzer tag available: "
-    echo "Current tag "$CATTAG
+    echo "Newer SNUAnalzer tag available: "
+    echo "Current tag "$SNUTAG
     echo "Latest tag is "$latest_tag
     echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 
@@ -59,12 +59,12 @@ else
             sline=$(echo $line | head -n1 | awk '{print $1}')
 	    NEWTAGS+=(${sline})
 	else 
-	    if [[ $line == $CATTAG ]]; then
+	    if [[ $line == $SNUTAG ]]; then
 		break
 	    fi
 	    NEWTAGS+=(${line})
 	fi
-    done < $tagpath/LatestTag80X.txt
+    done < $tagpath/LatestTag94X.txt
 
 
     for ntag in  ${NEWTAGS[@]};

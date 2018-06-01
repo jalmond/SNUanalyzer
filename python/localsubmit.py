@@ -34,7 +34,6 @@ parser.add_option("-O", "--outputdir", dest="outputdir", default="${LQANALYZER_D
 parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove the work space?")
 parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
 parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
-parser.add_option("-N", "--useCATv742ntuples", dest="useCATv742ntuples", default=True, help="' to run on these samples")
 parser.add_option("-L", "--LibList", dest="LibList", default="NULL", help="Add extra lib files to load")
 parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
 parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run submit script in debug mode?")
@@ -42,7 +41,7 @@ parser.add_option("-P", "--runnp", dest="runnp", default="runnp", help="Run fake
 parser.add_option("-G", "--runtau", dest="runtau", default="runtau", help="Run fake mode for np bkg?")
 parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
 parser.add_option("-q", "--queue", dest="queue", default="", help="Which queue to use?")
-parser.add_option("-v", "--catversion", dest="catversion", default="NULL", help="What cat version?")
+parser.add_option("-v", "--snuversion", dest="snuversion", default="NULL", help="What snu version?")
 parser.add_option("-f", "--skflag", dest="skflag", default="NULL", help="add input flag?")
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
 parser.add_option("-J", "--setnjobs", dest="setnjobs", default="False", help="user sets njobs?")
@@ -80,12 +79,11 @@ xsec = float(options.xsec)
 tar_lumi = float(options.targetlumi)
 eff_lumi = float(options.efflumi)
 data_lumi = options.data_lumi
-catversion = options.catversion
+snuversion = options.snuversion
 Finaloutputdir = options.outputdir
 remove_workspace=options.remove
 useskinput=options.skinput
 runevent= options.runevent
-useCATv742ntuples = options.useCATv742ntuples
 tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
 useskim = options.useskim
@@ -125,7 +123,7 @@ if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     
 flag=os.getenv("Flag")
 
-queuepath=path_jobpre +flag+"Analyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/ForceQueue.txt"
+queuepath=path_jobpre +flag+"Analyzer_rootfiles_for_analysis/SnutupleConfig/QUEUE/ForceQueue.txt"
 file_queuepath = open(queuepath,"r")
 for line in file_queuepath:
     if "#" in line:
@@ -236,7 +234,7 @@ elif useskinput == "true":
     print "Using SKTrees as input."
 else:
     print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-    print "Using CATntuples as input"    
+    print "Using SNUntuples as input"    
 ########  Sample specific configuration ###############
 ## set the job conguration set for a specific sample###
 #######################################################
@@ -271,12 +269,9 @@ if not len(splitsample)==1:
         if "runevent" in splitsample[conf]:
             conf+=1
             runevent = splitsample[conf]
-        if "useCATv742ntuples" in splitsample[conf]:
+        if "snuversion" in splitsample[conf]:
             conf+=1
-            useCATv742ntuples = splitsample[conf]
-        if "catversion" in splitsample[conf]:
-            conf+=1
-            catversion = splitsample[conf]
+            snuversion = splitsample[conf]
 print ""
 
 ####################
@@ -318,7 +313,7 @@ if not cycle == "SKTreeMaker":
                     if not cycle == "SKTreeMakerHNDiLep":
                         if not useskinput == "True":
                             if not useskinput == "true":
-                                print "You are running on FlatCATntuples. This will be more cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees."
+                                print "You are running on FlatSNUntuples. This will be more cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees."
                         
 
 output_mounted="/data2"
@@ -340,8 +335,8 @@ if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
 ### Make tmp directory for job
 ############################################################
 
-tmpwork = workoutput_mounted+"/CAT_SKTreeOutput/"+ getpass.getuser() + "/"
-mergetmpwork = merge_mounted+"/CAT_SKTreeOutput/"+ getpass.getuser() + "/"
+tmpwork = workoutput_mounted+"/SNU_SKTreeOutput/"+ getpass.getuser() + "/"
+mergetmpwork = merge_mounted+"/SNU_SKTreeOutput/"+ getpass.getuser() + "/"
 if not (os.path.exists(tmpwork)):
     os.system("mkdir " + tmpwork)
 
@@ -350,7 +345,7 @@ if not (os.path.exists(mergetmpwork)):
 
 
 
-timestamp_dir=tmpwork + "/" + cycle + "_joboutput_" +now() +"_" +os.getenv("HOSTNAME")+"_"+os.getenv("CATVERSION")
+timestamp_dir=tmpwork + "/" + cycle + "_joboutput_" +now() +"_" +os.getenv("HOSTNAME")+"_"+os.getenv("SNUVERSION")
 #timestamp_dir=tmpwork + "/" + cycle + "_joboutput_" +now() +"_" +os.getenv("HOSTNAME")    
 while  (os.path.exists(timestamp_dir)):
     app_dir=1
@@ -449,7 +444,7 @@ else:
 #list has only size ==1 currently
 
 ##################################################################################################################
-##### Specify if the job is running on SKTrees or CATNtuples
+##### Specify if the job is running on SKTrees or SNUNtuples
 ##################################################################################################################
 original_sample = sample
 if useskinput == "true":
@@ -552,7 +547,7 @@ if not mc:
     print "Input channel = " + new_channel
 
 ##############################################################################################
-#### Check if sktrees are located on current machines  (not used when running on cmsX at snu)                        
+#### Check if sktrees are losnued on current machines  (not used when running on cmsX at snu)                        
 #############################################################################################
 
 isfile = os.path.isfile
@@ -566,7 +561,7 @@ if platform.system() != "Linux":
         localDir = os.getenv("ANALYZER_DIR")+ "/data/input/mc/"  + sample
     
     if not os.path.exists(localDir):
-        print "No files in current location: Will copy them over"
+        print "No files in current losnuion: Will copy them over"
         CopySKTrees(new_channel,sample,mc,"True")
     elif  sum(1 for item in os.listdir(localDir) if isfile(join(localDir, item))) == 0:
         print "No files are located locally: Will copy from cms21 machine"
@@ -589,40 +584,40 @@ inDS = ""
 mcLumi = 1.0
 filechannel=""
 
-catversions = ["v7-6-4",
+snuversions = ["v7-6-4",
                "v7-6-3",
                "v7-6-2",
                "v7-4-5",
                "v7-4-4"]
 
-sample_catversion = ""
-output_catversion=os.getenv("CATVERSION")
+sample_snuversion = ""
+output_snuversion=os.getenv("SNUVERSION")
 
 #### Check latest tag/version for DS.
 iversion=0
 
 
 if "HN" in  sample or "CHT" in sample or "TTToH" in sample:
-    datasetfile="datasets_snu_sig_CAT_mc_"
+    datasetfile="datasets_snu_sig_SNU_mc_"
 else:
-    datasetfile="datasets_snu_nonsig_CAT_mc_"
+    datasetfile="datasets_snu_nonsig_SNU_mc_"
 
 while inDS == "":
     if platform.system() == "Linux":
-        version="_CAT"
-        sample_catversion = catversions[iversion]
+        version="_SNU"
+        sample_snuversion = snuversions[iversion]
 
 
-        if catversion != "":
-            sample_catversion = catversion
-            output_catversion = catversion
+        if snuversion != "":
+            sample_snuversion = snuversion
+            output_snuversion = snuversion
 
-        print "Using CAT " +sample_catversion + " ntuples"
+        print "Using SNU " +sample_snuversion + " ntuples"
         if mc:
-            filename = os.getenv("ANALYZER_RUN_PATH") + '/txt/'+datasetfile +sample_catversion +  '.txt'
+            filename = os.getenv("ANALYZER_RUN_PATH") + '/txt/'+datasetfile +sample_snuversion +  '.txt'
 
         else:
-            filename = os.getenv("ANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  +sample_catversion +'.txt'
+            filename = os.getenv("ANALYZER_RUN_PATH") + '/txt/datasets_snu_SNU_data_'  +sample_snuversion +'.txt'
     else:
         filename = os.getenv("ANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
              
@@ -658,15 +653,15 @@ while inDS == "":
                         inDS = entries[5]
     iversion = iversion +1                
     if inDS == "":
-        if catversion != "":
-            print "Input dataset is not available in specifies catversion: Exiting"
+        if snuversion != "":
+            print "Input dataset is not available in specifies snuversion: Exiting"
             sys.exit()
         print "Analyzer :: WARNING :: Sample is not available in " + filename + "."
         print "Will look in previous compatable version. Need input from user if this is ok or a mistake."
-        update = raw_input("This is likely because you have not changed the name of the input file. Since CATVERSION v7-6-3 these were changed. Is using anolder version of catuples ok for what you are doing? If you wish to use an older sample type Y. If not change input. run 'sktree -l' for options" )
+        update = raw_input("This is likely because you have not changed the name of the input file. Since SNUVERSION v7-6-3 these were changed. Is using anolder version of snuuples ok for what you are doing? If you wish to use an older sample type Y. If not change input. run 'sktree -l' for options" )
         if not  update == "Y":
             sys.exit()
-        if iversion == len(catversions):
+        if iversion == len(snuversions):
             print "Analyzer :: ERROR :: Input dataset is not available: Exiting"
             sys.exit()
 
@@ -770,7 +765,7 @@ check_array = []
 ###################################################
 
     
-workspace = workoutput_mounted+"/CAT_SKTreeOutput/"+ getpass.getuser() +"/"
+workspace = workoutput_mounted+"/SNU_SKTreeOutput/"+ getpass.getuser() +"/"
 
 if not (os.path.exists(workspace)):
         os.system("mkdir " + workspace)
@@ -847,15 +842,10 @@ if runcf == "True":
     print "sample --> " + outsamplename
 if not mc:
     outsamplename = outsamplename +  "_" + new_channel
-    if useCATv742ntuples == "True":
-        outsamplename = outsamplename + "_cat_" + output_catversion
 
-else:
-    if useCATv742ntuples == "True":
-                outsamplename = outsamplename + "_cat_"+ output_catversion
 
 if  "SKTreeMaker" in cycle:            
-    outsamplename = outsamplename +  os.getenv("CATTAG")
+    outsamplename = outsamplename +  os.getenv("SNUTAG")
 
 if tmp_filename != "":
     outsamplename = outsamplename +"_"+tmp_filename
@@ -980,7 +970,7 @@ if number_of_cores < 10:
 
 
 if DEBUG == "True":
-    print "Running CATAnalyzer jobs for: " + getpass.getuser()
+    print "Running SNUAnalyzer jobs for: " + getpass.getuser()
 
 array_batchjobs = []
 
@@ -1046,12 +1036,12 @@ for i in range(1,number_of_cores+1):
 
 if running_batch: 
     
-    if not os.path.exists(workoutput_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"):
-        os.system("mkdir " + workoutput_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/")
+    if not os.path.exists(workoutput_mounted+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"):
+        os.system("mkdir " + workoutput_mounted+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/")
     
 
     print "@@@@@@@@@@@@@@@@@@@@@@@@@"
-    path_jobids = workoutput_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample + "jobid.txt"
+    path_jobids = workoutput_mounted+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample + "jobid.txt"
 
     file_jobids = open(path_jobids,"w")
     for ijob in array_batchjobs:
@@ -1373,8 +1363,8 @@ if not JobOutput:
         os.system("mv "+ output + "/*/*.e* " + os.getenv("ANALYZER_LOG_PATH") + "/" + outsamplename)    
     print "###########################################################################################################"
     print "Check crash by running root -q -b " + failed_macro 
-    print "after typing: export cat_version=$CATVERSION"
-    print 'export CATAnalyzerPeriod="B"'
+    print "after typing: export snu_version=$SNUVERSION"
+    print 'export SNUAnalyzerPeriod="B"'
     print "Logfile of failed job is can be found at " + os.getenv("ANALYZER_LOG_PATH") + "/" + outsamplename   + failed_log 
     print "###########################################################################################################"
     JobCrash=True
@@ -1388,15 +1378,15 @@ else:
         if DEBUG == "True":
             print line
 
-    SKTreeOutput_pre = workoutput_mounted+"/CatNtuples/" + sample_catversion
+    SKTreeOutput_pre = workoutput_mounted+"/SnuNtuples/" + sample_snuversion
     if not os.path.exists(SKTreeOutput_pre):
         os.system("mkdir " + SKTreeOutput_pre)
 
-    SKTreeOutput_pre2 = workoutput_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"
+    SKTreeOutput_pre2 = workoutput_mounted+"/SnuNtuples/" + sample_snuversion + "/SKTrees/"
     if not os.path.exists(SKTreeOutput_pre2):
         os.system("mkdir " + SKTreeOutput_pre2)
                     
-    SKTreeOutput = workoutput_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"        
+    SKTreeOutput = workoutput_mounted+"/SnuNtuples/" + sample_snuversion + "/SKTrees/"        
     
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
@@ -1698,23 +1688,23 @@ else:
         os.system("hadd " + mergeoutputdir +  outfile  + " "+ mergeoutputdir + "*.root")
         
         if mc:
-            if not os.path.exists( "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger ):
-                os.system("mkdir " +  "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger)
-            os.system("source "+os.getenv("ANALYZER_DIR")+"/scripts/Counter.sh " + mergeoutputdir +  outfile + " > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+original_sample+"Hist.txt"   )
-            os.system("source "+os.getenv("ANALYZER_DIR")+"/scripts/CutFlow.sh " + mergeoutputdir +  outfile + " > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+original_sample+"CutFlow.txt"   )  
+            if not os.path.exists( "/data2/SNU_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger ):
+                os.system("mkdir " +  "/data2/SNU_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger)
+            os.system("source "+os.getenv("ANALYZER_DIR")+"/scripts/Counter.sh " + mergeoutputdir +  outfile + " > /data2/SNU_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+original_sample+"Hist.txt"   )
+            os.system("source "+os.getenv("ANALYZER_DIR")+"/scripts/CutFlow.sh " + mergeoutputdir +  outfile + " > /data2/SNU_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+original_sample+"CutFlow.txt"   )  
 
         if os.getenv("USER") == "jalmond":
 
-            transout=Finaloutputdir.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
+            transout=Finaloutputdir.replace("/data2/SNU_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer//data/output/SNU/","/afs/cern.ch/work/j/jalmond/SNU/")
             
-            catpath=os.getenv("ANALYZER_DIR")+"/bin/catconfig"
-            readcatpath=open(catpath,"r")
+            snupath=os.getenv("ANALYZER_DIR")+"/bin/snuconfig"
+            readsnupath=open(snupath,"r")
             lxmachine=""
-            for rline in readcatpath:
+            for rline in readsnupath:
                 if "localcpu" in rline:
                     srline = rline.split()
                     lxmachine=srline[2]
-            readcatpath.close()
+            readsnupath.close()
             if not "OPT/" in Finaloutputdir:
                 os.system("ssh  jalmond@"+lxmachine+".cern.ch  mkdir " + transout )
                 if "OPT" in skflag:
@@ -1725,7 +1715,7 @@ else:
             
 
         os.system("mv " + mergeoutputdir +  outfile + " "  + Finaloutputdir)
-        os.system("ls -lh " + Finaloutputdir +  outfile + " > " + path_jobpre +flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger +".txt")
+        os.system("ls -lh " + Finaloutputdir +  outfile + " > " + path_jobpre +flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger +".txt")
         f = ROOT.TFile(Finaloutputdir +  outfile)
         t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
         t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
@@ -1741,7 +1731,7 @@ else:
         if number_of_cores == 1 and setnumber_of_cores:
             os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + outfile )
             
-            os.system("ls -lh " + Finaloutputdir +   outfile + " > " + path_jobpre +flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger+".txt")
+            os.system("ls -lh " + Finaloutputdir +   outfile + " > " + path_jobpre +flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger+".txt")
             f = ROOT.TFile(Finaloutputdir +  outfile)
             t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
             t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
@@ -1753,7 +1743,7 @@ else:
             os.system("rm " + Finaloutputdir + "/*.root")
             os.system("mv " + outputdir + "*.root " + Finaloutputdir )
             os.system("chmod -R 777 " + Finaloutputdir )
-            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + path_jobpre +flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger+".txt")
+            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + path_jobpre +flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger+".txt")
             f = ROOT.TFile(Finaloutputdir +  outsamplename + "_1.root")
             t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
             t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
@@ -1797,15 +1787,15 @@ total_time=end_time- start_time
 print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"
 print ""
 
-statfile=path_jobpre +flag+ "Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_"+ original_sample + tagger +".txt"
-statfile_time=path_jobpre +flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_timetmp_"+original_sample+tagger +".txt"
-statfile_time_complete=path_jobpre + flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_time_"+original_sample+tagger +".txt"
+statfile=path_jobpre +flag+ "Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_"+ original_sample + tagger +".txt"
+statfile_time=path_jobpre +flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_timetmp_"+original_sample+tagger +".txt"
+statfile_time_complete=path_jobpre + flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_time_"+original_sample+tagger +".txt"
 
-if not os.path.exists(path_jobpre +flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() ):
-    os.system("mkdir " + path_jobpre + flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
-if not os.path.exists(path_jobpre + flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)):
-    print "mkdir " + path_jobpre + flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()+ "/" + str(tagger)
-    os.system("mkdir " + path_jobpre +flag +"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()+ "/" + str(tagger))
+if not os.path.exists(path_jobpre +flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() ):
+    os.system("mkdir " + path_jobpre + flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser())
+if not os.path.exists(path_jobpre + flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)):
+    print "mkdir " + path_jobpre + flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser()+ "/" + str(tagger)
+    os.system("mkdir " + path_jobpre +flag +"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser()+ "/" + str(tagger))
 
 statwrite = open(statfile, 'r')
 statwrite_time = open(statfile_time, 'w')
@@ -1821,7 +1811,7 @@ print "job_time  " + str(job_time)
 print "start_running_time " + str(start_running_time)
 print "last_job_time " + str(last_job_time)
 
-pathfilesize=path_jobpre +flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_"+original_sample + tagger +".txt"
+pathfilesize=path_jobpre +flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/filesize_"+original_sample + tagger +".txt"
 
 if os.path.exists(pathfilesize):
     readfilesize = open(pathfilesize, "r")
@@ -1842,10 +1832,10 @@ statwrite_time.write("memoryusage_v " + str(memoryusage_v/1000)  + "MB \n")
 statwrite_time.write("memoryusage_p " + str(memoryusage_p/1000)  + "MB \n") 
 if JobCrash:
     statwrite_time.write("Success= False \n")
-    if not os.path.exists(workoutput_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"):
-        os.system("mkdir " + workoutput_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/")
-    os.system("mkdir " + workoutput_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash")
-    crash_log= workoutput_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash/crashlog.txt"
+    if not os.path.exists(workoutput_mounted+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"):
+        os.system("mkdir " + workoutput_mounted+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/")
+    os.system("mkdir " + workoutput_mounted+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash")
+    crash_log= workoutput_mounted+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash/crashlog.txt"
     writecrashlog = open(crash_log,"w")
     writecrashlog.write("###########################################################################################################")
     writecrashlog.write("Check crash by running root -q -b " + failed_macro)
@@ -1876,6 +1866,6 @@ print "python " + GeneralStatFile + " -x " + tagger + " -s " + original_sample +
 
 os.system("python " + GeneralStatFile + " -x " + tagger + " -s " + original_sample + " -n " + str(number_of_jobs_for_statfile))
 
-#set_logfile=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_"+original_sample+ tagger + ".txt"
+#set_logfile=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_"+original_sample+ tagger + ".txt"
 #if os.path.exists(set_logfile):
 #    os.system("rm " + set_logfile)

@@ -389,7 +389,7 @@ function print_tag_diff_twotags
 	      NEWTAGS+=(${line})
 	  fi
       fi
-    done < ${CATTAGDIR}/LatestTag80X.txt
+    done < ${CATTAGDIR}/LatestTag94X.txt
 
     for ntag in  ${NEWTAGS[@]};
       do

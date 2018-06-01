@@ -1,14 +1,14 @@
-if [[ $LQANALYZER_DIR == "" ]];
+if [[ $ANALYZER_DIR == "" ]];
     then
-    source $LQANALYZER_DIR/setup.sh
+    source $ANALYZER_DIR/setup.sh
 fi
 
 ########## Tag index
-itag=".38"
+itag=".1"
 tagname=$CATVERSION$itag
 
 
-diff  $LQANALYZER_DIR/setup.sh $LQANALYZER_DIR/scripts/setup/tag_setup.sh >> SetupCheck.txt
+diff  $ANALYZER_DIR/setup.sh $ANALYZER_DIR/scripts/setup/tag_setup.sh >> SetupCheck.txt
 
 setup_is_different="False"
 while read line
@@ -29,7 +29,7 @@ do
     if [[ $line  == *$tagname* ]]; then
 	notnew_tag=True
     fi	
-done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
+done  < /data1/SNUAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
 
 if [[ $notnew_tag == "False" ]];then
     echo "$tagname (HEAD)" >> LatestTag80X.txt
@@ -43,23 +43,23 @@ if [[ $notnew_tag == "False" ]];then
 	    sline=${line%$suffix}
 	    echo "$sline" >> LatestTag80X.txt
 	fi
-    done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
-    mv LatestTag80X.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
+    done  < /data1/SNUAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
+    mv LatestTag80X.txt /data1/SNUAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
 else
     echo "Not adding a new tag"
 fi
 
-rm $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-echo "export CATVERSION="$CATVERSION >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-echo "### If there is a small bug/new code then new subtag is made"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-echo "export tag_numerator='"$itag"'"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-echo "if [[ \$1 == '"branch"' ]];"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-echo "    then" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-echo "    export CATTAG=" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-echo "else" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-echo "    export CATTAG=$CATVERSION"$itag >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-echo "fi" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-echo "" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+rm $ANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "export CATVERSION="$CATVERSION >> $ANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "### If there is a small bug/new code then new subtag is made"  >> $ANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "export tag_numerator='"$itag"'"  >> $ANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "if [[ \$1 == '"branch"' ]];"  >> $ANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "    then" >> $ANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "    export SNUTAG=" >> $ANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "else" >> $ANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "    export SNUTAG=$CATVERSION"$itag >> $ANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "fi" >> $ANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "" >> $ANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 
 sendemail=false
 
@@ -77,7 +77,7 @@ echo $tag_exists
 rm gitcheck.txt
 
 
-cp $LQANALYZER_DIR/scripts/setup/tag_setup.sh $LQANALYZER_DIR/setup.sh
+cp $ANALYZER_DIR/scripts/setup/tag_setup.sh $ANALYZER_DIR/setup.sh
 git commit -a
 
 #"New Tag: "$tagname  
@@ -107,5 +107,5 @@ git tag $tagname
 git push --tags
 
 if [[ $sendemail == "true" ]]; then
-    python $LQANALYZER_DIR/python/NewTagEmail.py -t $tagname
+    python $ANALYZER_DIR/python/NewTagEmail.py -t $tagname
 fi

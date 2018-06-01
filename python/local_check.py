@@ -16,13 +16,13 @@ fr = open(binDir + 'Branch.txt', 'r')
 sline=0
 for line in fr:
     if sline ==0:
-        print "Local code uses CATAnalyser version : " +  line
+        print "Local code uses SNUAnalyser version : " +  line
         print "Look up code at https://github.com/jalmond/"+flag+"analyzer/tree/" + line
     if sline == 1:
         print "..."
     sline=sline+1
 
-print "Running on tag : " +  os.getenv("CATTAG")    
+print "Running on tag : " +  os.getenv("SNUTAG")    
    
 
 if os.path.exists(""+flag+"Run/Macros/"):
@@ -37,7 +37,7 @@ if os.path.exists(""+flag+"Cycle/"):
     print "Cleaning up directory that failed to be removed by git merge"
     os.system("rm -r "+flag+"Cycle/")
 
-tag_dir  = os.getenv("ANALYZER_LIB_PATH")+ "/" + os.getenv("CATTAG");
+tag_dir  = os.getenv("ANALYZER_LIB_PATH")+ "/" + os.getenv("SNUTAG");
 yeartag= str(os.getenv("yeartag"))
 
 localfiledir = os.getenv("ANALYZER_FILE_DIR")
@@ -70,18 +70,18 @@ if not os.path.exists(tag_dir):
     if not os.path.exists(os.getenv("ANALYZER_BATCHLIB_PATH")):
         os.system("mkdir " + os.getenv("ANALYZER_BATCHLIB_PATH"))
 
-    if not os.path.exists("/data8/DATA/CAT_SKTreeOutput/" + os.getenv("USER")):
-        os.system("mkdir " + "/data8/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
-    if not os.path.exists("/data7/DATA/CAT_SKTreeOutput/" + os.getenv("USER")):
-        os.system("mkdir " + "/data7/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
+    if not os.path.exists("/data8/DATA/SNU_SKTreeOutput/" + os.getenv("USER")):
+        os.system("mkdir " + "/data8/DATA/SNU_SKTreeOutput/" + os.getenv("USER"))
+    if not os.path.exists("/data7/DATA/SNU_SKTreeOutput/" + os.getenv("USER")):
+        os.system("mkdir " + "/data7/DATA/SNU_SKTreeOutput/" + os.getenv("USER"))
         
     print "Copying all latest rootfiles for use in analysis"
 
-    if not os.path.exists(os.getenv("ANALYZER_DIR")+ "/data/Luminosity/80X/") or not os.path.exists(os.getenv("ANALYZER_DIR")+ "/data/Luminosity/76X/"):
+    if not os.path.exists(os.getenv("ANALYZER_DIR")+ "/data/Luminosity/94X/") or not os.path.exists(os.getenv("ANALYZER_DIR")+ "/data/Luminosity/76X/"):
         os.system("rm -r " + os.getenv("ANALYZER_DIR")+ "/data/")
     MakeDirectory((os.getenv("ANALYZER_DIR")+ "/data/"))
     MakeDirectory(snulumifiledir)
-    os.system("cp " + localfiledir + "/Luminosity/*"+str(os.getenv("CATVERSION"))+".txt " + snulumifiledir)
+    os.system("cp " + localfiledir + "/Luminosity/*"+str(os.getenv("SNUVERSION"))+".txt " + snulumifiledir)
     MakeDirectory(snufakefiledir)
     os.system("cp " + localfiledir + "/Fake/*.root " + snufakefiledir)
     MakeDirectory(snutriggerfiledir)
@@ -100,9 +100,9 @@ if not os.path.exists(tag_dir):
 
     if os.path.exists(snufiledir+"/cMVAv2.csv"):
         os.system("rm  "+snufiledir+"/*.csv")
-    if os.path.exists(snufiledir +"/triggers_catversion2016_802.txt") or os.path.exists(snufiledir +"/lumi_catversion2016_802.txt"):
+    if os.path.exists(snufiledir +"/triggers_snuversion2016_802.txt") or os.path.exists(snufiledir +"/lumi_snuversion2016_802.txt"):
         os.system("rm " + snufiledir+"/*.txt")
-    if os.path.exists(snufiledir +"/Luminosity/triggers_catversion2016_802.txt"):
+    if os.path.exists(snufiledir +"/Luminosity/triggers_snuversion2016_802.txt"):
         os.system("rm " +snufiledir +"/Luminosity/*2016*")
 
     if os.path.exists(snufiledir):
@@ -113,34 +113,34 @@ if not os.path.exists(tag_dir):
     if os.path.exists(logdir):
         os.system("rm -r "+logdir)
 
-    old_out=os.getenv("ANALYZER_DIR")+"/data/output/CAT/"
+    old_out=os.getenv("ANALYZER_DIR")+"/data/output/SNU/"
 
     
     mount_name="/data2"
     if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
         mount_name="/data4"
 
-    new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")
+    new_out=mount_name+"/SNU_SKTreeOutput/JobOutPut/"+os.getenv("USER")
     print "cleaning up home directory"
     if not os.path.exists(new_out):
         os.system("mkdir " + new_out)
 
     if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-        if not os.path.exists("/data7/DATA/CAT_SKTreeOutput/"+os.getenv("USER")):
-            os.system("mkdir " + "/data7/DATA/CAT_SKTreeOutput/"+os.getenv("USER"))
-        if not os.path.exists("/data8/DATA/CAT_SKTreeOutput/"+os.getenv("USER")):
-            os.system("mkdir " + "/data8/DATA/CAT_SKTreeOutput/"+os.getenv("USER"))
+        if not os.path.exists("/data7/DATA/SNU_SKTreeOutput/"+os.getenv("USER")):
+            os.system("mkdir " + "/data7/DATA/SNU_SKTreeOutput/"+os.getenv("USER"))
+        if not os.path.exists("/data8/DATA/SNU_SKTreeOutput/"+os.getenv("USER")):
+            os.system("mkdir " + "/data8/DATA/SNU_SKTreeOutput/"+os.getenv("USER"))
 
 
-    new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/"+flag+"analyzer/"
+    new_out=mount_name+"/SNU_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/"+flag+"analyzer/"
     print new_out
     if not os.path.exists(new_out):
         os.system("mkdir " + new_out)
-        new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/"+flag+"analyzer/data/"
+        new_out=mount_name+"/SNU_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/"+flag+"analyzer/data/"
         os.system("mkdir " + new_out)
-        new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/"+flag+"analyzer/data/output/"
+        new_out=mount_name+"/SNU_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/"+flag+"analyzer/data/output/"
         os.system("mkdir " + new_out)
-        new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/"+flag+"analyzer/data/output/CAT/"
+        new_out=mount_name+"/SNU_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/"+flag+"analyzer/data/output/SNU/"
         os.system("mkdir " + new_out)
         os.system("mv "+ old_out + "/* " + new_out)
         print "Moving output to " + new_out

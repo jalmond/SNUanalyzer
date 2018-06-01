@@ -22,15 +22,15 @@ if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
 
 
 
-path_master=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION") +".txt"
-path_skel_master=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton.txt"
+path_master=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/MasterFile_"+ os.getenv("SNUVERSION") +".txt"
+path_skel_master=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/MasterFileSkeleton.txt"
 
 if not os.path.exists(path_master):
-    os.system("cp " + path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton_newversion.txt " + path_master )
+    os.system("cp " + path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/MasterFileSkeleton_newversion.txt " + path_master )
     os.system("chmod 777 " + path_master)
 
-if not os.path.exists(path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()):
-    os.system("mkdir  " + path_jobpre + "/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
+if not os.path.exists(path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser()):
+    os.system("mkdir  " + path_jobpre + "/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser())
 
 from optparse import OptionParser
 parser = OptionParser()
@@ -44,8 +44,8 @@ sample=options.s
 njobs_submittest=int(options.n)
 
 
-path_job=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(filetag)+ "/statlog_time_"+sample + filetag + ".txt"
-path_tmpmaster=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/MasterFile_tmp" + filetag +sample+ ".txt"
+path_job=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/" + str(filetag)+ "/statlog_time_"+sample + filetag + ".txt"
+path_tmpmaster=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/MasterFile_tmp" + filetag +sample+ ".txt"
 
 os.system("cp " + path_master + " " + path_tmpmaster)
 
@@ -53,8 +53,8 @@ os.system("cp " + path_master + " " + path_tmpmaster)
 file_job=open(path_job,"r")
 file_tmpmaster=open(path_tmpmaster,"r")
 
-path_cluster=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_"+sample + filetag + ".txt"
-path_log=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" +sample+ filetag + ".log"
+path_cluster=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/Cluster_"+sample + filetag + ".txt"
+path_log=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" +sample+ filetag + ".log"
 
 
 
@@ -69,9 +69,9 @@ lastjobtime=0.
 cycle=""
 sample=""
 username=""
-catversion=""
+snuversion=""
 skim=""
-cattag=""
+snutag=""
 day=""
 month=""
 year=""
@@ -99,7 +99,7 @@ for line in file_job:
     if "ClusterIDs" == splitline[0]:
         clusterid=splitline[1]
     if "-v" == splitline[0]:
-        catversion=splitline[1]
+        snuversion=splitline[1]
     if "-s" == splitline[0]:
         stream=splitline[1]
     if "time"  == splitline[0]:
@@ -112,8 +112,8 @@ for line in file_job:
         sample=splitline[1]
     if "-m" ==  splitline[0]:
         skim=splitline[1]
-    if "cattag" ==  splitline[0]:
-        cattag=splitline[1]  
+    if "snutag" ==  splitline[0]:
+        snutag=splitline[1]  
     if "Success=" ==  splitline[0]:
         jobcrash=splitline[1]
     if "Njobs" ==  splitline[0]:
@@ -156,17 +156,17 @@ if nclusterjobs == "":
     nclusterjobs=" NULL "
 
 
-path_jobinfo=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+month+"_"+year+".txt"
+path_jobinfo=path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/JobSummary"+month+"_"+year+".txt"
 if not os.path.exists(path_jobinfo):
     with open(path_jobinfo, "w") as myfile:
-          myfile.write("Summary of CatAnalyzer Processes: month="+month+" year=" +year+"\n")
+          myfile.write("Summary of SnuAnalyzer Processes: month="+month+" year=" +year+"\n")
     os.system("chmod 777 " + path_jobinfo)
 
 if len(sample) < 2:
     sample=stream+"_"+sample
 
 with open(path_jobinfo, "a") as myfile:
-    myfile.write(username+" "+str(cycle)+" cv: "+str(catversion)+" "+str(cattag)+" sample: "+str(sample)+" skim: "+str(skim)+" njobs: " + str(njobs) + " nfiles: " + str(nfiles) + " sta_time: "+str(date)+" : "+str(month)+" : "+str(year)+" : "+str(ptime)+" proc.time: "+str(time)+ " job_time: "+str(jobtime)+ " last_job_time: " + str(lastjobtime)+ " output_file_size: " + str(filesize) + " mem_p: " + RoundMemory(memoryusage_p) + " mem_v: " + RoundMemory(memoryusage_v)+ " job_complete= "+ jobcrash + " cluster_info: " + nclusterjobs+ " job_cluster: " + str(clusterid) + "\n")
+    myfile.write(username+" "+str(cycle)+" cv: "+str(snuversion)+" "+str(snutag)+" sample: "+str(sample)+" skim: "+str(skim)+" njobs: " + str(njobs) + " nfiles: " + str(nfiles) + " sta_time: "+str(date)+" : "+str(month)+" : "+str(year)+" : "+str(ptime)+" proc.time: "+str(time)+ " job_time: "+str(jobtime)+ " last_job_time: " + str(lastjobtime)+ " output_file_size: " + str(filesize) + " mem_p: " + RoundMemory(memoryusage_p) + " mem_v: " + RoundMemory(memoryusage_v)+ " job_complete= "+ jobcrash + " cluster_info: " + nclusterjobs+ " job_cluster: " + str(clusterid) + "\n")
 
 os.system("rm " + path_cluster)
 
@@ -174,7 +174,7 @@ if os.path.exists(path_log):
     os.system("rm " + path_log)
     
 
-if "FLATCAT" in skim:  
+if "FLATSNU" in skim:  
     sample +="_lepton"
 
 if "SKTree_LeptonSkim" in skim:
@@ -182,7 +182,7 @@ if "SKTree_LeptonSkim" in skim:
 if "SKTree_DiLepSkim"in skim:
     sample +="_dilepton"
 
-sample += "_"+cattag
+sample += "_"+snutag
 if username != getpass.getuser():
     print "Issue with username"
     sys.exit()
@@ -257,7 +257,7 @@ if newUser:
     file_tmpmaster3.close()
     file_newuser_master.write("%%%%%%%%%%%%%%%%%%%%%%%% USER  " + username + " %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n")
     file_newuser_master.write("########  Code:  " + cycle +"#################################################\n")
-    file_newuser_master.write("################ CatVersion : "+ catversion +" \n")
+    file_newuser_master.write("################ SnuVersion : "+ snuversion +" \n")
     file_newuser_master.write("################ " + sample_title + nproc_title + time_title + filesize_title  + memv_title + memp_title +"\n")
     file_newuser_master.write("################\n")
     file_newuser_master.write("####################################################################################\n")
@@ -271,7 +271,7 @@ elif newCycle:
         if username in line:
             file_newuser_master.write(line)
             file_newuser_master.write("########  Code:  " + cycle + "   #################################################\n")
-            file_newuser_master.write("################ CatVersion : "+ catversion +" \n")
+            file_newuser_master.write("################ SnuVersion : "+ snuversion +" \n")
             file_newuser_master.write("################ " + sample_title + nproc_title + time_title + filesize_title + memv_title + memp_title+ "\n")
             file_newuser_master.write("################\n")
             file_newuser_master.write("####################################################################################\n")

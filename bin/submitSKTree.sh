@@ -1,20 +1,19 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-source    /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/${CATVERSION}.sh
+source    /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/${SNUVERSION}.sh
 cp $LQANALYZER_DATASETFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
 cp $LQANALYZER_DATASETFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
 
 
-declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim"  "SKTree_HNDiLepSkim" "SKTree_HNFakeSkim" "SKTree_HNFatJetSkim"  "SKTree_TriLepSkim" "SKTree_SSLepSkim" "NoCut" "Lepton" "DiLep")
+declare -a list_of_skims=("SKFLAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim"  "SKTree_HNDiLepSkim" "SKTree_HNFakeSkim" "SKTree_HNFatJetSkim"  "SKTree_TriLepSkim" "SKTree_SSLepSkim" "NoCut" "Lepton" "DiLep")
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton" "DoubleMuon_CF")
-declare -a  oldcat=("v7-4-4" "v7-4-5")
 
 #declare -a queueoptions=("allq" "fastq" "longq" "node1" "node2" "node3" "node4" "node5" "node6" "None")
 declare -a queueoptions=("allq" "fastq" "longq"  "None")  
 
 python $LQANALYZER_DIR/python/CheckSelection.py
-if [[ ! -d  /data2/CAT_SKTreeOutput/${USER}/GoodSelection/ ]]; then
+if [[ ! -d  /data2/SNU_SKTreeOutput/${USER}/GoodSelection/ ]]; then
     echo "Fix selection file and rerun"
     exit 1
 fi
@@ -65,16 +64,16 @@ changed_job_data_lumi=false
 changed_job_njobs=false 
 submit_file_tag=""
 submit_file_list=""
-submit_version_tag=${CATVERSION}
+submit_version_tag=${SNUVERSION}
 submit_sampletag=""
-submit_catvlist=""
+submit_snuvlist=""
 submit_searchlist=""
 submit_analyzer_name=""
 set_submit_analyzer_name=false
 request_sample=""
 submit_skim=""
-submit_cat_tag=""
-submit_cat_tag2=""
+submit_snu_tag=""
+submit_snu_tag2=""
 
 ######## NEW FOR TAG v7-6-3.2
 job_nevents=-1
@@ -82,7 +81,7 @@ job_nskip=-1
 job_run_taus=False
 job_run_fake=False
 job_run_flip=False
-check_all_catversions=false
+check_all_snuversions=false
 set_submit_file_tag=false
 set_submit_file_list=false
 set_submit_sampletag=false
@@ -90,12 +89,12 @@ set_sktreemaker_debug=false
 
 
 
-FLATCAT_MC="/data2/DATA/cattoflat/MC/"
-SKTREE_MC="/data2/CatNtuples/"
+FLATSNU_MC="/data2/DATA/snutoflat/MC/"
+SKTREE_MC="/data2/SnuNtuples/"
 if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
 then
     TXTPATH=${LQANALYZER_RUN_PATH}"/txt/Cluster/datasets_snu_cluster_"
-    FLATCAT_MC="/data4/DATA/FlatCatuples/MC/"
+    FLATSNU_MC="/data4/DATA/FlatSnuuples/MC/"
     SKTREE_MC="/data4/LocalNtuples/SKTrees13TeV/"
 fi
 
@@ -157,13 +156,13 @@ if [[ $job_run_flip != "False" ]];
 fi
 
 
-########### safe guard wrong catversion setting
-if [[ $check_all_catversions == "true" ]];
+########### safe guard wrong snuversion setting
+if [[ $check_all_snuversions == "true" ]];
     then
     submit_version_tag=""
     if [[ $changed_submit_version_tag == "true" ]];
         then
-        echo "LQanalyzer::sktree :: ERROR :: Catversion was set with -c, while you chose to look at all catversions wit -ac option. This is not possible."
+        echo "LQanalyzer::sktree :: ERROR :: Snuversion was set with -c, while you chose to look at all snuversions wit -ac option. This is not possible."
         exit 1
      fi
 fi
@@ -248,59 +247,59 @@ function mergeoutput
             then
 	    output_file_skim_tag=$1
 	    
-	    if [[ $job_skim == "FLATCAT" ]];
+	    if [[ $job_skim == "FLATSNU" ]];
 		then
-		output_file_skim_tag=$output_file_skim_tag"_cat_"$submit_version_tag
+		output_file_skim_tag=$output_file_skim_tag"_snu_"$submit_version_tag
 
 	    fi
 	    if [ $job_skim == "SKTree_NoSkim" ] || [ $job_skim == "NoCut" ];
 		  then
-                output_file_skim_tag="SK"$output_file_skim_tag"_nocut_cat_"$submit_version_tag
+                output_file_skim_tag="SK"$output_file_skim_tag"_nocut_snu_"$submit_version_tag
             fi
 	    
 	    if [ $job_skim == "SKTree_LeptonSkim" ] || [ $job_skim == "Lepton" ];
 		then
-		output_file_skim_tag="SK"$output_file_skim_tag"_cat_"$submit_version_tag
+		output_file_skim_tag="SK"$output_file_skim_tag"_snu_"$submit_version_tag
 	    fi
 	    
 	    if [ $job_skim == "SKTree_DiLepSkim" ] || [ $job_skim == "DiLep" ];
 		then
-		output_file_skim_tag="SK"$output_file_skim_tag"_dilep_cat_"$submit_version_tag
+		output_file_skim_tag="SK"$output_file_skim_tag"_dilep_snu_"$submit_version_tag
 	    fi
 	    if [ $job_skim == "SKTree_HNDiLepSkim" ] || [ $job_skim == "HNDiLep" ];
                 then
-                output_file_skim_tag="SK"$output_file_skim_tag"_hndilep_cat_"$submit_version_tag
+                output_file_skim_tag="SK"$output_file_skim_tag"_hndilep_snu_"$submit_version_tag
             fi
 	    if [ $job_skim == "SKTree_HNFakeSkim" ] || [ $job_skim == "HNFake" ];
 		then
-                output_file_skim_tag="SK"$output_file_skim_tag"_hnfake_cat_"$submit_version_tag
+                output_file_skim_tag="SK"$output_file_skim_tag"_hnfake_snu_"$submit_version_tag
             fi
 	    if [ $job_skim == "SKTree_HNFatJetSkim" ] || [ $job_skim == "HNFatJet" ];
             then
-                output_file_skim_tag="SK"$output_file_skim_tag"_hnfatjet_cat_"$submit_version_tag
+                output_file_skim_tag="SK"$output_file_skim_tag"_hnfatjet_snu_"$submit_version_tag
             fi
 
 	    if [[ $job_skim == "SKTree_TriLepSkim" ]] ;
 		then
-		output_file_skim_tag="SK"$output_file_skim_tag"_trilep_cat_"$submit_version_tag
+		output_file_skim_tag="SK"$output_file_skim_tag"_trilep_snu_"$submit_version_tag
             fi
 	    if [[ $job_skim == "SKTree_SSLepSkim" ]] ;
 	    then
-                output_file_skim_tag="SK"$output_file_skim_tag"_sslep_cat_"$submit_version_tag
+                output_file_skim_tag="SK"$output_file_skim_tag"_sslep_snu_"$submit_version_tag
             fi
 	    
 	    echo "############################################################################################################################################################"
 
 	    echo "MERGED DATA: "
 	    echo "Command:"
-            #echo "source hadd.sh "${outputdir_data}" "${job_cycle}"_data_cat_"${submit_version_tag}".root "${outputdir_data}${job_cycle}"'*'"$output_file_skim_tag"'*'"
+            #echo "source hadd.sh "${outputdir_data}" "${job_cycle}"_data_snu_"${submit_version_tag}".root "${outputdir_data}${job_cycle}"'*'"$output_file_skim_tag"'*'"
             #echo "############################################################################################################################################################"
 	    #echo ""
-            #source hadd.sh ${outputdir_data} ${job_cycle}_data_cat_${submit_version_tag}.root ${outputdir_data}${job_cycle}'*'${output_file_skim_tag}'*'
+            #source hadd.sh ${outputdir_data} ${job_cycle}_data_snu_${submit_version_tag}.root ${outputdir_data}${job_cycle}'*'${output_file_skim_tag}'*'
 	    echo ""
-            echo "merged output sent to -----> "${outputdir_data}${job_cycle}"_data_cat_"${submit_version_tag}".root "
+            echo "merged output sent to -----> "${outputdir_data}${job_cycle}"_data_snu_"${submit_version_tag}".root "
 	    
-            #mv  ${outputdir_data}/${job_cycle}_data_cat_${submit_version_tag}.root  ${outputdir_mc}/${job_cycle}_data_$1_cat_${submit_version_tag}.root
+            #mv  ${outputdir_data}/${job_cycle}_data_snu_${submit_version_tag}.root  ${outputdir_mc}/${job_cycle}_data_$1_snu_${submit_version_tag}.root
 
             echo ""
         fi
@@ -313,60 +312,60 @@ function mergefake
             output_file_skim_tag=$1
 	    outname="nonprompt"
 
-            if [[ $job_skim == "FLATCAT" ]];
+            if [[ $job_skim == "FLATSNU" ]];
                 then
-                output_file_skim_tag=$output_file_skim_tag"_cat_"$submit_version_tag
-		outname=$outname"_cat_"$submit_version_tag
+                output_file_skim_tag=$output_file_skim_tag"_snu_"$submit_version_tag
+		outname=$outname"_snu_"$submit_version_tag
             fi
             if [ $job_skim == "SKTree_NoSkim" ] || [ $job_skim == "NoCut" ];
                   then
-                output_file_skim_tag="SK"$output_file_skim_tag"_nocut_cat_"$submit_version_tag
-		outname="SK"$outname"_nocut_cat_"$submit_version_tag
+                output_file_skim_tag="SK"$output_file_skim_tag"_nocut_snu_"$submit_version_tag
+		outname="SK"$outname"_nocut_snu_"$submit_version_tag
             fi
 
             if [ $job_skim == "SKTree_LeptonSkim" ] || [ $job_skim == "Lepton" ];
                 then
-                output_file_skim_tag="SK"$output_file_skim_tag"_cat_"$submit_version_tag
-		outname="SK"$outname"_cat_"$submit_version_tag
+                output_file_skim_tag="SK"$output_file_skim_tag"_snu_"$submit_version_tag
+		outname="SK"$outname"_snu_"$submit_version_tag
 
             fi
 
             if [ $job_skim == "SKTree_DiLepSkim" ] || [ $job_skim == "DiLep" ];
                 then
-                output_file_skim_tag="SK"$output_file_skim_tag"_dilep_cat_"$submit_version_tag
-		outname="SK"$outname"_dilep_cat_"$submit_version_tag
+                output_file_skim_tag="SK"$output_file_skim_tag"_dilep_snu_"$submit_version_tag
+		outname="SK"$outname"_dilep_snu_"$submit_version_tag
 
             fi
 	    if [ $job_skim == "SKTree_HNDiLepSkim" ] || [ $job_skim == "HNDiLep" ];
              then
-                output_file_skim_tag="SK"$output_file_skim_tag"_hndilep_cat_"$submit_version_tag
-                outname="SK"$outname"_hndilep_cat_"$submit_version_tag
+                output_file_skim_tag="SK"$output_file_skim_tag"_hndilep_snu_"$submit_version_tag
+                outname="SK"$outname"_hndilep_snu_"$submit_version_tag
 
             fi
 	    if [ $job_skim == "SKTree_HNFakeSkim" ] || [ $job_skim == "HNFake" ];
 	    then
-                output_file_skim_tag="SK"$output_file_skim_tag"_hnfake_cat_"$submit_version_tag
-                outname="SK"$outname"_hnfake_cat_"$submit_version_tag
+                output_file_skim_tag="SK"$output_file_skim_tag"_hnfake_snu_"$submit_version_tag
+                outname="SK"$outname"_hnfake_snu_"$submit_version_tag
 		
             fi
             if [ $job_skim == "SKTree_HNFatJetSkim" ] || [ $job_skim == "HNFatJet" ];
             then
-                output_file_skim_tag="SK"$output_file_skim_tag"_hnfatjet_cat_"$submit_version_tag
-                outname="SK"$outname"_hnfatjet_cat_"$submit_version_tag
+                output_file_skim_tag="SK"$output_file_skim_tag"_hnfatjet_snu_"$submit_version_tag
+                outname="SK"$outname"_hnfatjet_snu_"$submit_version_tag
 
             fi
 
 
             if [[ $job_skim == "SKTree_TriLepSkim" ]] ;
                 then
-                output_file_skim_tag="SK"$output_file_skim_tag"_trilep_cat_"$submit_version_tag
-		outname="SK"$outname"_trilep_cat_"$submit_version_tag
+                output_file_skim_tag="SK"$output_file_skim_tag"_trilep_snu_"$submit_version_tag
+		outname="SK"$outname"_trilep_snu_"$submit_version_tag
 
             fi
 	    if [[ $job_skim == "SKTree_SSLepSkim" ]] ;
                 then
-                output_file_skim_tag="SK"$output_file_skim_tag"_sslep_cat_"$submit_version_tag
-                outname="SK"$outname"_sslep_cat_"$submit_version_tag
+                output_file_skim_tag="SK"$output_file_skim_tag"_sslep_snu_"$submit_version_tag
+                outname="SK"$outname"_sslep_snu_"$submit_version_tag
 
             fi
 
@@ -377,7 +376,7 @@ function mergefake
 		#mv  ${outputdir_np}/${job_cycle}_${output_file_skim_tag}.root  ${outputdir_mc}/${job_cycle}_$1_${outname}.root
 		echo "Merged data will be sent to ---> " +  ${outputdir_mc}/${job_cycle}_$1_${outname}.root
 	    fi
-	    if [[ $job_data_lumi  == $catdatatag ]];
+	    if [[ $job_data_lumi  == $snudatatag ]];
 	    then
                 #source hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
 		#mv  ${outputdir_np}/${job_cycle}_${output_file_skim_tag}.root  ${outputdir_mc}/${job_cycle}_$1_${outname}.root
@@ -458,45 +457,10 @@ if [[ $submit_file_tag  != ""  ]];
     if [[ $file_tag_exists == "false" ]];
 	then
 	echo "LQanalyzer::sktree :: ERROR :: 'sktree -i <samplename>'"
-	echo "LQanalyzer::sktree :: ERROR :: Samplename is Invalid for the catversion "$CATVERSION" and skim "$job_skim":" 
-	if [[ $check_all_catversions == "false" ]];
+	echo "LQanalyzer::sktree :: ERROR :: Samplename is Invalid for the snuversion "$SNUVERSION" and skim "$job_skim":" 
+	if [[ $check_all_snuversions == "false" ]];
 	    then
 
-	    isoldname=false
-	    for oclist in  ${oldcat[@]};
-	      do
-	      while read oline
-		do
-		if [[ $oline == *"/data2/DATA/cattoflat/MC/"* ]];
-		    then
-		    osline=$(echo $oline | head -n1 | awk '{print $1}')
-		    
-		    if [[ $submit_file_tag == $osline ]];
-			then
-			isoldname=true;
-		    fi
-		fi
-	      done < ${OLDTXTPATH}"CAT_mc_${oclist}.txt"
-
-	    done
-	    
-	    if [[ $isoldname == "true" ]];
-		then
-		echo "LQanalyzer::sktree :: HELP :: Input names since v7-6-3. You are still using old names" 
-		echo "LQanalyzer::sktree :: HELP :: To run on older samples set -c <catversion> or -ac true"
-		echo "LQanalyzer::sktree :: HELP :: Check new input options using 'sktree -L "$job_skim" "$CATVERSION"'"
-		exit 1
-	    else
-		echo ""
-		echo "LQanalyzer::sktree :: HELP :: 1) Check input options using 'sktree -L "$job_skim" "$CATVERSION"'"
-		echo "LQanalyzer::sktree :: HELP :: 2a) To check if this sample is available at SNU (FlatCatuple format) run 'sktree -A'."
-		echo "LQanalyzer::sktree :: HELP :: 2b) If it is available locallly check if this sample is available with different skim. run 'sktree -L <skim>'"
-		echo "LQanalyzer::sktree :: HELP :: 3a) If 'sktree -A' shows sample is missing then we need to wait for the miniAOD to be produced"
-		echo "LQanalyzer::sktree :: HELP :: 3b) If 'sktree -A' shows sample is available at kisti then run 'sktree -r DATASETNAME' to request this sample"
-		echo "LQanalyzer::sktree :: HELP :: 3c) If 'sktree -A' shows sample is not there then no catuple exists: run 'sktree -rcat DATASETNAME' to request this catuple"
-		echo ""
-		exit 1
-	    fi
 	    
 	else 
 	    echo ""

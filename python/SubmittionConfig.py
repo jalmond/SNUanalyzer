@@ -1,5 +1,5 @@
 ############################################################    
-### configure submisstion of CATANALYZER Jobs                                                                                                        #################################################################    
+### configure submisstion of SNUANALYZER Jobs                                                                                                        #################################################################    
 import os, getpass, sys,ROOT,time,curses,datetime,math
 from functions import *
 from datetime import timedelta
@@ -54,54 +54,54 @@ def   GetMonth(imonth):
     else:
         return "Dec"
 
-def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversion, defuseskim, defcycle, defchannel, deftmp_filename,deftagger,skflag):
+def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defsnuversion, defuseskim, defcycle, defchannel, deftmp_filename,deftagger,skflag):
     
     defoutput_file_skim_tag=defchannel
-    if defuseskim == "FLATCAT":
-        defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
+    if defuseskim == "FLATSNU":
+        defoutput_file_skim_tag=defoutput_file_skim_tag+"_snu_"+defsnuversion
     if defuseskim == "SKTree_LeptonSkim" :
-        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_snu_"+defsnuversion
     if defuseskim == "SKTree_DiLepSkim" :
-        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_snu_"+defsnuversion
     if defuseskim == "SKTree_HNDiLepSkim" :
-        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_cat_"+defcatversion
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_snu_"+defsnuversion
     if defuseskim == "SKTree_HNFakeSkim" :
-        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_snu_"+defsnuversion
     if defuseskim == "SKTree_HNFatJetSkim" :
-        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_cat_"+defcatversion
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_snu_"+defsnuversion
 
 
     if defuseskim == "SKTree_TriLepSkim" :
-        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_snu_"+defsnuversion
     if defuseskim == "SKTree_NoSkim" :
-        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_nocut_cat_"+defcatversion
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_nocut_snu_"+defsnuversion
 
     if defrunnp == "True":
         defoutput_file_skim_tag=defchannel
         foutname="nonprompt"
-        if defuseskim == "FLATCAT":
-            defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
-            foutname=foutname+"_cat_"+defcatversion
+        if defuseskim == "FLATSNU":
+            defoutput_file_skim_tag=defoutput_file_skim_tag+"_snu_"+defsnuversion
+            foutname=foutname+"_snu_"+defsnuversion
         if defuseskim == "SKTree_LeptonSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
-            foutname="SK"+foutname+"_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_snu_"+defsnuversion
+            foutname="SK"+foutname+"_snu_"+defsnuversion
         if defuseskim == "SKTree_DiLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
-            foutname="SK"+foutname+"_dilep_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_snu_"+defsnuversion
+            foutname="SK"+foutname+"_dilep_snu_"+defsnuversion
         if defuseskim == "SKTree_HNDiLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_cat_"+defcatversion
-            foutname="SK"+foutname+"_hndilep_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_snu_"+defsnuversion
+            foutname="SK"+foutname+"_hndilep_snu_"+defsnuversion
         if defuseskim == "SKTree_HNFakeSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
-            foutname="SK"+foutname+"_hnfake_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_snu_"+defsnuversion
+            foutname="SK"+foutname+"_hnfake_snu_"+defsnuversion
         if defuseskim == "SKTree_HNFatJetSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_cat_"+defcatversion
-            foutname="SK"+foutname+"_hnfatjet_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_snu_"+defsnuversion
+            foutname="SK"+foutname+"_hnfatjet_snu_"+defsnuversion
 
 
         if defuseskim == "SKTree_TriLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
-            foutname="SK"+foutname+"_trilep_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_snu_"+defsnuversion
+            foutname="SK"+foutname+"_trilep_snu_"+defsnuversion
 
             
         defFinaloutputdirMC=""
@@ -110,26 +110,26 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
             defFinaloutputdirMC=defFinaloutputdir
             defFinaloutputdirMC=defFinaloutputdirMC.replace("Fake/","")
 
-        if defdata_lumi == "ALL" or defdata_lumi==os.getenv("catdatatag"):
+        if defdata_lumi == "ALL" or defdata_lumi==os.getenv("snudatatag"):
             if not  "SKTreeMaker" in cycle:
                 os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_"+defoutput_file_skim_tag+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
                 os.system("mv "  + defFinaloutputdir+ "/"+ defcycle+"_"+defoutput_file_skim_tag+".root " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root")
-                if not os.path.exists( "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger ):
-                    os.system("mkdir " +  "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger)
-                os.system("source "+os.getenv("ANALYZER_DIR")+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt"   )
-                os.system("source "+os.getenv("ANALYZER_DIR")+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
+                if not os.path.exists( "/data2/SNU_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger ):
+                    os.system("mkdir " +  "/data2/SNU_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger)
+                os.system("source "+os.getenv("ANALYZER_DIR")+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root > /data2/SNU_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt"   )
+                os.system("source "+os.getenv("ANALYZER_DIR")+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root > /data2/SNU_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
                 
 
                 if os.getenv("USER") == "jalmond":
-                    transout=defFinaloutputdirMC.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
-                    catpath=os.getenv("ANALYZER_DIR")+"/bin/catconfig"
-                    readcatpath=open(catpath,"r")
+                    transout=defFinaloutputdirMC.replace("/data2/SNU_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer//data/output/SNU/","/afs/cern.ch/work/j/jalmond/SNU/")
+                    snupath=os.getenv("ANALYZER_DIR")+"/bin/snuconfig"
+                    readsnupath=open(snupath,"r")
                     lxmachine=""
-                    for rline in readcatpath:
+                    for rline in readsnupath:
                         if "localcpu" in rline:
                             srline = rline.split()
                             lxmachine=srline[2]
-                    readcatpath.close()
+                    readsnupath.close()
                     os.system("scp -r "+ defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root" + " jalmond@"+lxmachine+".cern.ch:"+transout)
                 
 
@@ -137,48 +137,48 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
     elif defruncf == "True":
         defoutput_file_skim_tag=defchannel
         foutname="chargeflip"
-        if defuseskim == "FLATCAT":
-            defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
-            foutname=foutname+"_cat_"+defcatversion
+        if defuseskim == "FLATSNU":
+            defoutput_file_skim_tag=defoutput_file_skim_tag+"_snu_"+defsnuversion
+            foutname=foutname+"_snu_"+defsnuversion
         if defuseskim == "SKTree_LeptonSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
-            foutname="SK"+foutname+"_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_snu_"+defsnuversion
+            foutname="SK"+foutname+"_snu_"+defsnuversion
         if defuseskim == "SKTree_DiLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
-            foutname="SK"+foutname+"_dilep_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_snu_"+defsnuversion
+            foutname="SK"+foutname+"_dilep_snu_"+defsnuversion
         if defuseskim == "SKTree_HNDiLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_cat_"+defcatversion
-            foutname="SK"+foutname+"_hndilep_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_snu_"+defsnuversion
+            foutname="SK"+foutname+"_hndilep_snu_"+defsnuversion
         if defuseskim == "SKTree_HNFakeSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
-            foutname="SK"+foutname+"_hnfake_cat_"+defcatversion            
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_snu_"+defsnuversion
+            foutname="SK"+foutname+"_hnfake_snu_"+defsnuversion            
         if defuseskim == "SKTree_HNFatJetSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_cat_"+defcatversion
-            foutname="SK"+foutname+"_hnfatjet_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_snu_"+defsnuversion
+            foutname="SK"+foutname+"_hnfatjet_snu_"+defsnuversion
 
         if defuseskim == "SKTree_TriLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
-            foutname="SK"+foutname+"_trilep_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_snu_"+defsnuversion
+            foutname="SK"+foutname+"_trilep_snu_"+defsnuversion
 
     else:
         defoutput_file_skim_tag=defchannel
-        if defuseskim == "FLATCAT":
-            defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
+        if defuseskim == "FLATSNU":
+            defoutput_file_skim_tag=defoutput_file_skim_tag+"_snu_"+defsnuversion
         if defuseskim == "SKTree_NoSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_nocut_cat_"+defcatversion            
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_nocut_snu_"+defsnuversion            
         if defuseskim == "SKTree_LeptonSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_snu_"+defsnuversion
         if defuseskim == "SKTree_DiLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_snu_"+defsnuversion
         if defuseskim == "SKTree_HNDiLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_snu_"+defsnuversion
         if defuseskim == "SKTree_HNFakeSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_snu_"+defsnuversion
         if defuseskim == "SKTree_HNFatJetSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_cat_"+defcatversion
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_snu_"+defsnuversion
 
         if defuseskim == "SKTree_TriLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion            
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_snu_"+defsnuversion            
 
         defFinaloutputdirMC=""
 
@@ -189,30 +189,30 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
             return 
         
         
-        output_datafile=defFinaloutputdirMC+"/"+defcycle+"_data_cat_"+ defcatversion+".root"
-        if defdata_lumi == "ALL" or defdata_lumi==os.getenv("catdatatag"):
+        output_datafile=defFinaloutputdirMC+"/"+defcycle+"_data_snu_"+ defsnuversion+".root"
+        if defdata_lumi == "ALL" or defdata_lumi==os.getenv("snudatatag"):
             if not "SKTreeMaker" in cycle:
 
-                os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_data_cat_"+defcatversion+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
-                os.system("mv "  + defFinaloutputdir+ "/"+defcycle+"_data_cat_"+defcatversion+".root  " + defFinaloutputdirMC+ "/"+defcycle+"_data_" + defchannel+"_cat_"+defcatversion+deftmp_filename+".root")
+                os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_data_snu_"+defsnuversion+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
+                os.system("mv "  + defFinaloutputdir+ "/"+defcycle+"_data_snu_"+defsnuversion+".root  " + defFinaloutputdirMC+ "/"+defcycle+"_data_" + defchannel+"_snu_"+defsnuversion+deftmp_filename+".root")
                 
 
-                if not os.path.exists( "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger ):
-                    os.system("mkdir " +  "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger)
-                os.system("source "+str(os.getenv("ANALYZER_DIR"))+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle +"_data_" + defchannel+"_cat_"+defcatversion+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt" )  
-                os.system("source "+str(os.getenv("ANALYZER_DIR"))+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle +"_data_" + defchannel+"_cat_"+defcatversion+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
+                if not os.path.exists( "/data2/SNU_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger ):
+                    os.system("mkdir " +  "/data2/SNU_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger)
+                os.system("source "+str(os.getenv("ANALYZER_DIR"))+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle +"_data_" + defchannel+"_snu_"+defsnuversion+deftmp_filename+".root  > /data2/SNU_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt" )  
+                os.system("source "+str(os.getenv("ANALYZER_DIR"))+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle +"_data_" + defchannel+"_snu_"+defsnuversion+deftmp_filename+".root  > /data2/SNU_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
 
                 if os.getenv("USER") == "jalmond":
-                    transout=defFinaloutputdirMC.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
-                    catpath=os.getenv("ANALYZER_DIR")+"/bin/catconfig"
-                    readcatpath=open(catpath,"r")
+                    transout=defFinaloutputdirMC.replace("/data2/SNU_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer//data/output/SNU/","/afs/cern.ch/work/j/jalmond/SNU/")
+                    snupath=os.getenv("ANALYZER_DIR")+"/bin/snuconfig"
+                    readsnupath=open(snupath,"r")
                     lxmachine=""
-                    for rline in readcatpath:
+                    for rline in readsnupath:
                         if "localcpu" in rline:
                             srline = rline.split()
                             lxmachine=srline[2]
-                    readcatpath.close()
-                    os.system("scp -r "+ defFinaloutputdirMC+ "/"+ defcycle+"_data_" + defchannel+"_cat_"+defcatversion+".root  jalmond@"+lxmachine+".cern.ch:"+transout)
+                    readsnupath.close()
+                    os.system("scp -r "+ defFinaloutputdirMC+ "/"+ defcycle+"_data_" + defchannel+"_snu_"+defsnuversion+".root  jalmond@"+lxmachine+".cern.ch:"+transout)
 
 
 def UpdateOutput(outputlist,outputlist_path):
@@ -258,7 +258,7 @@ def NewForat(ct):
 
 def GetNFiles( deftagger,defsample,defcycle,defskim):
 
-    if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
+    if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/MasterFile_"+ os.getenv("SNUVERSION")+".txt"):
         return 1000.
 
     nit=2
@@ -280,7 +280,7 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
         day=checkdate.strftime("%d")
         year=checkdate.strftime("%y")
 
-        file_jobsummary="/data1//"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
+        file_jobsummary="/data1//"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
 
         if not os.path.exists(file_jobsummary):
             return 1000.
@@ -298,7 +298,7 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
                 elif "H_" in defsample:
                     tmpsample="_"+tmpsample+" "
                                     
-                if tmpsample in line and defskim in line and defcycle in line and os.getenv("CATVERSION") in line:
+                if tmpsample in line and defskim in line and defcycle in line and os.getenv("SNUVERSION") in line:
                     splitline = line.split()
                     nthsplit=0
                     for s in splitline:
@@ -317,7 +317,7 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
 
 def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundebug):
 
-    if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
+    if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/MasterFile_"+ os.getenv("SNUVERSION")+".txt"):
         return 1000.
     
 
@@ -343,7 +343,7 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
         day=checkdate.strftime("%d")
         year=checkdate.strftime("%y")
 
-        file_jobsummary="/data1//"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
+        file_jobsummary="/data1//"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
         if rundebug:
             file_debug = open("debug.txt","a")
             file_debug.write(file_jobsummary+"\n")
@@ -422,7 +422,7 @@ def FreeSpaceInQueue(jobqueue, deftagger):
     if not is_allowed_queue:
         return 1000.
 
-    path_clust_check_njobs=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
+    path_clust_check_njobs=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
     os.system("qstat -f   > " +  path_clust_check_njobs)
     file_clust_check_njobs=open(path_clust_check_njobs ,"r")
     fastq_ninqueue=0.
@@ -475,7 +475,7 @@ def ChangeQueue(jobsummary, jobqueue, ncores_job, deftagger, rundebug):
 
     if rundebug:
         file_debug.write("queue ok\n")
-    path_clust_check_njobs=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
+    path_clust_check_njobs=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
     os.system("qstat -f   > " +  path_clust_check_njobs)
     file_clust_check_njobs=open(path_clust_check_njobs ,"r")
     fastq_ninqueue=0.
@@ -617,7 +617,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
 
     if rundebug:
         file_debug.write("deftagger " + deftagger + " defsample = " + defsample + " defskim = " + defskim + " defqueue = " + defqueue + "\n")
-    if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
+    if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/MasterFile_"+ os.getenv("SNUVERSION")+".txt"):
         return 20
        
     if ncores_job == 0:
@@ -899,7 +899,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
 
 def CheckJobHistory(info_type, defsample, defcycle, tagger,defskim):
 
-    if "FLATCAT" in defskim:
+    if "FLATSNU" in defskim:
         defsample +="_lepton"        
     if "SKTree_LeptonSkim" in defskim:
         defsample +="_lepton"
@@ -923,11 +923,11 @@ def CheckJobHistory(info_type, defsample, defcycle, tagger,defskim):
     itag=-1
     while not jobline:
         itag=itag+1
-        cattag=list_tags[itag]
-        newformat=NewForat(cattag)
+        snutag=list_tags[itag]
+        newformat=NewForat(snutag)
 
-        #info_file_master = path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"
-        info_file= path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/PreMasterFile_"+os.getenv("CATVERSION")+ str(tagger)+".txt"
+        #info_file_master = path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/MasterFile_"+ os.getenv("SNUVERSION")+".txt"
+        info_file= path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + os.getenv("USER") + "/PreMasterFile_"+os.getenv("SNUVERSION")+ str(tagger)+".txt"
 
         #os.system("cp " + info_file_master + " " + info_file)
         read_info_file = open(info_file,"r")
@@ -947,7 +947,7 @@ def CheckJobHistory(info_type, defsample, defcycle, tagger,defskim):
                     iscycle=False
                 if iscycle:
                     if defsample in infoline:
-                        if cattag in infoline:
+                        if snutag in infoline:
                             jobline=infoline
         read_info_file.close()            
         if itag == (len(list_tags) - 1):
@@ -998,22 +998,22 @@ def SendEmail(jobsummary, deftagger, e_subject, email_user, sendplots, plotlist)
 
     if not  os.getenv("USER") == "jalmond":
         if "jalmond" in email_user:
-            print "Email could not be set since email address is not set correctly in bin/catconfig."
+            print "Email could not be set since email address is not set correctly in bin/snuconfig."
             return 
 
     plotstring =""
     for x in plotlist:
         plotstring = plotstring+" -a " + x + " "
 
-    path_file_email=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.sh"
+    path_file_email=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.sh"
     file_email=open(path_file_email,"w")
     if not sendplots:
-        file_email.write('cat '+an_jonpre+'/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
+        file_email.write('cat '+an_jonpre+'/SNU_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
     else:
-        file_email.write('cat '+an_jonpre+'/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail  '+ plotstring+' -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
+        file_email.write('cat '+an_jonpre+'/SNU_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail  '+ plotstring+' -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
     file_email.close()
 
-    filejobsummary = open(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.txt","w")
+    filejobsummary = open(an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.txt","w")
     for eline in jobsummary:
         filejobsummary.write(eline)
     filejobsummary.close()    
@@ -1051,10 +1051,10 @@ def CrashHelpMessage(crashtype):
         crashmessage.append("   if(muons.at(0).Pt() > 20.) ... This will not crash")
         return crashmessage
     if crashtype == 1: 
-        crashmessage.append("Crash caused due to missing file. Check that file is located in $ANALYZER_FILE_DIR directory (use ls $ANALYZER_FILE_DIR).")
-        crashmessage.append("If file is located in $ANALYZER_FILE_DIR do:")
+        crashmessage.append("Crash caused due to missing file. Check that file is losnued in $ANALYZER_FILE_DIR directory (use ls $ANALYZER_FILE_DIR).")
+        crashmessage.append("If file is losnued in $ANALYZER_FILE_DIR do:")
         crashmessage.append("cp $ANALYZER_FILE_DIR/file  $FILEDIR")
-        crashmessage.append("If file is not located in $ANALYZER_FILE_DIR email jalmond@cern.ch with crash message")
+        crashmessage.append("If file is not losnued in $ANALYZER_FILE_DIR email jalmond@cern.ch with crash message")
     if crashtype == 2:
         crashmessage.append("Crash caused due to Error in GetMuons input string")
     if crashtype == 3:
@@ -1082,7 +1082,7 @@ def GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
     elif defskim == "SKTree_TriLepSkim":
         defskim="TriLep"
     
-    output_catversion=str(os.getenv("CATVERSION"))
+    output_snuversion=str(os.getenv("SNUVERSION"))
                                               
     if not ismc:
         if defskim == "Lepton":
@@ -1140,12 +1140,12 @@ def GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
         outsamplename = "chargeflip_" + outsamplename
     if not ismc:
         outsamplename = outsamplename +  "_" + defchannel
-        outsamplename = outsamplename + "_cat_" + str(output_catversion)
+        outsamplename = outsamplename + "_snu_" + str(output_snuversion)
     else:
-        outsamplename = outsamplename + "_cat_"+ str(output_catversion)
+        outsamplename = outsamplename + "_snu_"+ str(output_snuversion)
 
     if  "SKTreeMaker" in defcycle:
-        outsamplename = outsamplename +  str(os.getenv("CATTAG"))
+        outsamplename = outsamplename +  str(os.getenv("SNUTAG"))
 
     return outsamplename
                         
@@ -1161,7 +1161,7 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
     if ismc:
         outsamplename=  defcycle +"_"+tmpname + ".root"
     elif defrunnp == "True":
-        output_catversion=str(os.getenv("CATVERSION"))
+        output_snuversion=str(os.getenv("SNUVERSION"))
         skimtag=""
         if defskim == "DiLep":
             skimtag= "_dilep"
@@ -1176,12 +1176,12 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
             skimtag= "_trilep"
         elif defskim == "NoCut":
             skimtag= "_nocut"
-        outsamplename=  defcycle + "_" + defchannel + "_SKnonprompt"+skimtag+ "_cat_" +  str(output_catversion)+ ".root"
+        outsamplename=  defcycle + "_" + defchannel + "_SKnonprompt"+skimtag+ "_snu_" +  str(output_snuversion)+ ".root"
         if not mergedname:
             outsamplename=  defcycle + tmpname + ".root"
 
     elif defruncf == "True":
-        output_catversion=str(os.getenv("CATVERSION"))
+        output_snuversion=str(os.getenv("SNUVERSION"))
         skimtag=""
         if defskim == "DiLep":
             skimtag= "_dilep"
@@ -1195,35 +1195,35 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
             skimtag= "_trilep"
         elif defskim == "NoCut":
             skimtag= "_nocut"
-        outsamplename=  defcycle + "_" + defchannel + "SKchargeflip_"+skimtag+ "_cat_" +  str(output_catversion)+ ".root"
+        outsamplename=  defcycle + "_" + defchannel + "SKchargeflip_"+skimtag+ "_snu_" +  str(output_snuversion)+ ".root"
         if not mergedname:
             outsamplename=  defcycle + tmpname + ".root"
                         
 
     else:
-        output_catversion=str(os.getenv("CATVERSION"))
-        outsamplename=  defcycle +"_data_"+ defchannel + "_cat_" +  str(output_catversion)+ ".root"
+        output_snuversion=str(os.getenv("SNUVERSION"))
+        outsamplename=  defcycle +"_data_"+ defchannel + "_snu_" +  str(output_snuversion)+ ".root"
         if not  mergedname:
             outsamplename=defcycle +"_"+tmpname + ".root"
      
     if "SKTreeMaker" in defcycle:
         if ismc:
             if defskim == "DiLep":
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCTriLep/"+defsample+"/"
+                return an_jonpre+"/SnuNtuples/"+str(os.getenv("SNUVERSION"))+"/SKTrees/MCTriLep/"+defsample+"/"
                             
             elif "FatJet" in defcycle:
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCHNFatJet/"+defsample+"/"
+                return an_jonpre+"/SnuNtuples/"+str(os.getenv("SNUVERSION"))+"/SKTrees/MCHNFatJet/"+defsample+"/"
 
             elif "Fake" in defcycle:
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCHNFake/"+defsample+"/"                
+                return an_jonpre+"/SnuNtuples/"+str(os.getenv("SNUVERSION"))+"/SKTrees/MCHNFake/"+defsample+"/"                
 
             elif defskim == "Lepton":
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCDiLep/"+defsample+"/"
+                return an_jonpre+"/SnuNtuples/"+str(os.getenv("SNUVERSION"))+"/SKTrees/MCDiLep/"+defsample+"/"
             else:
                 if defcycle == "SKTreeMakerNoCut":
-                    return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCNoCut/"+defsample+"/"
+                    return an_jonpre+"/SnuNtuples/"+str(os.getenv("SNUVERSION"))+"/SKTrees/MCNoCut/"+defsample+"/"
                 else:
-                    return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MC/"+defsample+"/"
+                    return an_jonpre+"/SnuNtuples/"+str(os.getenv("SNUVERSION"))+"/SKTrees/MC/"+defsample+"/"
                                                     
     return outsamplename    
 
@@ -1383,7 +1383,7 @@ def RoundMemory(mem):
 def GetRunning(tagger, rsample):
     jobid_exists=True
     while jobid_exists:
-        path_job_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "jobid.txt"
+        path_job_check=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "jobid.txt"
         if  os.path.exists(path_job_check):
             jobid_exists=False
 
@@ -1396,7 +1396,7 @@ def GetRunning(tagger, rsample):
     nrunning=0.
     nqueue=0.
     njobs_in_total=0.  ### should equal three above                                                                                                                                                                                                                                                                   
-    path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust_gr.txt"
+    path_clust_check=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust_gr.txt"
     os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
     ijob=0
     
@@ -1427,7 +1427,7 @@ def GetRunning(tagger, rsample):
         if not job_inqueue:
             njobs_finished=njobs_finished+1.
         file_clust_check.close()
-    path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust_gr.txt"
+    path_clust_check=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust_gr.txt"
     os.system("rm " + path_clust_check)
 
     if njobs_in_total == 0:
@@ -1466,7 +1466,6 @@ parser.add_option("-O", "--outputdir", dest="outputdir", default="${ANALYZER_DIR
 parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove the work space?")
 parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
 parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
-parser.add_option("-N", "--useCATv742ntuples", dest="useCATv742ntuples", default=True, help="' to run on these samples")
 parser.add_option("-L", "--LibList", dest="LibList", default="NULL", help="Add extra lib files to load")
 parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
 parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run submit script in debug mode?")
@@ -1475,7 +1474,7 @@ parser.add_option("-G", "--runtau", dest="runtau", default="runtau", help="Run o
 parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
 parser.add_option("-q", "--queue", dest="queue", default="", help="Which queue to use?")
 parser.add_option("-J", "--setnjobs", dest="setnjobs", default="False", help="user sets njobs?")
-parser.add_option("-v", "--catversion", dest="catversion", default="NULL", help="What cat version?")
+parser.add_option("-v", "--snuversion", dest="snuversion", default="NULL", help="What snu version?")
 parser.add_option("-f", "--skflag", dest="skflag", default="NULL", help="add input flag?")
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
 parser.add_option("-u", "--useremail", dest="useremail", default="", help="Set user email")
@@ -1534,12 +1533,11 @@ xsec = float(options.xsec)
 tar_lumi = float(options.targetlumi)
 eff_lumi = float(options.efflumi)
 data_lumi = options.data_lumi
-catversion = options.catversion
+snuversion = options.snuversion
 Finaloutputdir = options.outputdir
 remove_workspace=options.remove
 useskinput=options.skinput
 runevent= options.runevent
-useCATv742ntuples = options.useCATv742ntuples
 tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
 useskim = options.useskim
@@ -1559,21 +1557,21 @@ if getpass.getuser()  == "jalmond":
         os.system("mkdir " + Finaloutputdir)
 
 
-    catpath=os.getenv("ANALYZER_DIR")+"/bin/catconfig"
-    readcatpath=open(catpath,"r")
+    snupath=os.getenv("ANALYZER_DIR")+"/bin/snuconfig"
+    readsnupath=open(snupath,"r")
     lxmachine=""
-    for rline in readcatpath:
+    for rline in readsnupath:
         if "localcpu" in rline:
             srline = rline.split()
             lxmachine=srline[2]
-    readcatpath.close()
+    readsnupath.close()
 
 
     print  "Making dir at lxplus"
     
     transout=Finaloutputdir
-    transout=transout.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer/data/output/CAT/" ,"/afs/cern.ch/work/j/jalmond/CAT/")
-    transout=transout.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer//data/output/CAT/" ,"/afs/cern.ch/work/j/jalmond/CAT/")
+    transout=transout.replace("/data2/SNU_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer/data/output/SNU/" ,"/afs/cern.ch/work/j/jalmond/SNU/")
+    transout=transout.replace("/data2/SNU_SKTreeOutput/JobOutPut/jalmond/"+flag+"analyzer//data/output/SNU/" ,"/afs/cern.ch/work/j/jalmond/SNU/")
 
     os.system("ssh  jalmond@"+lxmachine+".cern.ch  mkdir " + transout )
     if "OPT" in skflag:
@@ -1604,14 +1602,14 @@ if getpass.getuser()  == "jalmond":
     os.system("ls " + cpath + " > check_snu_connection.txt")
     snu_connect = open("check_snu_connection.txt",'r')
     connected_lxplus=False
-    catpath=os.getenv("ANALYZER_DIR")+"/bin/catconfig"
-    readcatpath=open(catpath,"r")
+    snupath=os.getenv("ANALYZER_DIR")+"/bin/snuconfig"
+    readsnupath=open(snupath,"r")
     lxmachine=""
-    for rline in readcatpath:
+    for rline in readsnupath:
         if "localcpu" in rline:
             srline = rline.split()
             lxmachine=srline[2]
-    readcatpath.close()
+    readsnupath.close()
 
     for line in snu_connect:
         if "ssh-jalmond@"+lxmachine in line:
@@ -1623,7 +1621,7 @@ if getpass.getuser()  == "jalmond":
         print "No connection to " + lxmachine
         sys.exit()                                                                                                                                                                 
 
-queuepath=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/ForceQueue.txt"
+queuepath=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SnutupleConfig/QUEUE/ForceQueue.txt"
 file_queuepath = open(queuepath,"r")
 QueueForced=False
 for line in file_queuepath:
@@ -1655,7 +1653,7 @@ if runinbkg == "True":
     print "Running in background"
     if not  os.getenv("USER") == "jalmond":
         if "jalmond" in useremail:
-            print "Email could not be sent since email address is not set correctly in bin/catconfig."
+            print "Email could not be sent since email address is not set correctly in bin/snuconfig."
             print "Please set email address and resubmit job"
             sys.exit()
 
@@ -1772,26 +1770,26 @@ for nsample in range(0, len(sample)):
         an_jonpre="/data7/DATA/"
 
 #### make working directorr
-if not os.path.exists(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)):
-    os.system("mkdir " + an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
+if not os.path.exists(an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)):
+    os.system("mkdir " + an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
 else:
-    os.system("rm -r " + an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
-    os.system("mkdir " + an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
+    os.system("rm -r " + an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
+    os.system("mkdir " + an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
 
 ### Make directory for job stats
-statdir=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"+ os.getenv("USER")
+statdir=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/"+ os.getenv("USER")
 if not os.path.exists(statdir):
     os.system("mkdir " +statdir)
 
 if channel == "":
     channel = NULL
 
-if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
-    os.system("cp  " + path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton.txt " + path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt")
+if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/MasterFile_"+ os.getenv("SNUVERSION")+".txt"):
+    os.system("cp  " + path_jobpre +"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/MasterFileSkeleton.txt " + path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/MasterFile_"+ os.getenv("SNUVERSION")+".txt")
 
 
-jobinfo_file_master = path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"
-jobinfo_file= path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/PreMasterFile_"+os.getenv("CATVERSION")+ str(tagger)+".txt"
+jobinfo_file_master = path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/MasterFile_"+ os.getenv("SNUVERSION")+".txt"
+jobinfo_file= path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + os.getenv("USER") + "/PreMasterFile_"+os.getenv("SNUVERSION")+ str(tagger)+".txt"
 os.system("cp " + jobinfo_file_master + " " + jobinfo_file)
 
 
@@ -1799,7 +1797,7 @@ os.system("cp " + jobinfo_file_master + " " + jobinfo_file)
 #http://stackoverflow.com/questions/14300770/how-to-noutrefresh-the-multi-line-output-dynamically
 ### split sample and check cluster queue
 
-#an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/" + str(tagger)+ "/jobid.txt"
+#an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/" + str(tagger)+ "/jobid.txt"
 samples_inbackground=[]
 samples_complete=[]
 jobidcrash=[]
@@ -1835,7 +1833,7 @@ for s in sample:
             curses.nocbreak()
             curses.endwin()
         print "%"*45
-        print "List of samples contains duplicates. Please fix list"
+        print "List of samples contains duplisnues. Please fix list"
         print "%"*45
         sys.exit()
 
@@ -2112,7 +2110,7 @@ for nsample in range(0, len(sample)):
         del output_bkg[:]
         for out_x in range(1,winx):
             output_bkg.append(stdscr.instr(out_x, 0))
-        UpdateOutput(output_bkg,an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")    
+        UpdateOutput(output_bkg,an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")    
     #### if sample is submitted this for loop will check job process on cluster and update the screen/terminal
     for x in range(0, len(sample)):
         
@@ -2120,7 +2118,7 @@ for nsample in range(0, len(sample)):
             del output_bkg[:]
             for out_x in range(1,winx):
                 output_bkg.append(stdscr.instr(out_x, 0))
-            UpdateOutput(output_bkg,an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
+            UpdateOutput(output_bkg,an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
 
         ### check if sample is already complet. Only update terminal for samples not complete
         sample_complete=False
@@ -2155,18 +2153,18 @@ for nsample in range(0, len(sample)):
             while jobid_exists:        
                 if rundebug:
                     file_debug = open("debug.txt","a")
-                    file_debug.write("Checking " +  an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt\n")
+                    file_debug.write("Checking " +  an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt\n")
                     file_debug.close()
-                path_job_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt"  
+                path_job_check=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt"  
                 if  os.path.exists(path_job_check):
                     jobid_exists=False
             if rundebug:
                 file_debug = open("debug.txt","a")
-                file_debug.write(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt exists\n")
+                file_debug.write(an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt exists\n")
                 file_debug.close()
         
 
-            #CheckRunningStatus(an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt")
+            #CheckRunningStatus(an_jonpre+"/SNU_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt")
 
             file_job_check=open(path_job_check ,"r")
             jobid1=0
@@ -2176,7 +2174,7 @@ for nsample in range(0, len(sample)):
             nrunning=0.
             nqueue=0.
             njobs_in_total=0.  ### should equal three above
-            path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
+            path_clust_check=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
             os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
             ijob=0
 
@@ -2209,7 +2207,7 @@ for nsample in range(0, len(sample)):
                 if not job_inqueue:
                     njobs_finished=njobs_finished+1.
                 file_clust_check.close()
-            path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
+            path_clust_check=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
             os.system("rm " + path_clust_check)
     
             if njobs_in_total == 0:
@@ -2283,7 +2281,7 @@ for nsample in range(0, len(sample)):
                     del output_bkg[:]
                     for out_x in range(1,winx):
                         output_bkg.append(stdscr.instr(out_x, 0))
-                        UpdateOutput(output_bkg,an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
+                        UpdateOutput(output_bkg,an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
             if nfin_per == 1.:
                 stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_DIM )
                 stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_DIM )
@@ -2305,7 +2303,7 @@ for nsample in range(0, len(sample)):
                 stdscr.addstr(int(x)+istatus_message, summary_block6,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_DIM) 
                 stdscr.refresh()
 
-                path_job=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_time_"+sample[x] + tagger + ".txt"
+                path_job=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_time_"+sample[x] + tagger + ".txt"
                 ismerging=True
                 while not os.path.exists(path_job):
                     if rundebug:
@@ -2319,7 +2317,7 @@ for nsample in range(0, len(sample)):
                         ismerging=False
                     check_crash_stat=False
                     if check_crash_stat:
-                        check_crashfile=an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt"
+                        check_crashfile=an_jonpre+"/SNU_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt"
                         if not os.path.exists(check_crashfile):
                             continue
                         file_check_crashfile=open(check_crashfile,"r")
@@ -2331,7 +2329,7 @@ for nsample in range(0, len(sample)):
                                 crashlog.append(line)
                         file_check_crashfile.close()
                         if crash_in_job:
-                            crash_log= an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
+                            crash_log= an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
                             if os.path.exists(crash_log):
                                 file_crash=open(crash_log,"a")
                                 for linex in  crashlog:
@@ -2347,7 +2345,7 @@ for nsample in range(0, len(sample)):
                     continue
                 
 
-                crash_log= an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
+                crash_log= an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
 
                 if os.path.exists(crash_log):
                     jobidcrash.append(int(x))
@@ -2457,35 +2455,35 @@ for nsample in range(0, len(sample)):
             stdscr.refresh()
 
     ##### New Code looks at submittnig jobs to batch queue        
-    logfile=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)+ "/statlog_"+ s + tagger + ".txt"
-    if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)):
-        os.system("mkdir " + path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger))
+    logfile=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)+ "/statlog_"+ s + tagger + ".txt"
+    if not os.path.exists(path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)):
+        os.system("mkdir " + path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger))
 
     filestatlog=open(logfile,"w")
     filestatlog.write("user " +  os.getenv("USER")+ " \n")
     filestatlog.write(" -c " + cycle + " \n")
-    filestatlog.write(" -v " + catversion + " \n")
+    filestatlog.write(" -v " + snuversion + " \n")
     filestatlog.write(" -s " + channel + " \n")
     filestatlog.write(" -d " + data_lumi + " \n")
     filestatlog.write("sample "+ s + " \n")
     filestatlog.write(" -m " + useskim + " \n")
-    filestatlog.write("cattag " + os.getenv("CATTAG") + " \n")
+    filestatlog.write("snutag " + os.getenv("SNUTAG") + " \n")
     filestatlog.write(time.strftime("%c")  + " \n")
     filestatlog.write("############################" + " \n")
     filestatlog.close()
     blankbuffer = "         "
     if not queue:
         queue="None"
-    command1= "python  " +  os.getenv("ANALYZER_DIR")+  "/python/CATConfig.py -p " + s + "  -s " + str(channel) + "  -j " + str(njobs_for_submittion) + " -c  " + str(cycle)+ " -o " + str(logstep)+ "  -d " + str(data_lumi) + " -O " + str(Finaloutputdir) + "  -w " + str(remove_workspace)+ " -l  " + str(loglevel) + "  -k " + str(skipev) + "  -n " + str(number_of_events_per_job) + "  -e " + str(totalev) + "  -x " + str(xsec) + "  -T " + str(tar_lumi) + " -E " + str(eff_lumi) + "  -S " + str(useskinput) + " -R " + str(runevent)+ "  -N " + str(useCATv742ntuples) + " -L " + str(tmplist_of_extra_lib) + " -D " + str(DEBUG) + " -m " + str(useskim) + " -P  " + str(runnp) + " -Q " + str(runcf) + " -v " + str(catversion) + " -f " + str(skflag) + " -b " + str(usebatch) + "  -X " + str(tagger) +" -q " + str(queue) + " -J " + str(setjobs) + " -G " + str(runtau) + " -F " + str(tmpsubmit_allfiles) + " -g " + str(tmp_filename)
+    command1= "python  " +  os.getenv("ANALYZER_DIR")+  "/python/SNUConfig.py -p " + s + "  -s " + str(channel) + "  -j " + str(njobs_for_submittion) + " -c  " + str(cycle)+ " -o " + str(logstep)+ "  -d " + str(data_lumi) + " -O " + str(Finaloutputdir) + "  -w " + str(remove_workspace)+ " -l  " + str(loglevel) + "  -k " + str(skipev) + "  -n " + str(number_of_events_per_job) + "  -e " + str(totalev) + "  -x " + str(xsec) + "  -T " + str(tar_lumi) + " -E " + str(eff_lumi) + "  -S " + str(useskinput) + " -R " + str(runevent) + " -L " + str(tmplist_of_extra_lib) + " -D " + str(DEBUG) + " -m " + str(useskim) + " -P  " + str(runnp) + " -Q " + str(runcf) + " -v " + str(snuversion) + " -f " + str(skflag) + " -b " + str(usebatch) + "  -X " + str(tagger) +" -q " + str(queue) + " -J " + str(setjobs) + " -G " + str(runtau) + " -F " + str(tmpsubmit_allfiles) + " -g " + str(tmp_filename)
     command2=command1
-    command2 = command2.replace("CATConfig.py", "localsubmit.py")
-    command2_background=command2 + "&>  "+an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + s+".txt&"
+    command2 = command2.replace("SNUConfig.py", "localsubmit.py")
+    command2_background=command2 + "&>  "+an_jonpre+"/SNU_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + s+".txt&"
     checkqueue=True
     stdscr.addstr(list4+1, box_shift,  "Initialise:: sample " + s +  blankbuffer)
     stdscr.refresh()
     while checkqueue:
         os.system(command1)
-        if not os.path.exists(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER") +"/"+tagger):
+        if not os.path.exists(an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER") +"/"+tagger):
             stdscr.addstr(list4+1, box_shift,  "Queue busy.. please wait")
             stdscr.refresh()
             
@@ -2512,7 +2510,7 @@ for nsample in range(0, len(sample)):
             if backgroundsamples:
                 jobid_exists=True
                 while jobid_exists:
-                    path_job_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt"
+                    path_job_check=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt"
                     if  os.path.exists(path_job_check):
                         jobid_exists=False
                 file_job_check=open(path_job_check ,"r")
@@ -2522,7 +2520,7 @@ for nsample in range(0, len(sample)):
                 nrunning=0.
                 nqueue=0.
                 njobs_in_total=0.  ### should equal three above                                                                                                                                                                                                       
-                path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
+                path_clust_check=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
                 os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
                 ijob=0
                 for sline in file_job_check:
@@ -2552,7 +2550,7 @@ for nsample in range(0, len(sample)):
                     if not job_inqueue:
                         njobs_finished=njobs_finished+1.
                     file_clust_check.close()
-                path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
+                path_clust_check=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
                 os.system("rm " + path_clust_check)
                 if njobs_in_total == 0:
                     continue
@@ -2630,7 +2628,7 @@ for nsample in range(0, len(sample)):
                         del output_bkg[:]
                         for out_x in range(1,winx):
                             output_bkg.append(stdscr.instr(out_x, 0))
-                            UpdateOutput(output_bkg,an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
+                            UpdateOutput(output_bkg,an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
                     job_time = time.time() - start_time
                     if not jobid1 == 0:
                         nblanks=2*(8-len(str(jobid2)))
@@ -2643,15 +2641,15 @@ for nsample in range(0, len(sample)):
                     stdscr.refresh()
                     
         else:
-            os.system("rm -r "+an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER") +"/"+tagger)
+            os.system("rm -r "+an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER") +"/"+tagger)
             stdscr.addstr(list4+1, box_shift,  "Submitting sample to queue  " + s)
             stdscr.refresh()
             
             checkqueue=False
-            if not os.path.exists(an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger):
-                os.system("mkdir  "+an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger)
+            if not os.path.exists(an_jonpre+"/SNU_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger):
+                os.system("mkdir  "+an_jonpre+"/SNU_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger)
 
-            stdscr.addstr(list3 + 1+int(isample), box_shift,  "Running " + s + " in background: terminal output sent to "+an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" +  str(tagger) + "/" + tagger + "/" + s + ".txt")
+            stdscr.addstr(list3 + 1+int(isample), box_shift,  "Running " + s + " in background: terminal output sent to "+an_jonpre+"/SNU_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" +  str(tagger) + "/" + tagger + "/" + s + ".txt")
             stdscr.refresh()
             stdscr.addstr(int(isample)+istatus_message, box_shift,  str(int(isample+1)) )
             stdscr.addstr(int(isample)+istatus_message, summary_block0,  "| " + cycle  )
@@ -2670,7 +2668,7 @@ for nsample in range(0, len(sample)):
                 del output_bkg[:]
                 for out_x in range(1,winx):
                     output_bkg.append(stdscr.instr(out_x, 0))
-                    UpdateOutput(output_bkg,an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
+                    UpdateOutput(output_bkg,an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
 
 stdscr.refresh()
 StillRunning=True
@@ -2681,7 +2679,7 @@ while StillRunning:
         del output_bkg[:]
         for out_x in range(1,winx):
             output_bkg.append(stdscr.instr(out_x, 0))
-        UpdateOutput(output_bkg,an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
+        UpdateOutput(output_bkg,an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
 
     for x in range(0, len(sample)):
         sample_complete=False
@@ -2707,7 +2705,7 @@ while StillRunning:
             del output_bkg[:]
             for out_x in range(1,winx):
                 output_bkg.append(stdscr.instr(out_x, 0))
-            UpdateOutput(output_bkg,an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
+            UpdateOutput(output_bkg,an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
 
         backgroundsamples=False
         for bs in samples_inbackground:
@@ -2716,11 +2714,11 @@ while StillRunning:
         if backgroundsamples:
             jobid_exists=True
             while jobid_exists:
-                path_job_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt"
+                path_job_check=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt"
                 if  os.path.exists(path_job_check):
                     jobid_exists=False
 
-            #CheckRunningStatus(an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt")
+            #CheckRunningStatus(an_jonpre+"/SNU_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt")
 
 
             file_job_check=open(path_job_check ,"r")
@@ -2728,7 +2726,7 @@ while StillRunning:
             nrunning=0.
             nqueue=0.
             njobs_in_total=0.
-            path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
+            path_clust_check=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
             os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
             ijob=0
             jobid1=0
@@ -2761,7 +2759,7 @@ while StillRunning:
                     njobs_finished=njobs_finished+1.
                     
                 file_clust_check.close()
-            path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
+            path_clust_check=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
             os.system("rm " + path_clust_check)
         
 
@@ -2837,7 +2835,7 @@ while StillRunning:
                     del output_bkg[:]
                     for out_x in range(1,winx):
                         output_bkg.append(stdscr.instr(out_x, 0))
-                        UpdateOutput(output_bkg,an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
+                        UpdateOutput(output_bkg,an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
 
                 stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_DIM )
                 stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_DIM )
@@ -2860,7 +2858,7 @@ while StillRunning:
                 stdscr.addstr(int(x)+istatus_message, summary_block6,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_DIM)
                 stdscr.addstr(int(x)+istatus_message, summary_block7 ,"|    ",curses.A_DIM)
                 stdscr.refresh()
-                path_job=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()  + "/" + str(tagger)+ "/statlog_time_"+sample[x] + tagger + ".txt"
+                path_job=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser()  + "/" + str(tagger)+ "/statlog_time_"+sample[x] + tagger + ".txt"
                 ismerging=True
                 while not os.path.exists(path_job):
                     if ismerging:
@@ -2871,7 +2869,7 @@ while StillRunning:
                         
                     check_crash_stat=False
                     if check_crash_stat:
-                        check_crashfile=an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt"    
+                        check_crashfile=an_jonpre+"/SNU_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt"    
                         if not os.path.exists(check_crashfile):
                             continue
                         file_check_crashfile=open(check_crashfile,"r")
@@ -2883,7 +2881,7 @@ while StillRunning:
                                 crashlog.append(line)
                         file_check_crashfile.close()
                         if crash_in_job:
-                            crash_log= an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
+                            crash_log= an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
                             if os.path.exists(crash_log):
                                 file_crash=open(crash_log,"a")
                                 for linex in  crashlog:
@@ -2899,7 +2897,7 @@ while StillRunning:
 
                     continue
 
-                crash_log= an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
+                crash_log= an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
                 if os.path.exists(crash_log):
                     jobidcrash.append(int(x))
                     stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
@@ -2920,7 +2918,7 @@ while StillRunning:
                         del output_bkg[:]
                         for out_x in range(1,winx):
                             output_bkg.append(stdscr.instr(out_x, 0))
-                            UpdateOutput(output_bkg,an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
+                            UpdateOutput(output_bkg,an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
                 else:
                     stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
                     stdscr.addstr(2+list2+int(x), summary2_block0 ,"| " + str(round(job_time,2)) + "[s]",curses.A_DIM)
@@ -2999,13 +2997,13 @@ while StillRunning:
                         del output_bkg[:]
                         for out_x in range(1,winx):
                             output_bkg.append(stdscr.instr(out_x, 0))
-                            UpdateOutput(output_bkg,an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
+                            UpdateOutput(output_bkg,an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
             stdscr.refresh()
             if run_in_bkg:
                 del output_bkg[:]
                 for out_x in range(1,winx):
                     output_bkg.append(stdscr.instr(out_x, 0))
-                    UpdateOutput(output_bkg,an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
+                    UpdateOutput(output_bkg,an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
 
             
     stdscr.refresh()
@@ -3051,10 +3049,10 @@ collist.append(92)
 collist.append(68) 
 
 if quickdraw:
-    plotallhist(fileoutputlist,an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ str(tagger)  + "_hist.pdf", collist, tagger)
+    plotallhist(fileoutputlist,an_jonpre+"/SNU_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ str(tagger)  + "_hist.pdf", collist, tagger)
     if not DoSendEmail:
-        os.system("display " + an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ str(tagger)  + "_hist.pdf&")
-    listofplots.append(an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ str(tagger) + "_hist.pdf")
+        os.system("display " + an_jonpre+"/SNU_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ str(tagger)  + "_hist.pdf&")
+    listofplots.append(an_jonpre+"/SNU_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ str(tagger) + "_hist.pdf")
 
 mergedoutfilepath=""
 if not ismctmp:
@@ -3114,7 +3112,7 @@ for i in range(0, winx-remove_from_end):
 
 
 time.sleep(10.)
-path_stat_dir=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()  + "/" + str(tagger)+ "/"
+path_stat_dir=path_jobpre+"/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser()  + "/" + str(tagger)+ "/"
 os.system("rm -r " + path_stat_dir)
 
 
@@ -3126,12 +3124,12 @@ if end_job_time > email_time_limit:
     email_subject=email_subject+"Job time>600s "
 
 if run_in_bkg:
-    os.system("mv "+an_jonpre+"CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt "+an_jonpre+"CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_finished.txt")
+    os.system("mv "+an_jonpre+"SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt "+an_jonpre+"SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_finished.txt")
 if runningData:
     if tmp_filename == "None":
-        MergeData(runnp,runcf,data_lumi, Finaloutputdir, catversion, useskim, cycle, channel, "",tagger,skflag)
+        MergeData(runnp,runcf,data_lumi, Finaloutputdir, snuversion, useskim, cycle, channel, "",tagger,skflag)
     else:
-        MergeData(runnp,runcf,data_lumi, Finaloutputdir, catversion, useskim, cycle, channel, tmp_filename,tagger,skflag)
+        MergeData(runnp,runcf,data_lumi, Finaloutputdir, snuversion, useskim, cycle, channel, tmp_filename,tagger,skflag)
 
 if len(output_warning) > 0:
     print "\n"
@@ -3146,7 +3144,7 @@ if len(output_warning) > 0:
 
 if runningData and  not "SKTreeMaker" in cycle:
 
-    file_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/Hist.txt","r")
+    file_read_counter = open("/data2/SNU_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/Hist.txt","r")
     nhists=0
     for rc_line in file_read_counter:
 
@@ -3172,7 +3170,7 @@ if runningData and  not "SKTreeMaker" in cycle:
         job_summary.append("#"*40+ "\n")
 
 
-    cffile_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/CutFlow.txt","r")
+    cffile_read_counter = open("/data2/SNU_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/CutFlow.txt","r")
     cfnhists=0
     for rc_line in cffile_read_counter:
 
@@ -3200,7 +3198,7 @@ elif  not "SKTreeMaker" in cycle:
     cuts =[]
     print " "
     print "%%%%%%%%%%%%%%"*4
-    file_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+sample[0]+"Hist.txt","r")
+    file_read_counter = open("/data2/SNU_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+sample[0]+"Hist.txt","r")
     for rc_line in file_read_counter:
         src_line = rc_line.split()
         if  "=" in rc_line :
@@ -3216,7 +3214,7 @@ elif  not "SKTreeMaker" in cycle:
         sample_sum=[]
         sample_err=[]
         for hs in sample:
-            file_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+hs+"Hist.txt","r")
+            file_read_counter = open("/data2/SNU_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+hs+"Hist.txt","r")
             for rc_line in file_read_counter:
                 cut_line=False
                 src_line = rc_line.split()
@@ -3298,8 +3296,8 @@ if len(crash_output) > 0:
 
             if not os.path.exists(errlogpath):
                 found_crash=True
-                print "Error in locating log file " + errlogpath + ". Could not print out error message from batch jobs"
-                job_summary.append("Error in locating log file " + errlogpath + ". Could not print out error message from batch jobs\n")
+                print "Error in losnuing log file " + errlogpath + ". Could not print out error message from batch jobs"
+                job_summary.append("Error in losnuing log file " + errlogpath + ". Could not print out error message from batch jobs\n")
             else:
                 file_read_err = open(errlogpath,"r")
                 for rline in file_read_err:
@@ -3339,7 +3337,7 @@ remdir=False
 
 if remdir:
     njobs_in_total=0.
-    path_clust_check2=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/clusterjobs.txt"
+    path_clust_check2=an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/clusterjobs.txt"
     os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check2)
     file_clust_check2=open(path_clust_check2,"r")
     for sline in file_clust_check2:
@@ -3352,6 +3350,6 @@ if remdir:
     file_clust_check2.close()
     
     if njobs_in_total == 0 :    
-        os.system("rm -r "+an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG*")
+        os.system("rm -r "+an_jonpre+"/SNU_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG*")
     else:
-        os.system("rm -r "+an_jonpre+"CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) )
+        os.system("rm -r "+an_jonpre+"SNU_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) )

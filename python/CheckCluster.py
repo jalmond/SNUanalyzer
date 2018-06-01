@@ -6,8 +6,8 @@ flag=os.getenv("Flag")
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     path_jobpre="/data2/"
 
-if not os.path.exists(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()):
-    os.system("mkdir  " + path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
+if not os.path.exists(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser()):
+    os.system("mkdir  " + path_jobpre+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser())
 
 from optparse import OptionParser
 parser = OptionParser()
@@ -19,8 +19,8 @@ filetag=options.x
 ssample=options.s
     
 
-path_job=path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + ssample+filetag + ".txt"
-path_log=path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + ssample+filetag + ".log"
+path_job=path_jobpre+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + ssample+filetag + ".txt"
+path_log=path_jobpre+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + ssample+filetag + ".log"
 
 os.system("qstat -u '*' > " + path_log)
 

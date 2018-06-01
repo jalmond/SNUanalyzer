@@ -22,11 +22,11 @@ def checkLumiFile(backupdir,backup_datelist):
     if not  int(date_now)  % 2 == 0:
         sys.exit()
 
-    catversion=os.getenv("CATVERSION")
+    snuversion=os.getenv("SNUVERSION")
     lumidir=os.getenv("ANALYZER_DATASETFILE_DIR")
-    currentfile=lumidir+"/datasets_snu_CAT_mc_" + catversion+".txt"
+    currentfile=lumidir+"/datasets_snu_SNU_mc_" + snuversion+".txt"
     
-    backupfile = lumidir+"/BackUp/"+backup_datelist[len(backup_datelist)-1] + "/datasets_snu_CAT_mc_" + catversion+".txt"
+    backupfile = lumidir+"/BackUp/"+backup_datelist[len(backup_datelist)-1] + "/datasets_snu_SNU_mc_" + snuversion+".txt"
     if not os.path.exists( currentfile):
         print currentfile + " does not exist"
 
@@ -163,9 +163,9 @@ if dobackup:
 
     print flag
     copylist=[]
-    copylist.append(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_v* ")
-    copylist.append(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary* ")
-    makeBackUp(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/BackUp/",copylist,backup_date)
+    copylist.append(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/MasterFile_v* ")
+    copylist.append(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/JobSummary* ")
+    makeBackUp(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/BackUp/",copylist,backup_date)
     copylist2=[]
     lumidir=os.getenv("ANALYZER_DATASETFILE_DIR")
     copylist2.append(lumidir+"/data* ")

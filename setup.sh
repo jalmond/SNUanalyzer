@@ -11,17 +11,17 @@
 
 # Greet the user
 
-echo "Setting up environment for compiling/running CATAnalzer with SKTree"
+echo "Setting up environment for compiling/running SNUAnalzer with SKTree"
 
 setupok=False
 
 Flag=""
 
 if [[ $1 == "" ]]; then
-    Flag="SNU"
+    export Flag="SNU"
 
 else
-    Flag="LQ"
+    export Flag="LQ"
 fi
 
 function killbkg {
@@ -60,8 +60,8 @@ then
 fi
 
 
-if [ ${Flag}ANALYZER_DIR ]; then
-    echo ${Flag}ANALYZER_DIR is already defined, use a clean shell
+if [ $ANALYZER_DIR ]; then
+    echo $ANALYZER_DIR is already defined, use a clean shell
     return 1
 fi
 
@@ -87,37 +87,37 @@ export ANALYZER_DIR=${PWD}
 
 if [[ $1 == *"v7"* ]]; then
     echo "Setting up tag "$1
-    export CHECKTAGFILE=/data1/${Flag}Analyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
+    export CHECKTAGFILE=/data1/${Flag}Analyzer_rootfiles_for_analysis/SnutupleConfig/SetBrachAndTag_$1.sh
     if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
     then
-	export CHECKTAGFILE=/data2/${Flag}Analyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
+	export CHECKTAGFILE=/data2/${Flag}Analyzer_rootfiles_for_analysis/SnutupleConfig/SetBrachAndTag_$1.sh
     fi
 
     if [[ ! -f $CHECKTAGFILE ]]; then 
 	export ANALYZER_DIR=""
 	echo $1 "is not allowed input. Use one of:"
 	
-	source /data1/${Flag}Analyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+	source /data1/${Flag}Analyzer_rootfiles_for_analysis/SnutupleConfig/$SNUVERSION.sh
 	if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 	then
-	    source /data2/${Flag}Analyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+	    source /data2/${Flag}Analyzer_rootfiles_for_analysis/SnutupleConfig/$SNUVERSION.sh
 	fi
-	for ic in  ${list_of_catversions[@]};
+	for ic in  ${list_of_snuversions[@]};
         do
             echo $ic
 	done
 	return 1
     
     fi
-    export ANALYZER_MOD="/data1/${Flag}Analyzer_rootfiles_for_analysis/CATMOD2015/"
+    export ANALYZER_MOD="/data1/${Flag}Analyzer_rootfiles_for_analysis/SNUMOD2015/"
     if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
         then
-	export ANALYZER_MOD="/data2/${Flag}Analyzer_rootfiles_for_analysis/CATMOD2015/"
+	export ANALYZER_MOD="/data2/${Flag}Analyzer_rootfiles_for_analysis/SNUMOD2015/"
 
     fi
     source $ANALYZER_DIR/bin/setup2015.sh
     export running2015=True
-    cvdir=$ANALYZER_DIR/${Flag}Lib/$CATVERSION
+    cvdir=$ANALYZER_DIR/${Flag}Lib/$SNUVERSION
     if [[ ! -d "${cvdir}" ]]; then
         mkdir $cvdir
         make distclean
@@ -126,24 +126,24 @@ if [[ $1 == *"v7"* ]]; then
     return 1
 fi
 
-export ANALYZER_MOD="/data1/${Flag}Analyzer_rootfiles_for_analysis/CATMOD/"
+export ANALYZER_MOD="/data1/${Flag}Analyzer_rootfiles_for_analysis/SNUMOD/"
 if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then
-    export ANALYZER_MOD="/data2/${Flag}Analyzer_rootfiles_for_analysis/CATMOD/"
+    export ANALYZER_MOD="/data2/${Flag}Analyzer_rootfiles_for_analysis/SNUMOD/"
 
 fi
 python ${ANALYZER_DIR}/scripts/CheckEmailIsSetup.py
-cat_email="NULL"
+snu_email="NULL"
 while read line
 do
     prefix="email = "
     if [[ $line == $prefix* ]];
     then
         line=${line:${#prefix}}
-        cat_email=$line
+        snu_email=$line
     fi
-done < ${ANALYZER_DIR}/bin/catconfig
-if [[ $cat_email  == "NULL" ]];
+done < ${ANALYZER_DIR}/bin/snuconfig
+if [[ $snu_email  == "NULL" ]];
 then
     echo "Email not setup. run setup.sh again"
     export ANALYZER_DIR=""
@@ -156,15 +156,15 @@ source $CHECKTAGFILE branch
 
 source $ANALYZER_DIR/bin/CheckTag.sh
 
-buglist=/data1/${Flag}Analyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
+buglist=/data1/${Flag}Analyzer_rootfiles_for_analysis/SNUTag/BuggyTag.txt
 if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then
-    buglist=/data2/${Flag}Analyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
+    buglist=/data2/${Flag}Analyzer_rootfiles_for_analysis/SNUTag/BuggyTag.txt
 fi
 
 while read line
 do
-    if [[ $line == $CATTAG* ]];
+    if [[ $line == $SNUTAG* ]];
     then
 	echo "Current tag is buggy. Please update to newer tag."
         exit
@@ -174,10 +174,10 @@ done < $buglist
 export LIBTAG=""
 if [[ $1 != "" ]];then
 
-    export CHECKTAGFILE=/data1/${Flag}Analyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
+    export CHECKTAGFILE=/data1/${Flag}Analyzer_rootfiles_for_analysis/SnutupleConfig/SetBrachAndTag_$1.sh
     if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
     then
-	export CHECKTAGFILE=/data2/${Flag}Analyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
+	export CHECKTAGFILE=/data2/${Flag}Analyzer_rootfiles_for_analysis/SnutupleConfig/SetBrachAndTag_$1.sh
     fi
     if [[ ! -f $CHECKTAGFILE ]]; then
 	export ANALYZER_DIR=""
@@ -185,12 +185,12 @@ if [[ $1 != "" ]];then
 	
 	if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 	then
-            source /data2/${Flag}Analyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+            source /data2/${Flag}Analyzer_rootfiles_for_analysis/SnutupleConfig/$SNUVERSION.sh
 	else
-	    source /data1/${Flag}Analyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+	    source /data1/${Flag}Analyzer_rootfiles_for_analysis/SnutupleConfig/$SNUVERSION.sh
 
 	fi
-        for ic in  ${list_of_catversions[@]};
+        for ic in  ${list_of_snuversions[@]};
         do
             echo $ic
 	done
@@ -198,15 +198,15 @@ if [[ $1 != "" ]];then
     fi
     
     source $CHECKTAGFILE branch
-    export LIBTAG=$CATVERSION
+    export LIBTAG=$SNUVERSION
 fi
 
-export yeartag="80X/"
+export yeartag="94X/"
 
 
 
-alias cathistcounter="source scripts/Counter.sh "
-alias catcutflowcounter="source scripts/CutFlow.sh "
+alias snuhistcounter="source scripts/Counter.sh "
+alias snucutflowcounter="source scripts/CutFlow.sh "
 alias sktree="bash submitSKTree.sh"
 alias sktreemaker="bash submitSKTree.sh -M True "
 alias sktree_val="bash submitSKTree.sh -V True "
@@ -215,18 +215,18 @@ alias new_git_tag="bash "$ANALYZER_DIR"/scripts/setup/git_newtag.sh"
 alias git_commit_lq="bash scripts/setup/git_commit.sh"
 alias sktree_bkg_log="python python/PrintBkgJob.py"
 
-export ANALYZER_FILE_DIR="/data1/${Flag}Analyzer_rootfiles_for_analysis/CATAnalysis2016/"
+export ANALYZER_FILE_DIR="/data1/${Flag}Analyzer_rootfiles_for_analysis/SNUAnalysis/"
 export ANALYZER_DATASETFILE_DIR="/data1/${Flag}Analyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/"
 export ANALYZER_DATASET_DIR="/data1/${Flag}Analyzer_rootfiles_for_analysis/DataSetLists/"
-export ANALYZER_SKTreeLOG_DIR="/data1/${Flag}Analyzer_rootfiles_for_analysis/CATSKTreeMaker/"
-export CATTAGDIR="/data1/${Flag}Analyzer_rootfiles_for_analysis/CATTag/"
+export ANALYZER_SKTreeLOG_DIR="/data1/${Flag}Analyzer_rootfiles_for_analysis/SNUSKTreeMaker/"
+export SNUTAGDIR="/data1/${Flag}Analyzer_rootfiles_for_analysis/SNUTag/"
 if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then
-    export ANALYZER_FILE_DIR="/data2/${Flag}Analyzer_rootfiles_for_analysis/CATAnalysis2016/"
+    export ANALYZER_FILE_DIR="/data2/${Flag}Analyzer_rootfiles_for_analysis/SNUAnalysis/"
     export ANALYZER_DATASETFILE_DIR="/data2/${Flag}Analyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/"
     export ANALYZER_DATASET_DIR="/data2/${Flag}Analyzer_rootfiles_for_analysis/DataSetLists/"
-    export ANALYZER_SKTreeLOG_DIR="/data2/${Flag}Analyzer_rootfiles_for_analysis/CATSKTreeMaker/"
-    export CATTAGDIR="/data2/${Flag}Analyzer_rootfiles_for_analysis/CATTag/"
+    export ANALYZER_SKTreeLOG_DIR="/data2/${Flag}Analyzer_rootfiles_for_analysis/SNUSKTreeMaker/"
+    export SNUTAGDIR="/data2/${Flag}Analyzer_rootfiles_for_analysis/SNUTag/"
 fi
 
 export running2015=False
@@ -241,7 +241,7 @@ export ANALYZER_CORE_PATH=${ANALYZER_DIR}/${Flag}Core/
 
 export isSLC5="False"
 export BTAGDIR=${ANALYZER_DIR}/${Flag}Analysis/AnalyzerTools/BTag/BTagC11/
-export ROCHDIR=${ANALYZER_DIR}/${Flag}Analysis/AnalyzerTools/rochcor2016/
+export ROCHDIR=${ANALYZER_DIR}/${Flag}Analysis/AnalyzerTools/rochcor/
 if [[ "$HOSTNAME" == "cms.snu.ac.kr" ]];
 then 
     if [[ $LIBTAG == *"v"* ]]; then
@@ -279,11 +279,11 @@ export ANALYZER_BIN_PATH=${ANALYZER_DIR}/bin/
 export SKTREE_INCLUDE_PATH=${ANALYZER_DIR}/${Flag}Core/SKTree/include/
 ## setup directory to store analysis rootfiles
 export FILEDIR=${ANALYZER_DIR}/data/rootfiles/
-export IDFILEDIR=${ANALYZER_DIR}/data/ID/80X/
-export LUMIFILEDIR=${ANALYZER_DIR}/data/Luminosity/80X/
-export TRIGGERFILEDIR=${ANALYZER_DIR}/data/Trigger/80X/
-export BTAGFILEDIR=${ANALYZER_DIR}/data/BTag/80X/
-export PILEUPFILEDIR=${ANALYZER_DIR}/data/Pileup/80X/
+export IDFILEDIR=${ANALYZER_DIR}/data/ID/94X/
+export LUMIFILEDIR=${ANALYZER_DIR}/data/Luminosity/94X/
+export TRIGGERFILEDIR=${ANALYZER_DIR}/data/Trigger/94X/
+export BTAGFILEDIR=${ANALYZER_DIR}/data/BTag/94X/
+export PILEUPFILEDIR=${ANALYZER_DIR}/data/Pileup/94X/
 
 
 
@@ -311,15 +311,15 @@ fi
 source ${ANALYZER_BIN_PATH}/cleanup.sh 
 ### make directories that git does not allow to store
 
-export ANALYZER_OUTPUT_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/${Flag}analyzer/data/output/
+export ANALYZER_OUTPUT_PATH=/data2/SNU_SKTreeOutput/JobOutPut/${USER}/${Flag}analyzer/data/output/
 
-export ANALYZER_LOG_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/${Flag}analyzer/data/logfiles/
+export ANALYZER_LOG_PATH=/data2/SNU_SKTreeOutput/JobOutPut/${USER}/${Flag}analyzer/data/logfiles/
 export ANALYZER_LOG_8TeV_PATH=${ANALYZER_DIR}/data/logfiles/
 
 if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then
-    export ANALYZER_OUTPUT_PATH=/data4/CAT_SKTreeOutput/JobOutPut/${USER}/${Flag}analyzer/data/output/
-    export ANALYZER_LOG_PATH=/data4/CAT_SKTreeOutput/JobOutPut/${USER}/${Flag}analyzer/data/logfiles/
+    export ANALYZER_OUTPUT_PATH=/data4/SNU_SKTreeOutput/JobOutPut/${USER}/${Flag}analyzer/data/output/
+    export ANALYZER_LOG_PATH=/data4/SNU_SKTreeOutput/JobOutPut/${USER}/${Flag}analyzer/data/logfiles/
 fi
 
 python ${ANALYZER_DIR}/python/SetUpWorkSpace.py

@@ -6,10 +6,10 @@ if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     master_an_jonpre="/data4/"
 
 def GetList(an_jonpre):
-    if os.path.exists( an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG* >  " + an_jonpre + "CAT_SKTreeOutput/"+getpass.getuser() +"/check"):
-        os.system("rm " + an_jonpre + "CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG* >  " + an_jonpre + "CAT_SKTreeOutput/"+getpass.getuser() +"/check")    
+    if os.path.exists( an_jonpre+"/SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG* >  " + an_jonpre + "SNU_SKTreeOutput/"+getpass.getuser() +"/check"):
+        os.system("rm " + an_jonpre + "SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG* >  " + an_jonpre + "SNU_SKTreeOutput/"+getpass.getuser() +"/check")    
 
-    os.system("ls -l " + an_jonpre + "CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG* >  " + an_jonpre + "CAT_SKTreeOutput/"+getpass.getuser() +"/check")
+    os.system("ls -l " + an_jonpre + "SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG* >  " + an_jonpre + "SNU_SKTreeOutput/"+getpass.getuser() +"/check")
     print ""
     print "_"*100
     print "Checking JobIDs that are running currently or have been in the past hour are. To check these IDs run:"
@@ -26,11 +26,11 @@ def GetList(an_jonpre):
     if nowd_last == 0:
         nowd_last = 30
 
-    file_check = open( an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/check","r")
+    file_check = open( an_jonpre+"/SNU_SKTreeOutput/"+getpass.getuser() +"/check","r")
     path_checked=""
     running_job=[]
     for line in file_check:
-        if  an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" in line:
+        if  an_jonpre+"/SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" in line:
             path_checked=line
         else:
             if  " "+nowd+" " in line and " "+nowh+":" in line:
@@ -44,7 +44,7 @@ def GetList(an_jonpre):
 
     jobidlist=[]
     for line in running_job:
-        jobid=line.replace( an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG","")
+        jobid=line.replace( an_jonpre+"/SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG","")
         jobid=jobid.replace( ":","")
         jobid=(jobid.split())[0]
         jobidexists=False
@@ -56,8 +56,8 @@ def GetList(an_jonpre):
             jobidlist.append(jobid)
 
     for i in jobidlist:
-        bkg_job_file_path=an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + i + "/output_bkg.txt"
-        finished_path=an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + i + "/output_finished.txt"
+        bkg_job_file_path=an_jonpre+"/SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + i + "/output_bkg.txt"
+        finished_path=an_jonpre+"/SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + i + "/output_finished.txt"
 
         if not os.path.exists(bkg_job_file_path):
             if not os.path.exists(finished_path):
@@ -71,13 +71,13 @@ def GetList(an_jonpre):
                 continue
 
             skip=False
-            os.system("ls " + an_jonpre + "CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + i + "/" + i +"/ " +  " > " + an_jonpre + "CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + i + "/check.txt")
-            file_check= open(an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + i + "/check.txt","r")
+            os.system("ls " + an_jonpre + "SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + i + "/" + i +"/ " +  " > " + an_jonpre + "SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + i + "/check.txt")
+            file_check= open(an_jonpre+"/SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + i + "/check.txt","r")
             for line in file_check:
                 line = line.replace(".txt","")
                 sline = line.split()
                 if len(sline) == 1:
-                    file_id=an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + i + "/"+sline[0]+"jobid.txt"
+                    file_id=an_jonpre+"/SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + i + "/"+sline[0]+"jobid.txt"
                     if not os.path.exists(file_id):
                         skip=True
             file_check.close()
@@ -114,11 +114,11 @@ if outinfo == "False":
 else:
     output_jobinfo_only=True
 
-bkg_job_file_path=master_an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_bkg.txt"
-finished_path=master_an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_finished.txt"
+bkg_job_file_path=master_an_jonpre+"/SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_bkg.txt"
+finished_path=master_an_jonpre+"/SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_finished.txt"
 if isdata:
-    bkg_job_file_path=master_an_jonpre2+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_bkg.txt"
-    finished_path=master_an_jonpre2+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_finished.txt"
+    bkg_job_file_path=master_an_jonpre2+"/SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_bkg.txt"
+    finished_path=master_an_jonpre2+"/SNU_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_finished.txt"
 
 
 if not os.path.exists(bkg_job_file_path):

@@ -16,22 +16,22 @@
 void MakeDataInputFile(TString version=""){
   
 
-  TString def_version = TString(getenv("CATVERSION"));
+  TString def_version = TString(getenv("SNUVERSION"));
   if(!version.Contains("v8") ) version = def_version;
 
   bool cluster = false;
   TString analysisdir = TString(getenv("HOSTNAME"));
   if(analysisdir.Contains("cmscluster.snu.ac.kr")) cluster=true;
   ofstream lumi_file;
-  string lfile =  "datasets_snu_CAT_data_" + string(version.Data()) + ".txt";
-  if(cluster) lfile =  "datasets_snu_cluster_CAT_data_" + string(version.Data()) + ".txt";
+  string lfile =  "datasets_snu_SNU_data_" + string(version.Data()) + ".txt";
+  if(cluster) lfile =  "datasets_snu_cluster_SNU_data_" + string(version.Data()) + ".txt";
 
   lumi_file.open(lfile.c_str());
   lumi_file.setf(ios::fixed,ios::floatfield);
   lumi_file.precision(1);
   
   lumi_file << "########################" << endl;
-  lumi_file << "### CATTUPLES ##########" << endl;
+  lumi_file << "### SNUTUPLES ##########" << endl;
   lumi_file << "########################" << endl;
   
   lumi_file << "\n" << endl;
@@ -63,13 +63,8 @@ void MakeDataInputFile(TString version=""){
   periods.push_back("D");
   periods.push_back("E");
   periods.push_back("F");
-  periods.push_back("G");
-  periods.push_back("H_v2");
-  periods.push_back("H_v3");
   
-  TString output="/data7/DATA/cattoflat/Data/" + version + "/";
-
-  if(cluster) output="/data4/DATA/FlatCatuples/Data/" + version + "/";
+  TString output="/data8/DATA/SKFlat/v9-4-4/"+version+"/";
 
 
   for(unsigned int i = 0 ; i < samples.size() ; i++){
@@ -80,7 +75,7 @@ void MakeDataInputFile(TString version=""){
   }
 
   
-  TString SKTreeOutput="/data7/DATA/CatNtuples/"+ version + "/SKTrees/Data/";
+  TString SKTreeOutput="/data8/DATA/SnuNtuples/"+ version + "/SKTrees/Data/";
   if(cluster) SKTreeOutput="/data4/LocalNtuples/SKTrees13TeV/"+ version + "/SKTrees/Data/";
 
   lumi_file << ""<< endl;
@@ -98,7 +93,7 @@ void MakeDataInputFile(TString version=""){
   lumi_file << ""<< endl;
   
 
-  TString SKTreeOutputDiLep="/data7/DATA/CatNtuples/"+ version + "/SKTrees/DataDiLep/";
+  TString SKTreeOutputDiLep="/data7/DATA/SnuNtuples/"+ version + "/SKTrees/DataDiLep/";
   if(cluster) SKTreeOutputDiLep="/data4/LocalNtuples/SKTrees13TeV/"+ version + "/SKTrees/DataDiLep/";
 
   
@@ -109,7 +104,7 @@ void MakeDataInputFile(TString version=""){
     //lumi_file << ""<< endl;
   }
   
-  TString SKTreeOutputHNDiLep="/data7/DATA/CatNtuples/"+ version + "/SKTrees/DataHNDiLep/";
+  TString SKTreeOutputHNDiLep="/data7/DATA/SnuNtuples/"+ version + "/SKTrees/DataHNDiLep/";
 
 
   for(unsigned int i = 0 ; i < samples.size() ; i++){
@@ -120,7 +115,7 @@ void MakeDataInputFile(TString version=""){
   }
 
   
-  TString SKTreeOutputHNFake="/data7/DATA/CatNtuples/"+ version + "/SKTrees/DataHNFake/";
+  TString SKTreeOutputHNFake="/data7/DATA/SnuNtuples/"+ version + "/SKTrees/DataHNFake/";
   
   for(unsigned int i = 0 ; i < samples.size() ; i++){
     for(unsigned int j = 0 ; j < periods.size() ; j++){
@@ -133,7 +128,7 @@ void MakeDataInputFile(TString version=""){
  
 
 
-  TString SKTreeOutputTriLep="/data7/DATA/CatNtuples/"+ version + "/SKTrees/DataTriLep/";
+  TString SKTreeOutputTriLep="/data7/DATA/SnuNtuples/"+ version + "/SKTrees/DataTriLep/";
   if(cluster) SKTreeOutputTriLep="/data4/LocalNtuples/SKTrees13TeV/"+ version + "/SKTrees/DataTriLep/";
 
   for(unsigned int i = 0 ; i < samples.size() ; i++){
@@ -147,8 +142,8 @@ void MakeDataInputFile(TString version=""){
   string lqdir = getenv("LQANALYZER_DIR");
   TString user = TString(getenv("USER"));
 
-  string lfile2 =   lqdir+ "/LQRun/txt/datasets_snu_CAT_data_" + string(version.Data()) + ".txt";
-  if(cluster) lfile2 =   lqdir+ "/LQRun/txt/Cluster/datasets_snu_cluster_CAT_data_" + string(version.Data()) + ".txt";
+  string lfile2 =   lqdir+ "/LQRun/txt/datasets_snu_SNU_data_" + string(version.Data()) + ".txt";
+  if(cluster) lfile2 =   lqdir+ "/LQRun/txt/Cluster/datasets_snu_cluster_SNU_data_" + string(version.Data()) + ".txt";
 
   if(user.Contains("jalmond")){
     if(!cluster)gSystem->Exec(("cp " + lfile + "  " + getenv("LQANALYZER_DATASETFILE_DIR")).c_str());     

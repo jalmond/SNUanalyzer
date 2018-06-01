@@ -16,9 +16,9 @@ parser.add_option("-s", "--s", dest="s", default="123",help="tag")
 yeartag=options.x
 monthtag=options.s
 
-if not os.path.exists(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(monthtag)+"_"+str(yeartag)+".txt"):
+if not os.path.exists(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/JobSummary"+str(monthtag)+"_"+str(yeartag)+".txt"):
     sys.exit()
-file_toread = open(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(monthtag)+"_"+str(yeartag)+".txt","r")
+file_toread = open(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/JobSummary"+str(monthtag)+"_"+str(yeartag)+".txt","r")
 
 userlist=[]
 
@@ -48,7 +48,7 @@ fullcode_list=[]
 for u in userlist:
     codelist=[]
     user=u
-    file_toread = open(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(monthtag)+"_"+str(yeartag)+".txt","r")
+    file_toread = open(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/JobSummary"+str(monthtag)+"_"+str(yeartag)+".txt","r")
     for line in file_toread:
         if not "job_complete= True"in line:
             continue
@@ -81,7 +81,7 @@ for c in fullcode_list:
     njobs=0
     nfiles=0
     nsamples=0
-    file_toread = open(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(monthtag)+"_"+str(yeartag)+".txt","r")
+    file_toread = open(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/JobSummary"+str(monthtag)+"_"+str(yeartag)+".txt","r")
        
     for line in file_toread:
         if not "job_complete= True" in line:

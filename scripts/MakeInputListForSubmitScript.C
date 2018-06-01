@@ -25,19 +25,19 @@ Iter next(Iter iter)
 
 void MakeInputListForSubmitScript(){
     
-  TString path_of_list=TString(getenv("LQANALYZER_DATASET_DIR"))+ "/cattuplist_"+TString(getenv("CATVERSION"))+".txt";  
+  TString path_of_list=TString(getenv("LQANALYZER_DATASET_DIR"))+ "/snutuplist_"+TString(getenv("SNUVERSION"))+".txt";  
 
   map<TString, TString> lqmap_tmp = GetLQMap2016(path_of_list);
   map<TString, TString> lqmap;
   for(std::map<TString, TString>::iterator mit =lqmap_tmp.begin(); mit != lqmap_tmp.end();++mit){
-    TString def_version = TString(getenv("CATVERSION"));
+    TString def_version = TString(getenv("SNUVERSION"));
     
     TString analysisdir = TString(getenv("HOSTNAME"));
     bool cluster = false;
     if(analysisdir.Contains("cmscluster.snu.ac.kr")) cluster=true;
 
-    TString dir = "ls /data2/DATA/cattoflat/MC/" + def_version + "/"+ mit->first + "/*.root > inputlist_lists.txt";
-    if(cluster) dir = "ls  /data4/DATA/FlatCatuples/MC/" + def_version + "/"+ mit->first + "/*.root > inputlist_lists.txt";
+    TString dir = "ls /data2/DATA/snutoflat/MC/" + def_version + "/"+ mit->first + "/*.root > inputlist_lists.txt";
+    if(cluster) dir = "ls  /data4/DATA/FlatSnuuples/MC/" + def_version + "/"+ mit->first + "/*.root > inputlist_lists.txt";
     
     system(dir.Data());
     std::ifstream fin("inputlist_lists.txt");
@@ -54,7 +54,7 @@ void MakeInputListForSubmitScript(){
   }
 
   
-  TString def_version = TString(getenv("CATVERSION"));
+  TString def_version = TString(getenv("SNUVERSION"));
   
   ofstream lumi_file;
   TString lfile =  "list_all_mc_" + def_version+".sh";

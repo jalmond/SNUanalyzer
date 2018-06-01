@@ -346,14 +346,14 @@ def PrintOutMuons(ID,generalpath, userpath):
     os.system("rm " + path)
     return out_list
 
-muon_path_id=os.getenv("ANALYZER_DIR")+"/CATConfig/SelectionConfig/muons.sel"
-electron_path_id=os.getenv("ANALYZER_DIR")+"/CATConfig/SelectionConfig/electrons.sel"
-jet_path_id=os.getenv("ANALYZER_DIR")+"/CATConfig/SelectionConfig/jets.sel"
+muon_path_id=os.getenv("ANALYZER_DIR")+"/SNUConfig/SelectionConfig/muons.sel"
+electron_path_id=os.getenv("ANALYZER_DIR")+"/SNUConfig/SelectionConfig/electrons.sel"
+jet_path_id=os.getenv("ANALYZER_DIR")+"/SNUConfig/SelectionConfig/jets.sel"
 
 
-user_muon_path_id=os.getenv("ANALYZER_DIR")+"/CATConfig/SelectionConfig/user_muons.sel"
-user_electron_path_id=os.getenv("ANALYZER_DIR")+"/CATConfig/SelectionConfig/user_electrons.sel"
-user_jet_path_id=os.getenv("ANALYZER_DIR")+"/CATConfig/SelectionConfig/user_jets.sel"
+user_muon_path_id=os.getenv("ANALYZER_DIR")+"/SNUConfig/SelectionConfig/user_muons.sel"
+user_electron_path_id=os.getenv("ANALYZER_DIR")+"/SNUConfig/SelectionConfig/user_electrons.sel"
+user_jet_path_id=os.getenv("ANALYZER_DIR")+"/SNUConfig/SelectionConfig/user_jets.sel"
 
 
 from optparse import OptionParser

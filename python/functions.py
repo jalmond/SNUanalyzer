@@ -107,7 +107,7 @@ def make_batch_script(workdir, jname, lqdir, macroname, cluster):
     config+='. bin/thisroot.sh \n'
     config+='cd ' + lqdir + '\n'
 
-    config+='source setup.sh ' + os.getenv("CATVERSION") + ' \n'
+    config+='source setup.sh ' + os.getenv("SNUVERSION") + ' \n'
     config+='echo "PWD= "$PWD \n'
     config+='cd ' + workdir + ' \n'
     config+='root -l -q -b ' + macroname +' \n'
@@ -135,7 +135,7 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSelection.so");\n'
     config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libPlotting.so");\n'
     config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libHNCommonLeptonFakes.so");\n'
-    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/librochcor2016");\n'
+    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/librochcor");\n'
     config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libBTagSFUtil.so");\n'
     for lib in libraries:
         config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/' + lib + ' + .so");\n'

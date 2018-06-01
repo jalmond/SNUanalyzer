@@ -8,11 +8,11 @@ flag=os.getenv("Flag")
 
 files_check = ["electrons.sel","muons.sel","jets.sel", "user_electrons.sel","user_muons.sel","user_jets.sel"]
 
-if os.path.exists(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER") + "/GoodSelection/"):
-    os.system("rm -r   " + an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER") + "/GoodSelection/")
+if os.path.exists(an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER") + "/GoodSelection/"):
+    os.system("rm -r   " + an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER") + "/GoodSelection/")
 
 for i in files_check:
-    path_file =  str(os.getenv("ANALYZER_DIR")) + "/CATConfig/SelectionConfig/"+i
+    path_file =  str(os.getenv("ANALYZER_DIR")) + "/SNUConfig/SelectionConfig/"+i
     file_ = open(path_file,"r")
     ncut_el=0
     for line in file_:
@@ -29,4 +29,4 @@ for i in files_check:
                 print line + " "  + str(len(sline)) + ": FIX in " + path_file
                 sys.exit()                
     file_.close()
-os.system("mkdir  "+an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER") + "/GoodSelection/")
+os.system("mkdir  "+an_jonpre+"/SNU_SKTreeOutput/" + os.getenv("USER") + "/GoodSelection/")

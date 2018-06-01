@@ -44,28 +44,28 @@ if not ANALYZER_DIR == "None" :
 		os.system("rm " +os.getenv("ANALYZER_DIR")+ "/nohup.out")
 
 
-        CleanUpLogs(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"+ getpass.getuser()+ "/")
+        CleanUpLogs(path_jobpre+flag+"Analyzer_rootfiles_for_analysis/SNUAnalyzerStatistics/"+ getpass.getuser()+ "/")
         CleanUpJobLogs(ANALYZER_LOG)
 	if os.getenv("HOSTNAME") == "cms.snu.ac.kr":
-            CleanUpLogs(path_jobpre+"CAT_SKTreeOutput/" + getpass.getuser()+ "/")
-            CleanUpLogs("/data2/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
-            CleanUpLogs("/data7/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
-            CleanUpLogs("/data8/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
-            CleanUpLogs("/data8/DATA/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
-            CleanUpLogs("/data7/DATA/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+            CleanUpLogs(path_jobpre+"SNU_SKTreeOutput/" + getpass.getuser()+ "/")
+            CleanUpLogs("/data2/SNU_SKTreeOutput/" + getpass.getuser()+ "/")
+            CleanUpLogs("/data7/SNU_SKTreeOutput/" + getpass.getuser()+ "/")
+            CleanUpLogs("/data8/SNU_SKTreeOutput/" + getpass.getuser()+ "/")
+            CleanUpLogs("/data8/DATA/SNU_SKTreeOutput/" + getpass.getuser()+ "/")
+            CleanUpLogs("/data7/DATA/SNU_SKTreeOutput/" + getpass.getuser()+ "/")
             CleanUpLogs(os.getenv("ANALYZER_BATCHLIB_PATH"))
             CleanUpLogs(EightTeVdataOne)
             CleanUpLogs(EightTeVdataTwo)
         else:
-            CleanUpLogs("/data4/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+            CleanUpLogs("/data4/SNU_SKTreeOutput/" + getpass.getuser()+ "/")
         localfiledir = os.getenv("ANALYZER_FILE_DIR")
 	datasetfiledir = os.getenv("ANALYZER_DATASETFILE_DIR")
 	txtfiledir = os.getenv("ANALYZER_DIR")+ "/"+flag+"Run/txt/"
 	cltxtfiledir = os.getenv("ANALYZER_DIR")+ "/"+flag+"Run/txt/Cluster/"
 	seldir =os.getenv("ANALYZER_DIR")+  "/SNUConfig/SelectionConfig/"
-	os.system("cp " + localfiledir + "/Luminosity/triggers_catversion_"+str(os.getenv("CATVERSION"))+"* "  + lumifiledir)
-	os.system("cp " + localfiledir + "/Luminosity/lumi_catversion_"+str(os.getenv("CATVERSION"))+".txt "  + lumifiledir)
-	os.system("cp " + datasetfiledir + "/list_all_mc_"+str(os.getenv("CATVERSION"))+".sh " + txtfiledir)
+	os.system("cp " + localfiledir + "/Luminosity/triggers_snuversion_"+str(os.getenv("SNUVERSION"))+"* "  + lumifiledir)
+	os.system("cp " + localfiledir + "/Luminosity/lumi_snuversion_"+str(os.getenv("SNUVERSION"))+".txt "  + lumifiledir)
+	os.system("cp " + datasetfiledir + "/list_all_mc_"+str(os.getenv("SNUVERSION"))+".sh " + txtfiledir)
         if os.getenv("HOSTNAME") == "cms.snu.ac.kr":
             list_sel= ["muons","electrons","jets","fatjets"]
             for x in list_sel:
@@ -80,7 +80,7 @@ if not ANALYZER_DIR == "None" :
         else:
             os.system("rm " + seldir  +"/electrons.sel") 
             while not os.path.exists(seldir  +"/electrons.sel"):
-                os.system("scp 147.47.242.42:/data1/"+flag+"Analyzer_rootfiles_for_analysis/CATAnalysis2016/Selection/*.sel  " + seldir)
+                os.system("scp 147.47.242.42:/data1/"+flag+"Analyzer_rootfiles_for_analysis/SNUAnalysis2016/Selection/*.sel  " + seldir)
                 
 	#os.system("cp " + localfiledir + "/*.csv " + btagfiledir)
 	#os.system("source " +  os.getenv("LQANALYZER_DIR") + "/bin/IncludePrivateSamples.sh")
