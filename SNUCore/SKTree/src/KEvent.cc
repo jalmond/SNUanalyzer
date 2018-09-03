@@ -714,11 +714,11 @@ void KEvent::SetGenId(int id1, int id2){
   k_pdf_id2 = id2;
 }
 
-void KEvent::SetPDFWeights(std::vector<float> pdfweights){
+void KEvent::SetPDFWeights(std::vector<double> pdfweights){
   k_pdf_weights = pdfweights;
 }
 
-void KEvent::SetScaleWeights(std::vector<float> scaleweights){
+void KEvent::SetScaleWeights(std::vector<double> scaleweights){
   k_scale_weights= scaleweights;
 }
 

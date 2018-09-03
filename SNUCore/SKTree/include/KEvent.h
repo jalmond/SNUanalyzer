@@ -67,8 +67,8 @@ namespace snu {
     void SetPropagatedRochesterToMET(bool setpr);
     void SetPropagatedJMRToMET(bool setpr);
     /// PDF
-    void SetPDFWeights(std::vector<float> pdfw);
-    void SetScaleWeights(std::vector<float> pdfw);
+    void SetPDFWeights(std::vector<double> pdfw);
+    void SetScaleWeights(std::vector<double> pdfw);
     
     /// Process ID
     void SetLumiSection(int ls);
@@ -235,8 +235,8 @@ namespace snu {
     inline Double_t x1() const {return k_pdf_x1;}
     inline Double_t x2() const {return k_pdf_x2;}
     
-    inline std::vector<Float_t> PdfWeights() const {return k_pdf_weights;}
-    inline std::vector<Float_t> ScaleWeights() const {return k_scale_weights;}
+    inline std::vector<Double_t> PdfWeights() const {return k_pdf_weights;}
+    inline std::vector<Double_t> ScaleWeights() const {return k_scale_weights;}
     
     virtual void Reset();    
   protected:
@@ -245,9 +245,12 @@ namespace snu {
   private:
     /// decalre private functions
     
-    Int_t    k_EventNumber, k_RunNumber,k_nvertices,  k_lumisec, k_ngoodvertices,k_pdf_id1, k_pdf_id2, k_lumi_mask_silver, k_lumi_mask_gold;
-    std::vector<Float_t> k_pdf_weights, k_scale_weights;
-    Double_t k_vertexX,k_vertexY,k_vertexZ, k_vertexNDOF,  k_mcweight, k_lheweight, k_pdf_q, k_pdf_x1, k_pdf_x2;
+    // Event variables 
+    Int_t    k_EventNumber, k_RunNumber,k_nvertices,  k_lumisec, k_ngoodvertices,k_pdf_id1, k_pdf_id2;
+
+    std::vector<Double_t> k_pdf_weights, k_scale_weights, k_alpha_weights;
+
+    Double_t k_vertexX,k_vertexY,k_vertexZ, k_vertexNDOF, k_vertexChi2 , k_normchi2,  k_mcweight, k_lheweight, k_pdf_q, k_pdf_x1, k_pdf_x2;
 
     Double_t k_PF_MET, k_PF_METphi, k_PF_SumET ;
     Double_t k_PF_METx,k_PF_METy;
@@ -267,14 +270,11 @@ namespace snu {
     Bool_t k_passBadEESupercrystalFilter,k_passCSCHaloFilterTight,k_passEcalDeadCellTriggerPrimitiveFilter,  k_passHBHENoiseFilter, k_passHBHENoiseIsoFilter, k_passTightHalo2016Filter, k_passBadChargedCandFilter, k_passBadpfMuonFilter;
 
 
-    Double_t  k_PileUpInteractionsTrue, k_pu_gold_weight, k_pu_gold_p_weight, k_pu_gold_m_weight, k_pu_gold_xs71000_weight, k_pu_gold_xs71000_p_weight, k_pu_gold_xs71000_m_weight;
-    Double_t k_pu_gold_weightB, k_pu_gold_weightC, k_pu_gold_weightD,k_pu_gold_weightE,k_pu_gold_weightF,k_pu_gold_weightG,k_pu_gold_weightH;
-    Bool_t prop_metrc;
-    Bool_t prop_metjmr;
+    Double_t  k_PileUpInteractionsTrue;
 
     std::string k_catversion;
     Double_t k_rho;
-    Double_t k_top_reweight;
+
 
     ClassDef(KEvent,34);
   }; 

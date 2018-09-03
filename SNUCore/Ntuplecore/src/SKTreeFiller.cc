@@ -62,9 +62,9 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
 
   /// trignames should only be empty id user is running on Catuples and not SKTreeMaker. In this case all triggers are used 
   if(trignames.size() == 0 ){
-    for (UInt_t i=0; i< vtrignames->size(); i++) {
-      std::string tgname = vtrignames->at(i);
-      Int_t ps = vtrigps->at(i);
+    for (UInt_t i=0; i< HLT_TriggerName->size(); i++) {
+      std::string tgname = HLT_TriggerName->at(i);
+      Int_t ps = HLT_TriggerPrescale->at(i);
       vHLTInsideDatasetTriggerNames.push_back(tgname);
       if(ps > 0) vHLTInsideDatasetTriggerDecisions.push_back(true);
       else vHLTInsideDatasetTriggerDecisions.push_back(false);
@@ -74,23 +74,23 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
 
   
   /// vtrigname is vector of ALL triggers in Catuples
-  for (UInt_t i=0 ; i< vtrignames->size(); i++) {
+  for (UInt_t i=0 ; i< HLT_TriggerName->size(); i++) {
     // trignames is vector of trigger names that we want to store in SKTrees
     // trigname contains names substrings X (where X is for example "HLT_mu") and we store all triggers that start with X
 
     
-    std::string tgname = vtrignames->at(i);
+    std::string tgname = HLT_TriggerName->at(i);
     if(TString(CatVersion).Contains("v7-6-2")) {
       if(SkipTrigger(TString(tgname)))continue;
     }
 
-    Int_t ps = vtrigps->at(i);
+    Int_t ps = HLT_TriggerPrescale->at(i);
 
     for (std::vector<TString>::reverse_iterator it (trignames.end());
 	 it != std::vector<TString>::reverse_iterator (trignames.begin());
 	 ++it) {
 
-      TString tmpHLT = vtrignames->at(i);
+      TString tmpHLT = HLT_TriggerName->at(i);
       if ( tmpHLT.BeginsWith(*it)){
 	
 	vHLTInsideDatasetTriggerNames.push_back(tgname);
@@ -130,45 +130,41 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   // New variable to set catversion. Add this to flat ntuples for next iteration
   kevent.SetCatVersion(CatVersion);
 
-  if(k_cat_version > 7)  {
-    
-    /// type 1
-    double met_type1 =  sqrt(met_jetRes_Px_up->at(0)*met_jetRes_Px_up->at(0) + met_jetRes_Py_up->at(0)*met_jetRes_Py_up->at(0));
-    double phi_type1 =  TMath::ATan2(met_jetRes_Py_up->at(0),met_jetRes_Px_up->at(0)); 
-    // type 1 + ohi corrections
-    double met_type1xy = sqrt(met_xyshift_px->at(0)*met_xyshift_px->at(0) + met_xyshift_py->at(0)*met_xyshift_py->at(0));
-    double phi_type1xy =  TMath::ATan2(met_xyshift_py->at(0), met_xyshift_px->at(0));
+  /// type 1
+  // type 1 + ohi corrections
+  double met_type1xy = sqrt(pfMET_Type1_PhiCor_Px*pfMET_Type1_PhiCor_Px + pfMET_Type1_Py*pfMET_Type1_Py);
+  double phi_type1xy =  TMath::ATan2(pfMET_Type1_Py,pfMET_Type1_Px);
+  
+  
+  /// Default MET is now xy shifted typ1
+  if(IsData)  {
+    kevent.SetMET(snu::KEvent::pfmet, met_type1xy, phi_type1xy, pfMET_Type1_PhiCor_SumEt);
+    kevent.SetPFMETx(pfMET_Type1_PhiCor_Px);
+    kevent.SetPFMETy(pfMET_Type1_PhiCor_Py);
 
-
-    /// Default MET is now xy shifted typ1
-    if(isData)  {
-      kevent.SetMET(snu::KEvent::pfmet, met_type1xy, phi_type1xy, met_xyshift_sumet->at(0));
-      kevent.SetPFMETx(met_xyshift_px->at(0));
-      kevent.SetPFMETy(met_xyshift_py->at(0));
-
-      /// Also for completness store type1 without phi corrections
-      kevent.SetPFMETType1x(met_jetRes_Px_up->at(0));
-      kevent.SetPFMETType1y(met_jetRes_Py_up->at(0));
-      kevent.SetPFMETType1SumEt(met_sumet->at(0));
-    }
-    /// set unsmeared met variables
-    kevent.SetPFMETType1Unsmearedx(met_jetRes_Px_up->at(0));
-    kevent.SetPFMETType1Unsmearedy(met_jetRes_Py_up->at(0));
-    kevent.SetPFMETType1xyUnsmearedx(met_xyshift_px->at(0));
-    kevent.SetPFMETType1xyUnsmearedy(met_xyshift_py->at(0));
+    /// Also for completness store type1 without phi corrections
+    kevent.SetPFMETType1x(pfMET_Type1_Px);
+    kevent.SetPFMETType1y(pfMET_Type1_Py);
+    kevent.SetPFMETType1SumEt(pfMET_Type1_SumEt);
     
   }
+    /// set unsmeared met variables
+  kevent.SetPFMETType1Unsmearedx(pfMET_Type1_Px);
+  kevent.SetPFMETType1Unsmearedy(pfMET_Type1_Py);
+  kevent.SetPFMETType1xyUnsmearedx(pfMET_Type1_PhiCor_Px);
+  kevent.SetPFMETType1xyUnsmearedy(pfMET_Type1_PhiCor_Py);
+    
   double topreweight=1.;
   bool settopweight=false;
   if(k_sample_name.Contains("TTLL_powheg"))settopweight=true;
   if(k_sample_name.Contains("TTLJ_powheg"))settopweight=true;
   if(k_sample_name.Contains("TT_powheg"))settopweight=true;
   if(k_sample_name.Contains("TTJets_aMC"))settopweight=true;
-
+  
   
   if(settopweight){
     for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
-      if(fabs(gen_pdgid->at(itx))==6 && fabs(gen_status->at(itx))<30 && fabs(gen_status->at(itx))>20){
+      if(fabs(gen_PID->at(itx))==6 && fabs(gen_status->at(itx))<30 && fabs(gen_status->at(itx))>20){
 	topreweight*=exp(0.0615-0.0005*gen_pt->at(itx));
       }
     }
@@ -176,53 +172,60 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 
   kevent.SetTopPtReweight(topreweight);
 
-  if(jets_rho){
-    if(jets_rho->size() > 0)kevent.SetRho(jets_rho->at(0));
+  if(jet_rho){
+    if(jet_rho->size() > 0)kevent.SetRho(jet_rho->at(0));
     else kevent.SetRho(-999.);
   }
   m_logger << DEBUG << "Filling Event Info [2]" << SNULogger::endmsg;
   /// Since some versions of catuples have no metNoHF due to bug in met code 
-
-
-  if(k_cat_version > 3){
-    /// k_cat_version > 3 == v765+
-    if(PDFWeights){
-      if(PDFWeights->size() > 0){
-	kevent.SetPDFWeights(*PDFWeights);
-      }
-    }
-    if(ScaleWeights){
-      if(ScaleWeights->size() > 0){
-      kevent.SetScaleWeights(*ScaleWeights);
-      }
-    }
-
-  }
-
   
+  if(PDFWeights_Error){
+    if(PDFWeights_Error->size() > 0){
+      std::vector<double>* w1= PDFWeights_Error;
+      std::vector<double> w1store;
 
-  if(!isData){
+      for(unsigned int i=0; i < w1->size(); i++){
+	w1store.push_back(w1->at(i));
+      }
+      kevent.SetPDFWeights(w1store);
+    }
+  }
+  if(PDFWeights_Scale){
+    if(PDFWeights_Scale->size() > 0){
+      std::vector<double>* w1= PDFWeights_Scale;
+      std::vector<double> w1store;
+
+      for(unsigned int i=0; i < w1->size(); i++){
+        w1store.push_back(w1->at(i));
+      }
+
+      kevent.SetScaleWeights(w1store);
+    }
+  }
+  
+  
+  if(!IsData){
     float jpx(0.), jpy(0.), sjpx(0.), sjpy(0.), sjpxup(0.), sjpxdown(0.),sjpyup(0.), sjpydown(0.) ;
-
+    
     /// only smear jets not close to leptons (use top projection id)
-    for(unsigned int ij = 0 ; ij < jets_pt->size(); ij++){
+    for(unsigned int ij = 0 ; ij < jet_pt->size(); ij++){
       bool close_to_lepton(false);
-      if(jets_pt->at(ij) < 10.) continue;
+      if(jet_pt->at(ij) < 10.) continue;
       for(unsigned int im=0; im < muon_pt->size(); im++){
 	if(muon_pt->at(im) < 10.) continue;
 	if(fabs(muon_eta->at(im)) > 2.5) continue;
 	// find full definition for 13 TeV
 	//if(muon_relIso04->at(im) > 0.2)  continue;
-        double dr = sqrt( pow(fabs( jets_eta->at(ij) - muon_eta->at(im)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( jets_phi->at(ij) - muon_phi->at(im))),2.0));
+        double dr = sqrt( pow(fabs( jet_eta->at(ij) - muon_eta->at(im)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( jet_phi->at(ij) - muon_phi->at(im))),2.0));
 	if(dr < 0.4){
 	  close_to_lepton=true;
 	}
       }
-      for(unsigned int iel=0; iel < electrons_pt->size(); iel++){
-	if(electrons_pt->at(iel) < 10.) continue;
-        if(fabs(electrons_eta->at(iel)) > 2.5) continue;
+      for(unsigned int iel=0; iel < electron_pt->size(); iel++){
+	if(electron_pt->at(iel) < 10.) continue;
+        if(fabs(electron_eta->at(iel)) > 2.5) continue;
 	// find full definition for 13 TeV                                                                                                                                          if(electrons_relIso03->at(ilep) > 0.15)  continue;
-        double dr = sqrt( pow(fabs( jets_eta->at(ij) - electrons_eta->at(iel)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( jets_phi->at(ij) - electrons_phi->at(iel))),2.0));
+        double dr = sqrt( pow(fabs( jet_eta->at(ij) - electron_eta->at(iel)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( jet_phi->at(ij) - electron_phi->at(iel))),2.0));
         if(dr < 0.4){
           close_to_lepton=true;
         }
@@ -230,146 +233,106 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       
       if(close_to_lepton) continue;
       
-      float jets_px = jets_pt->at(ij) *TMath::Cos(jets_phi->at(ij)); 
-      float jets_py = jets_pt->at(ij) *TMath::Sin(jets_phi->at(ij));
-      jpx +=  jets_px;
-      jpy +=  jets_py;
+      float jet_px = jet_pt->at(ij) *TMath::Cos(jet_phi->at(ij)); 
+      float jet_py = jet_pt->at(ij) *TMath::Sin(jet_phi->at(ij));
+      jpx +=  jet_px;
+      jpy +=  jet_py;
       
-      if(!isData){
-	sjpx +=  jets_smearedRes->at(ij) *jets_px;
-	sjpy +=  jets_smearedRes->at(ij) *jets_py;
+      // JS jet_smearedRes ?
+      if(!IsData){
+	sjpx +=  1. *jet_px;
+	sjpy +=  1. *jet_py;
       }
       else{
-	sjpx +=  jets_px;
-        sjpy +=  jets_py;
+	sjpx +=  jet_px;
+        sjpy +=  jet_py;
       }
-      sjpxup +=  jets_smearedResUp->at(ij) *jets_px;
-      sjpyup +=  jets_smearedResUp->at(ij) *jets_py;
+      sjpxup +=  1. *jet_px;
+      sjpyup +=  1. *jet_py;
       
-      sjpxdown +=  jets_smearedResDown->at(ij) *jets_px;
-      sjpydown +=  jets_smearedResDown->at(ij) *jets_py;
+      sjpxdown +=  1. *jet_px;
+      sjpydown +=  1. *jet_py;
 
     }
 
     // met_jetRes_Px_up ==met_Px since no smearing is applied in miniaods -> cattools
-    float met_x  = met_xyshift_px->at(0)  +  jpx - sjpx;
-    float met_y  = met_xyshift_py->at(0)  +  jpy - sjpy;
+    float met_x  = pfMET_Type1_PhiCor_Px  +  jpx - sjpx;
+    float met_y  = pfMET_Type1_PhiCor_Py  +  jpy - sjpy;
     float met_newpt = sqrt(met_x*met_x+ met_y*met_y);
     float met_newphi = TMath::ATan2(met_y,met_x);
     
-    kevent.SetMET(snu::KEvent::pfmet,  met_newpt,met_newphi,  met_xyshift_sumet->at(0));  
+    kevent.SetMET(snu::KEvent::pfmet,  met_newpt,met_newphi, pfMET_Type1_PhiCor_SumEt);  
     kevent.SetPFMETx(met_x);
     kevent.SetPFMETy(met_y);
 
     /// correct MET for jets smearing
-    float type1_met_x  = met_jetRes_Px_up->at(0)  +  jpx - sjpx;
-    float type1_met_y  = met_jetRes_Py_up->at(0)  +  jpy - sjpy;
-    float type1_met_newpt = sqrt(type1_met_x*type1_met_x+ type1_met_y*type1_met_y);
-    float type1_met_newphi = TMath::ATan2(type1_met_y,type1_met_x);
+    float type1_met_x  = pfMET_Type1_Px  +  jpx - sjpx;
+    float type1_met_y  = pfMET_Type1_Py +   jpy - sjpy;
     
     kevent.SetPFMETType1x(type1_met_x);
     kevent.SetPFMETType1y(type1_met_y);		  
-    kevent.SetPFMETType1SumEt(met_sumet->at(0));           
+    kevent.SetPFMETType1SumEt(pfMET_Type1_SumEt);           
 
     /// Fix met phi 
-    float met_x_jer_up  = met_xyshift_px->at(0) +  jpx - sjpxup;
-    float met_y_jer_up   = met_xyshift_py->at(0)  +  jpy - sjpyup;
+    float met_x_jer_up  = pfMET_Type1_PhiCor_Px +  jpx - sjpxup;
+    float met_y_jer_up   = pfMET_Type1_PhiCor_Py  +  jpy - sjpyup;
     float met_newpt_jerup = sqrt(met_x_jer_up*met_x_jer_up+ met_y_jer_up*met_y_jer_up);
-    float met_x_jer_down   = met_xyshift_px->at(0)  +  jpx - sjpxdown;
-    float met_y_jer_down  = met_xyshift_py->at(0)  +  jpy -sjpydown;
+    float met_x_jer_down   = pfMET_Type1_PhiCor_Px  +  jpx - sjpxdown;
+    float met_y_jer_down  = pfMET_Type1_PhiCor_Py  +  jpy -sjpydown;
     float met_newpt_jerdown = sqrt(met_x_jer_down*met_x_jer_down+ met_y_jer_down*met_y_jer_down);
 
       
     kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetRes,     met_newpt_jerup);
     kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetRes,     met_newpt_jerdown);
     
-
   }
   
 
   m_logger << DEBUG << "Filling Event Info [3]" << SNULogger::endmsg;
   
-  if(k_cat_version > 2){
-    if(met_unclusteredEn_Px_up){
-      if(met_unclusteredEn_Px_up->at(0)){
-	
-	// catools use slimmedMETs in MiniAOD
-	// this uses type 1 corrected MET
-	// as explained in here https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2016#ETmiss
-	// The type1 corrections is computed from ak4PFJetsCHS jets with pT > 15 GeV,
-	// smearing mc jets
-	// https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetResolution
-	// change in jet pt needs propagating into MET
-	// https://twiki.cern.ch/twiki/bin/viewauth/CMS/JERCReference
-	/// For details see hete
-	/// https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETRun2Corrections 
-	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_up*met_muonEn_Px_up + met_muonEn_Py_up*met_muonEn_Py_up));
-	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_down*met_muonEn_Px_down + met_muonEn_Py_down*met_muonEn_Py_up));
-	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_up*met_electronEn_Px_up + met_electronEn_Py_up*met_electronEn_Py_up));
-	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_down*met_electronEn_Px_down + met_electronEn_Py_down*met_electronEn_Py_down));
-	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_up->at(0)*met_unclusteredEn_Px_up->at(0) + met_unclusteredEn_Py_up->at(0)*met_unclusteredEn_Py_up->at(0)));
-	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_down->at(0)*met_unclusteredEn_Px_down->at(0) + met_unclusteredEn_Py_down->at(0)*met_unclusteredEn_Py_down->at(0)));
-	kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::Unclustered,met_unclusteredEn_SumEt_up->at(0));
-	kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::Unclustered,met_unclusteredEn_SumEt_down->at(0));
-	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetEn,      sqrt(met_jetEn_Px_up->at(0)*met_jetEn_Px_up->at(0) + met_jetEn_Py_up->at(0)*met_jetEn_Py_up->at(0)));
-	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetEn,      sqrt(met_jetEn_Px_down->at(0)*met_jetEn_Px_down->at(0) + met_jetEn_Py_down->at(0)*met_jetEn_Py_down->at(0)));
-	kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetEn,      met_jetEn_SumEt_up->at(0));
-	kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetEn,      met_jetEn_SumEt_down->at(0));
 
-	/// https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_25/PhysicsTools/PatUtils/python/patPFMETCorrections_cff.py
-	/// jets > 15 GeV in mc smeared. This is not done in cattolls so branches have no change,
-	/// Apply this here
-	/// 
-
-      }
-    }
-  }
+  /*
+    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_up*met_muonEn_Px_up + met_muonEn_Py_up*met_muonEn_Py_up));
+    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_down*met_muonEn_Px_down + met_muonEn_Py_down*met_muonEn_Py_up));
+    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_up*met_electronEn_Px_up + met_electronEn_Py_up*met_electronEn_Py_up));
+    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_down*met_electronEn_Px_down + met_electronEn_Py_down*met_electronEn_Py_down));
+    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_up->at(0)*met_unclusteredEn_Px_up->at(0) + met_unclusteredEn_Py_up->at(0)*met_unclusteredEn_Py_up->at(0)));
+    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_down->at(0)*met_unclusteredEn_Px_down->at(0) + met_unclusteredEn_Py_down->at(0)*met_unclusteredEn_Py_down->at(0)));
+    kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::Unclustered,met_unclusteredEn_SumEt_up->at(0));
+    kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::Unclustered,met_unclusteredEn_SumEt_down->at(0));
+    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetEn,      sqrt(met_jetEn_Px_up->at(0)*met_jetEn_Px_up->at(0) + met_jetEn_Py_up->at(0)*met_jetEn_Py_up->at(0)));
+    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetEn,      sqrt(met_jetEn_Px_down->at(0)*met_jetEn_Px_down->at(0) + met_jetEn_Py_down->at(0)*met_jetEn_Py_down->at(0)));
+    kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetEn,      met_jetEn_SumEt_up->at(0));
+    kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetEn,      met_jetEn_SumEt_down->at(0));
+  */
+  /// https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_25/PhysicsTools/PatUtils/python/patPFMETCorrections_cff.py
+  /// jets > 15 GeV in mc smeared. This is not done in cattolls so branches have no change,
+  /// Apply this here
+  /// 
+  
+  
+  
   m_logger << DEBUG << "Filling Event Info [4]" << SNULogger::endmsg;
   
   /// Filling event variables
     
-  kevent.SetIsData(isData);
+  kevent.SetIsData(IsData);
   kevent.SetRunNumber(run);
   kevent.SetEventNumber(event);
   kevent.SetLumiSection(lumi);
   
-  if(!isData){
+  if(!IsData){
   
-    kevent.SetPUWeight(snu::KEvent::central,double(puWeightGold));
-    kevent.SetPUWeight(snu::KEvent::down,double(puWeightGoldDn));
-    kevent.SetPUWeight(snu::KEvent::up,  double(puWeightGoldUp));
-    if(k_cat_version == 4){
-      if(puWeightGold_xs71000){
-	kevent.SetAltPUWeight(snu::KEvent::central,double(puWeightGold_xs71000));
-	kevent.SetAltPUWeight(snu::KEvent::down,double(puWeightGoldDn_xs71000));
-	kevent.SetAltPUWeight(snu::KEvent::up,  double(puWeightGoldUp_xs71000));
-      }
-    }
-    else{
-      kevent.SetAltPUWeight(snu::KEvent::central,double(puWeightGold));
-      kevent.SetAltPUWeight(snu::KEvent::down,double(puWeightGoldDn));
-      kevent.SetAltPUWeight(snu::KEvent::up,  double(puWeightGoldUp));
+    kevent.SetPUWeight(snu::KEvent::central,double(PUweight)); // JSKIM
+    kevent.SetPUWeight(snu::KEvent::down,double(pileUpReweightMinus));
+    kevent.SetPUWeight(snu::KEvent::up,  double(pileUpReweightPlus));
 
-      if(k_cat_version > 7){
-	kevent.SetPeriodPileupWeight(double(puWeightGoldB),double(puWeightGoldC),double(puWeightGoldD),double(puWeightGoldE),double(puWeightGoldF),double(puWeightGoldG),double(puWeightGoldH));
-      }
-    }
-  }
-  if(isData){
-    if(k_cat_version > 2&&k_cat_version < 5){
-      kevent.SetLumiMask(snu::KEvent::silver, lumiMaskSilver);
-      kevent.SetLumiMask(snu::KEvent::gold,   lumiMaskGold);
-    }
-    else{
-      kevent.SetLumiMask(snu::KEvent::silver, 1);
-      kevent.SetLumiMask(snu::KEvent::gold,   1);
-    }
   }
   kevent.SetGenId(genWeight_id1, genWeight_id2);
-  kevent.SetLHEWeight(lheWeight);
-  kevent.SetGenX(genWeightX1, genWeightX2);
-  kevent.SetGenQ(genWeightQ);
-  if(genWeight > 0.) kevent.SetWeight(1.);
+  // kevent.SetLHEWeight(lheWeight);   JSKIM
+  kevent.SetGenX(genWeight_X1, genWeight_X2);
+  kevent.SetGenQ(genWeight_Q);
+  if(gen_weight > 0.) kevent.SetWeight(1.);
   else kevent.SetWeight(-1.);
   
   kevent.SetVertexInfo(vertex_X, vertex_Y, vertex_Z,0. );
@@ -378,32 +341,24 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 
   
   /// 
-  kevent.SetPileUpInteractionsTrue(nTrueInteraction);
+  //  kevent.SetPileUpInteractionsTrue(nTrueInteraction); // JSKIM
     
   kevent.SetNVertices(nPV);
-  kevent.SetNGoodVertices(nGoodPV);
+  kevent.SetNGoodVertices(nPV); // JSKIM
   
-  kevent.SetIsGoodEvent(nGoodPV);
+  //  kevent.SetIsGoodEvent(nGoodPV);
 
   /// MET filter cuts/checks
-  if(k_cat_version > 4){
-    kevent.SetPassEcalDeadCellTriggerPrimitiveFilter(ecalDCTRFilter);
-    kevent.SetPassHBHENoiseFilter(HBHENoiseFilter);
-    kevent.SetPassHBHENoiseIsoFilter(HBHENoiseIsoFilter);
-    kevent.SetPassCSCHaloFilterTight(csctighthaloFilter);
-    kevent.SetPassBadEESupercrystalFilter(eeBadScFilter);
-    kevent.SetPassTightHalo2016Filter(Flag_globalTightHalo2016Filter);
-  }
-  else{
-    kevent.SetPassEcalDeadCellTriggerPrimitiveFilter(ecalDCTRFilter);
-    kevent.SetPassHBHENoiseFilter(HBHENoiseFilter);
-    kevent.SetPassCSCHaloFilterTight(csctighthaloFilter);
-    kevent.SetPassBadEESupercrystalFilter(eeBadScFilter);
-  }
-  if(k_cat_version > 6){
-    kevent.SetPassBadChargedCandidateFilter(BadChargedCandidateFilter);
-    kevent.SetPassBadPFMuonFilter(BadPFMuonFilter);
-  }
+  kevent.SetPassEcalDeadCellTriggerPrimitiveFilter(Flag_EcalDeadCellTriggerPrimitiveFilter);
+  kevent.SetPassHBHENoiseFilter(Flag_HBHENoiseFilter);
+  kevent.SetPassHBHENoiseIsoFilter(Flag_HBHENoiseIsoFilter);
+
+  kevent.SetPassTightHalo2016Filter(Flag_globalTightHalo2016Filter);
+  kevent.SetPassBadChargedCandidateFilter(Flag_BadChargedCandidateFilter);
+  kevent.SetPassBadPFMuonFilter(Flag_BadPFMuonFilter);
+  
+  // JSKIM
+
   return kevent;
 }
 
@@ -412,8 +367,6 @@ std::vector<KPhoton> SKTreeFiller::GetAllPhotons(){
 
   std::vector<KPhoton> photons;
 
-  if(k_cat_version < 3) return photons;
-  if(k_cat_version > 4) return photons;
   
   if(!SNUinput){
     for(std::vector<KPhoton>::iterator kit  = k_inputphotons->begin(); kit != k_inputphotons->end(); kit++){
@@ -421,35 +374,35 @@ std::vector<KPhoton> SKTreeFiller::GetAllPhotons(){
     }
     return photons;
   }
-  for (UInt_t iph=0; iph< photons_eta->size(); iph++) {
-    if(photons_pt->at(iph) != photons_pt->at(iph)) continue;
+  for (UInt_t iph=0; iph< photon_eta->size(); iph++) {
+    if(photon_pt->at(iph) != photon_pt->at(iph)) continue;
     KPhoton ph;
     
-    ph.SetPtEtaPhiE(photons_pt->at(iph),photons_eta->at(iph), photons_phi->at(iph),photons_energy->at(iph));
+    ph.SetPtEtaPhiM(photon_pt->at(iph),photon_eta->at(iph), photon_phi->at(iph),0.); // JSKIM 
 
-    ph.SetIsLoose(photons_photonID_loose->at(iph));
-    ph.SetIsMedium(photons_photonID_medium->at(iph));
-    ph.SetIsTight(photons_photonID_tight->at(iph));
-    ph.SetPassMVA(photons_photonID_mva->at(iph));
-    ph.SetMCMatched(photons_mcMatched->at(iph));
-    ph.SetHasPixSeed(photons_haspixseed->at(iph));
-    ph.SetPassElVeto(photons_passelectronveto->at(iph));
+    ph.SetIsLoose(photon_passLooseID->at(iph));
+    ph.SetIsMedium(photon_passMediumID->at(iph));
+    ph.SetIsTight(photon_passTightID->at(iph));
+    ph.SetPassMVA(photon_passMVAID_WP80->at(iph));
+    //ph.SetMCMatched(photon_mcMatched->at(iph)); 
+    //ph.SetHasPixSeed(photon_haspixseed->at(iph));
+    //ph.SetPassElVeto(photon_passelectronveto->at(iph));
 
-    ph.SetChargedHadIsoNoEA(photons_chargedHadronIso->at(iph));
-    ph.SetpuChargedHadIsoNoEA(photons_puChargedHadronIso->at(iph));
-    ph.SetNeutalHadIsoNoEA(photons_neutralHadronIso->at(iph));
-    ph.SetPhotonIsoNoEA(photons_photonIso->at(iph));
-    ph.SetRhoIso(photons_rhoIso->at(iph));
-    ph.SetChargedHadIso(photons_chargedHadronIsoWithEA->at(iph));
-    ph.SetPhotonIso(photons_photonIsoWithEA->at(iph));
-    ph.SetNeutalHadIso(photons_neutralHadronIsoWithEA->at(iph));
-    ph.SetSigmaIetaIeta(photons_sigmaietaieta->at(iph));
-    ph.SetR9(photons_r9->at(iph));
-    ph.SetHoverE(photons_hovere->at(iph));
-    ph.SetSCEta(photons_sceta->at(iph));
-    ph.SetSCPhi(photons_scphi->at(iph));
-    ph.SetSCRawE(photons_scrawenergy->at(iph));
-    ph.SetSCPreShowerE(photons_scpreshowerenergy->at(iph));
+    ph.SetChargedHadIsoNoEA(photon_ChIso->at(iph));
+    //ph.SetpuChargedHadIsoNoEA();  JSKIM
+    ph.SetNeutalHadIsoNoEA(photon_NhIso->at(iph));
+    ph.SetPhotonIsoNoEA(photon_PhIso->at(iph));
+    //ph.SetRhoIso(); JSKIM
+    ph.SetChargedHadIso(photon_ChIsoWithEA->at(iph));
+    ph.SetPhotonIso(photon_PhIsoWithEA->at(iph));
+    ph.SetNeutalHadIso(photon_NhIsoWithEA->at(iph));
+    ph.SetSigmaIetaIeta(photon_Full5x5_SigmaIEtaIEta->at(iph));
+    //ph.SetR9(->at(iph)); JSKIM
+    ph.SetHoverE(photon_HoverE->at(iph));
+    ph.SetSCEta(photon_scEta->at(iph));
+    ph.SetSCPhi(photon_scPhi->at(iph));
+    //ph.SetSCRawE(->at(iph)); JSKIM
+    //ph.SetSCPreShowerE(->at(iph)); JSKIM
     
     photons.push_back(ph);
   }
@@ -470,89 +423,90 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     return electrons;
   }
 
-  m_logger << DEBUG << "Filling electron Info " << electrons_eta->size() << SNULogger::endmsg;
+  m_logger << DEBUG << "Filling electron Info " << electron_eta->size() << SNULogger::endmsg;
   
   vector<int> matched_truth;
-  for (UInt_t iel=0; iel< electrons_eta->size(); iel++) {
+  for (UInt_t iel=0; iel< electron_eta->size(); iel++) {
     
-    if(electrons_pt->at(iel) != electrons_pt->at(iel))    continue;
+    if(electron_pt->at(iel) != electron_pt->at(iel))    continue;
     
     KElectron el;
 
     /// Kinematic Variables
-    el.SetPtEtaPhiE(electrons_pt->at(iel),electrons_eta->at(iel), electrons_phi->at(iel),electrons_energy->at(iel));
+    el.SetPtEtaPhiE(electron_pt->at(iel),electron_eta->at(iel), electron_phi->at(iel),electron_Energy->at(iel));
 
-    if(electrons_smearedScale)el.SetSmearFactor(electrons_smearedScale->at(iel));
-    el.SetTrigMatch(electron_trigmatch->at(iel));
-    el.SetSCEta(electrons_scEta->at(iel));
+    el.SetSmearFactor(electron_Energy_Smear_Up->at(iel)/ electron_Energy->at(iel));
+    //el.SetTrigMatch(electron_trigmatch->at(iel)); JSKIM
+    el.SetSCEta(electron_scEta->at(iel));
    
-    el.Setdz( electrons_dz->at(iel));
-    el.Setdxy(electrons_dxy->at(iel) );
-    if(electrons_mva){
-      el.SetMVA(electrons_mva->at(iel) );
-      el.SetZZMVA(electrons_zzmva->at(iel) );
+    el.Setdz( electron_dz->at(iel));
+    el.Setdxy(electron_dxy->at(iel) );
+    if(electron_mva){
+      el.SetMVA(electron_mva->at(iel) );
+      el.SetZZMVA(electron_zzmva->at(iel) );
     }
-    if(electrons_sigdxy){
-      if(electrons_sigdxy->size() > 0 )el.Setdxy_sig(electrons_sigdxy->at(iel) );
+    if(electron_sigdxy){
+      if(electron_sigdxy->size() > 0 )el.Setdxy_sig(electron_sigdxy->at(iel) );
     }
-    el.SetPFChargedHadronIso(0.3, electrons_puChIso03->at(iel));
-    el.SetPFPhotonIso(0.3,electrons_phIso03->at(iel));
-    el.SetPFNeutralHadronIso(0.3,electrons_nhIso03->at(iel));
-    el.SetPFRelIso(0.3,electrons_relIso03->at(iel));
+    el.SetPFChargedHadronIso(0.3, electron_puChIso03->at(iel));
+    el.SetPFPhotonIso(0.3,electron_phIso03->at(iel));
+    el.SetPFNeutralHadronIso(0.3,electron_nhIso03->at(iel));
+    el.SetPFRelIsoRho(0.3,electron_relIsoRho03->at(iel));
+    el.SetPFRelIsoBeta(0.3,electron_relIsoBeta03->at(iel));
 
 
 
     m_logger << DEBUG << "Filling electron_minirelIso " << SNULogger::endmsg;
-    if(electrons_minirelIso) el.SetPFRelMiniIso(electrons_minirelIso->at(iel));
+    if(electron_minirelIso) el.SetPFRelMiniIso(electron_minirelIso->at(iel));
     
     m_logger << DEBUG << "Filling electron Info 2" << SNULogger::endmsg;
     
-    el.SetPFChargedHadronIso(0.4,electrons_puChIso04->at(iel));
-    el.SetPFPhotonIso(0.4,electrons_phIso04->at(iel));
-    el.SetPFNeutralHadronIso(0.4,electrons_nhIso04->at(iel));
-    el.SetPFRelIso(0.4,electrons_relIso04->at(iel));
+    el.SetPFChargedHadronIso(0.4,electron_puChIso04->at(iel));
+    el.SetPFPhotonIso(0.4,electron_phIso04->at(iel));
+    el.SetPFNeutralHadronIso(0.4,electron_nhIso04->at(iel));
+    el.SetPFRelIso(0.4,electron_relIso04->at(iel));
     
-    el.SetPFAbsIso(0.3,electrons_absIso03->at(iel));
-    el.SetPFAbsIso(0.4,electrons_absIso04->at(iel));
+    el.SetPFAbsIso(0.3,electron_absIso03->at(iel));
+    el.SetPFAbsIso(0.4,electron_absIso04->at(iel));
 
 
     /// set Charge variables
-    el.SetCharge(electrons_q->at(iel));
-    el.SetGsfCtfScPixCharge(electrons_isGsfCtfScPixChargeConsistent->at(iel));
+    el.SetCharge(electron_q->at(iel));
+    el.SetGsfCtfScPixCharge(electron_isGsfCtfScPixChargeConsistent->at(iel));
     
     m_logger << DEBUG << "Filling electron Info 3" << SNULogger::endmsg;
     /// set conversion variables
     
-    if(electrons_shiftedEnDown){
-      el.SetShiftedEUp(electrons_shiftedEnUp->at(iel));
-      el.SetShiftedEDown(electrons_shiftedEnDown->at(iel));
+    if(electron_shiftedEnDown){
+      el.SetShiftedEUp(electron_shiftedEnUp->at(iel));
+      el.SetShiftedEDown(electron_shiftedEnDown->at(iel));
     }
 
-    if(electrons_missinghits)el.SetMissingHits(electrons_missinghits->at(iel));
-    el.SetSNUID(electrons_electronID_snu->at(iel));
-    el.SetPassVeto(electrons_electronID_veto->at(iel));
-    el.SetPassLoose(electrons_electronID_loose->at(iel));
-    el.SetPassMedium(electrons_electronID_medium->at(iel));
-    el.SetPassTight(electrons_electronID_tight->at(iel));
-    if(electrons_electronID_hlt)el.SetPassHLT(electrons_electronID_hlt->at(iel));
+    if(electron_missinghits)el.SetMissingHits(electron_missinghits->at(iel));
+    el.SetSNUID(electron_electronID_snu->at(iel));
+    el.SetPassVeto(electron_electronID_veto->at(iel));
+    el.SetPassLoose(electron_electronID_loose->at(iel));
+    el.SetPassMedium(electron_electronID_medium->at(iel));
+    el.SetPassTight(electron_electronID_tight->at(iel));
+    if(electron_electronID_hlt)el.SetPassHLT(electron_electronID_hlt->at(iel));
     /// HEEP
-    //el.SetPassHEEP(electrons_electronID_heep->at(iel));
+    //el.SetPassHEEP(electron_electronID_heep->at(iel));
 
     // MVA
-    el.SetPassMVATrigMedium(electrons_electronID_mva_trig_medium->at(iel));
-    el.SetPassMVATrigTight(electrons_electronID_mva_trig_tight->at(iel));
-    el.SetPassMVANoTrigMedium(electrons_electronID_mva_medium->at(iel));
-    el.SetPassMVANoTrigTight(electrons_electronID_mva_tight->at(iel));
-    if(electrons_electronID_mva_zz)el.SetPassMVAZZ(electrons_electronID_mva_zz->at(iel));
+    el.SetPassMVATrigMedium(electron_electronID_mva_trig_medium->at(iel));
+    el.SetPassMVATrigTight(electron_electronID_mva_trig_tight->at(iel));
+    el.SetPassMVANoTrigMedium(electron_electronID_mva_medium->at(iel));
+    el.SetPassMVANoTrigTight(electron_electronID_mva_tight->at(iel));
+    if(electron_electronID_mva_zz)el.SetPassMVAZZ(electron_electronID_mva_zz->at(iel));
 
-    el.SetIsPF(electrons_isPF->at(iel));
-    if(electrons_isTrigMVAValid) el.SetIsTrigMVAValid(electrons_isTrigMVAValid->at(iel));
-    //el.SetIsMCMatched(electrons_mcMatched->at(iel));
-    el.SetHasMatchedConvPhot(electrons_passConversionVeto->at(iel));
+    el.SetIsPF(electron_isPF->at(iel));
+    if(electron_isTrigMVAValid) el.SetIsTrigMVAValid(electron_isTrigMVAValid->at(iel));
+    //el.SetIsMCMatched(electron_mcMatched->at(iel));
+    el.SetHasMatchedConvPhot(electron_passConversionVeto->at(iel));
     
-    el.SetTrkVx(electrons_x->at(iel));
-    el.SetTrkVy(electrons_y->at(iel));
-    el.SetTrkVz(electrons_z->at(iel));
+    el.SetTrkVx(electron_x->at(iel));
+    el.SetTrkVy(electron_y->at(iel));
+    el.SetTrkVz(electron_z->at(iel));
     m_logger << DEBUG << "Filling electron Info 4" << SNULogger::endmsg;    
 
     //// Set Is ChargeFlip
@@ -577,20 +531,20 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  
 	  
 	  /// Requirements to make sure no crash or warnings with pt=0
-	if(gen_motherindex->at(it) <= 0)continue;
-	if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+	if(gen_mother_index->at(it) <= 0)continue;
+	if(gen_mother_index->at(it) >= int(gen_pt->size()))continue;
 	if(gen_pt->at(it) < 0.001) continue;
 	
 
-	double match_eta =electrons_eta->at(iel);
-	double match_pt =electrons_pt->at(iel);
-	double match_phi =electrons_phi->at(iel);
+	double match_eta =electron_eta->at(iel);
+	double match_pt =electron_pt->at(iel);
+	double match_phi =electron_phi->at(iel);
 	double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
 
 	
 	
 	/// check for photon conversion veto in DY/ZG                                                                                                                               
-	if(fabs(gen_pdgid->at(it)) ==22){
+	if(fabs(gen_PID->at(it)) ==22){
 	  if(gen_pt->at(it) > 10.){	
 	    if(dr < 0.3){
 	      if(gen_isprompt->at(it) && gen_status->at(it) ==1) {
@@ -600,7 +554,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
 		  // check ph is matched to q or g from matrix element (st 23)
 		  if(gen_status->at(it_ph) ==23){
-		    if(fabs(gen_pdgid->at(it_ph)) < 7 || fabs(gen_pdgid->at(it_ph))==21){
+		    if(fabs(gen_PID->at(it_ph)) < 7 || fabs(gen_PID->at(it_ph))==21){
 		      double drph = sqrt( pow(fabs(gen_eta->at(it_ph) - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( gen_phi->at(it_ph) - gen_phi->at(it))),2.0));
 		      if(drph < 0.05) conv_veto=false;
 		    }
@@ -617,7 +571,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
 	/// Match required to status 1 electron
 	if(gen_status->at(it) != 1) continue;
-	if(fabs(gen_pdgid->at(it)) != 11) continue;
+	if(fabs(gen_PID->at(it)) != 11) continue;
 	if(gen_pt->at(it) < 5.) continue;
 
 	/// Check status 1 electron is not matched already to areco electron
@@ -630,10 +584,10 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	if(matched_in_Dr){
 	  /// This is for multiple matched status 1 el.
 	  /// In case multiple status 1 electrons are matched with same mother check pt
-	  if(gen_motherindex->at(it) == gen_motherindex->at(matched_index)){
+	  if(gen_mother_index->at(it) == gen_mother_index->at(matched_index)){
 	    if (dr < 0.1){
 	      // in case 2+ electrons from same mother electron (conversion) also match in pt
-	      if( fabs(gen_pt->at(it)-electrons_pt->at(iel)) < fabs(gen_pt->at(matched_index)-electrons_pt->at(iel))) matched_index=it;
+	      if( fabs(gen_pt->at(it)-electron_pt->at(iel)) < fabs(gen_pt->at(matched_index)-electron_pt->at(iel))) matched_index=it;
 	    }
 	  }
 	  else if ((dr < min_Dr) ){
@@ -665,14 +619,14 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	}
       }// end of gen loop to find status 1 electron
 	
-	//cout << iel << " " << electrons_pt->at(iel) << " " << electrons_eta->at(iel) << " " << electrons_phi->at(iel) << " " << conv_veto << endl;
+	//cout << iel << " " << electron_pt->at(iel) << " " << electron_eta->at(iel) << " " << electron_phi->at(iel) << " " << conv_veto << endl;
 	
       ///// treat case where there is a matched status 1 electron:
       //// classify into prompt:Fake:FromTau
 
       if(matched_in_Dr){
 	/// Find closest non electron ancesteror
-	float pdgid = gen_pdgid->at(matched_index);
+	float pdgid = gen_PID->at(matched_index);
 
 	// mc_pdgid = closest matched status 1 pdgid
 	mc_pdgid= int(pdgid);
@@ -680,15 +634,15 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	// mindex = mother index: will loop to find first non el mother
 	int mindex= matched_index;
 
-	while ( (fabs(gen_pdgid->at(mindex)) == 11)) {
-	  pdgid = gen_pdgid->at(mindex);
-	  mindex=gen_motherindex->at(mindex);
+	while ( (fabs(gen_PID->at(mindex)) == 11)) {
+	  pdgid = gen_PID->at(mindex);
+	  mindex=gen_mother_index->at(mindex);
 	}
 
 	/// pdgid is now of electron from non electron mother
 	//  mindex = index for mother of non electron ancestor
 	
-	if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
+	if( (fabs(gen_PID->at(mindex)) == 23) || (fabs(gen_PID->at(mindex)) == 24)) {
 	  /// Check if el from Z/W is CF and if it is from a photon conversion
 	  
 	  eltype=1;
@@ -698,12 +652,12 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  /// In case of a conversion i.e  Z->ee->eephoton->eeee the status 23 electorn decays to 3 electrons e+e+e- or e-e-e+
 	  bool isthirdel_fromconv(false);
 	  for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
-	    if(gen_motherindex->at(itx) <= 0)continue;
-	    if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
+	    if(gen_mother_index->at(itx) <= 0)continue;
+	    if(gen_mother_index->at(itx) >= int(gen_pt->size()))continue;
 	    if(gen_pt->at(itx) < 0.001) continue;
-	    if(fabs(gen_pdgid->at(itx)) ==11) {
-	      if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) { 
-		charge_sum+= gen_pdgid->at(itx); n_el_from_el++;
+	    if(fabs(gen_PID->at(itx)) ==11) {
+	      if(gen_mother_index->at(itx) == gen_mother_index->at(matched_index)) { 
+		charge_sum+= gen_PID->at(itx); n_el_from_el++;
 		if(n_el_from_el==3){
 		  if(itx == matched_index) isthirdel_fromconv=true;
 		}
@@ -719,7 +673,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  /// Two methods: 
 	  /// 1) check pdgid of status 1 el vs mother. if < 0 it is a converison
 	  /// 2) In case closest status 1 el is not opposite charge truth check number of electrons from mother if 3 it is a conversion
-	  if((gen_pdgid->at(matched_index)  * pdgid) < 0 )  {el.SetIsPhotonConversion(true);           eltype=2;} 
+	  if((gen_PID->at(matched_index)  * pdgid) < 0 )  {el.SetIsPhotonConversion(true);           eltype=2;} 
 	  else  el.SetIsPhotonConversion(false);
 	  
 	  
@@ -728,7 +682,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    if(n_el_from_el ==5&& (fabs(charge_sum) == 11)) { eltype=3; el.SetIsPhotonConversion(true); }
 	  }
 	  else{
-	    if(pdgid * electrons_q->at(iel) > 0 )  {
+	    if(pdgid * electron_q->at(iel) > 0 )  {
 	      if(n_el_from_el ==3&& (fabs(charge_sum) == 11)) { eltype=3; el.SetIsPhotonConversion(true);}
 	      if(n_el_from_el ==5&& (fabs(charge_sum) == 11)) { eltype=3; el.SetIsPhotonConversion(true);}
 	    }
@@ -736,7 +690,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
 	  /// Check if it is a chargeflip.
 	  /// Either from a conversion or just reconstructed charge is wrong
-	  if(pdgid * electrons_q->at(iel) > 0 )    
+	  if(pdgid * electron_q->at(iel) > 0 )    
 	    { el.SetIsChargeFlip(true); 
 	      if(eltype == 2 || eltype == 3){
 		if(eltype == 2) eltype=4;
@@ -748,13 +702,13 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  else     el.SetIsChargeFlip(false);
 	  
 	  mother_index=mindex;
-	  mother_pdgid=gen_pdgid->at(mindex);
+	  mother_pdgid=gen_PID->at(mindex);
 	  isprompt=true; /// means is prompt
 	  
 	}/// end of Z/W
 	else {
 	  if(gen_status->at(mindex) == 2){
-	    if(fabs(gen_pdgid->at(mindex)) > 50) {isprompt=false; mother_pdgid=gen_pdgid->at(mindex); mother_index=mindex; from_tau=false;
+	    if(fabs(gen_PID->at(mindex)) > 50) {isprompt=false; mother_pdgid=gen_PID->at(mindex); mother_index=mindex; from_tau=false;
 	      eltype=7;
 	      
 	      if(gen_isprompt->at(matched_index)){
@@ -771,12 +725,12 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    }
 	    else {
 	      isprompt=true;
-	      mother_pdgid=gen_pdgid->at(mindex); mother_index=mindex; from_tau=false;
+	      mother_pdgid=gen_PID->at(mindex); mother_index=mindex; from_tau=false;
 	      eltype=8;
 	      
 	      
-	      if(fabs(gen_pdgid->at(mindex)) == 22){
-		if(fabs(gen_pdgid->at(gen_motherindex->at(mindex))) > 50){
+	      if(fabs(gen_PID->at(mindex)) == 22){
+		if(fabs(gen_PID->at(gen_mother_index->at(mindex))) > 50){
 		  eltype=9;
 		}
 		else {
@@ -785,32 +739,32 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	      }
 	    }
 	    
-	    if(fabs(gen_pdgid->at(mindex)) == 15){
+	    if(fabs(gen_PID->at(mindex)) == 15){
 	      eltype=11;
 
-	      isprompt=true; mother_pdgid=gen_pdgid->at(mindex);  mother_index=mindex; from_tau=true;
+	      isprompt=true; mother_pdgid=gen_PID->at(mindex);  mother_index=mindex; from_tau=true;
 	      // Check if el from tau  is CF
 	      
 	      int n_el_from_el=0;
 	      float charge_sum=0.;
 	      for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
 		if(itx == matched_index) continue;
-		if(gen_motherindex->at(itx) <= 0)continue;
-		if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
+		if(gen_mother_index->at(itx) <= 0)continue;
+		if(gen_mother_index->at(itx) >= int(gen_pt->size()))continue;
 		if(gen_pt->at(itx) < 0.001) continue;
-		if(fabs(gen_pdgid->at(itx)) ==11) {
-		  if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) { charge_sum+= gen_pdgid->at(itx); n_el_from_el++;
+		if(fabs(gen_PID->at(itx)) ==11) {
+		  if(gen_mother_index->at(itx) == gen_mother_index->at(matched_index)) { charge_sum+= gen_PID->at(itx); n_el_from_el++;
 		  }
 		}
 	      }// end of truth loop to check Conv
-	      if((gen_pdgid->at(matched_index)  * pdgid) < 0 )  el.SetIsPhotonConversion(true);
+	      if((gen_PID->at(matched_index)  * pdgid) < 0 )  el.SetIsPhotonConversion(true);
 	      else  el.SetIsPhotonConversion(false);
 	      if(n_el_from_el ==3&& (fabs(charge_sum) == 11))  el.SetIsPhotonConversion(true);
 	      if(n_el_from_el ==5&& (fabs(charge_sum) == 11))  el.SetIsPhotonConversion(true);
 
-	      if(fabs(gen_pdgid->at(gen_motherindex->at(mother_index))) > 50) {isprompt=false; eltype=12;}
+	      if(fabs(gen_PID->at(gen_mother_index->at(mother_index))) > 50) {isprompt=false; eltype=12;}
 	      
-	      if(pdgid * electrons_q->at(iel) > 0 )     {el.SetIsChargeFlip(true); eltype=13; }
+	      if(pdgid * electron_q->at(iel) > 0 )     {el.SetIsChargeFlip(true); eltype=13; }
 	      else     el.SetIsChargeFlip(false);
 	    }
 	    
@@ -824,11 +778,11 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    bool isthirdel_fromconv(false);
 	    bool neutrino_invertex(false);
 	    for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
-	      if(gen_motherindex->at(itx) <= 0)continue;
-	      if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
+	      if(gen_mother_index->at(itx) <= 0)continue;
+	      if(gen_mother_index->at(itx) >= int(gen_pt->size()))continue;
 	      if(gen_pt->at(itx) < 0.001) continue;
-	      if(fabs(gen_pdgid->at(itx)) ==11) {
-		if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) {  n_el_from_eg++;
+	      if(fabs(gen_PID->at(itx)) ==11) {
+		if(gen_mother_index->at(itx) == gen_mother_index->at(matched_index)) {  n_el_from_eg++;
 		  if(n_el_from_eg==3){isthirdel_fromconv=true; }
 		  if(n_el_from_eg==5){isthirdel_fromconv=true; }
 		  if(gen_status->at(itx) ==1){
@@ -839,11 +793,11 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 		}
 	      }
 	      
-	      if(fabs(gen_pdgid->at(itx)) ==12) {
+	      if(fabs(gen_PID->at(itx)) ==12) {
 
-		int index_mother_nu=gen_motherindex->at(itx);
+		int index_mother_nu=gen_mother_index->at(itx);
 		while (fabs(index_mother_nu) ==12){
-		  index_mother_nu=gen_motherindex->at(index_mother_nu);
+		  index_mother_nu=gen_mother_index->at(index_mother_nu);
 		}
 		
 		if(index_mother_nu == mindex) {
@@ -860,24 +814,24 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    }
 
 
-	    if((gen_pdgid->at(matched_index)  * pdgid) < 0 )  {el.SetIsPhotonConversion(true);  eltype=17;}
+	    if((gen_PID->at(matched_index)  * pdgid) < 0 )  {el.SetIsPhotonConversion(true);  eltype=17;}
 	    else el.SetIsPhotonConversion(false);
 	    
 	    if(n_el_from_eg ==3&&!isthirdel_fromconv)  {el.SetIsPhotonConversion(true); eltype=18;}
 	    if(isthirdel_fromconv&&n_el_from_eg ==3){
-	      if(pdgid * electrons_q->at(iel) > 0 )   {
+	      if(pdgid * electron_q->at(iel) > 0 )   {
 		el.SetIsPhotonConversion(true);
 		eltype=18;
 	      }
 	    }
 	    if(isthirdel_fromconv&&n_el_from_eg ==5){
-              if(pdgid * electrons_q->at(iel) > 0 )   {
+              if(pdgid * electron_q->at(iel) > 0 )   {
                 el.SetIsPhotonConversion(true);
                 eltype=18;
               }
             }
 
-	    if(pdgid * electrons_q->at(iel) > 0 )  {
+	    if(pdgid * electron_q->at(iel) > 0 )  {
 	      el.SetIsChargeFlip(true);
 	      if(eltype==17  || eltype == 18){
 		if(eltype==17 ) eltype=19;
@@ -889,7 +843,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    
 	    /// speacial treatment for signal 
 
-	    if( fabs(gen_pdgid->at(mindex))>= 9900012 &&  fabs(gen_pdgid->at(mindex)) < 9900025 )mother_pdgid= gen_pdgid->at(mindex);
+	    if( fabs(gen_PID->at(mindex))>= 9900012 &&  fabs(gen_PID->at(mindex)) < 9900025 )mother_pdgid= gen_PID->at(mindex);
 	    	    
 	    
 	  }  // not gen status 2
@@ -898,12 +852,12 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       else{
 	if(gen_pt){
 	  for (UInt_t it=0; it< gen_pt->size(); it++ ){
-	    if(gen_motherindex->at(it) <= 0)continue;
-	    if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+	    if(gen_mother_index->at(it) <= 0)continue;
+	    if(gen_mother_index->at(it) >= int(gen_pt->size()))continue;
 	    if(gen_pt->at(it) < 0.001) continue;
 	    
-	    double match_eta =electrons_eta->at(iel);
-	    double match_phi =electrons_phi->at(iel);
+	    double match_eta =electron_eta->at(iel);
+	    double match_phi =electron_phi->at(iel);
 	    double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
 	  
 	    bool already_matched=false;
@@ -912,27 +866,27 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    }
 	    
 	    // in coversion case  2 matched electrons to one photon
-	    if(fabs(gen_pdgid->at(it)) != 22 && already_matched) continue;
+	    if(fabs(gen_PID->at(it)) != 22 && already_matched) continue;
 	    
 	    if (dr <0.1){
 	      matched_in_Dr=true;
-	      int mindex= gen_motherindex->at(it);
-	      float pdgid = gen_pdgid->at(it);
+	      int mindex= gen_mother_index->at(it);
+	      float pdgid = gen_PID->at(it);
 
 	      
 	      /// Unlikely to have mother as electron but just in case
-	      while ( (fabs(gen_pdgid->at((mindex))) == 11)) {
-		mindex=gen_motherindex->at(mindex);
+	      while ( (fabs(gen_PID->at((mindex))) == 11)) {
+		mindex=gen_mother_index->at(mindex);
 	      }
 	      // isprompt = false since it failed status 1 matching
 	      isprompt=false;
 	      /// mother index of first non electron
 	      int grandmother =0;
-	      if(gen_motherindex->at(mindex) > 0)grandmother=gen_pdgid->at(gen_motherindex->at(mindex));
-	      mother_pdgid=gen_pdgid->at(mindex);
+	      if(gen_mother_index->at(mindex) > 0)grandmother=gen_PID->at(gen_mother_index->at(mindex));
+	      mother_pdgid=gen_PID->at(mindex);
 	      mother_index=mindex;
 	      matched_index = it;
-	      mc_pdgid= int(gen_pdgid->at(it));
+	      mc_pdgid= int(gen_PID->at(it));
 	      if(fabs(pdgid) == 22) {
 
 		if(fabs(mother_pdgid) > 50) eltype=22;
@@ -941,7 +895,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 		//// This case is not a conversion
 		//el.SetIsPhotonConversion(true);
 		
-		//if(gen_pdgid->at(gen_motherindex->at(it)) * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
+		//if(gen_PID->at(gen_mother_index->at(it)) * electron_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
 		//else     el.SetIsChargeFlip(false);
 		
 		from_tau=false;
@@ -1028,12 +982,12 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  if(!(gen_istaudecayproduct->at(matched_index)   || gen_isprompttaudecayproduct->at(matched_index))){
 	    //cout << "matched as prompt yet status flag is not prompt" << endl;
 	    //cout << "matched_index = " << matched_index << endl;
-	    //cout << "reco "<< electrons_pt->at(iel)<< " " << electrons_eta->at(iel)  << " " << electrons_phi->at(iel) << endl;;
+	    //cout << "reco "<< electron_pt->at(iel)<< " " << electron_eta->at(iel)  << " " << electron_phi->at(iel) << endl;;
 	    //for (UInt_t it=0; it< gen_pt->size(); it++ ){
-	    //	      if(gen_motherindex->at(it) <= 0)continue;
-	    //if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+	    //	      if(gen_mother_index->at(it) <= 0)continue;
+	    //if(gen_mother_index->at(it) >= int(gen_pt->size()))continue;
 	    //if(gen_pt->at(it) < 0.1) continue;
-	    //cout << it << " " << gen_pt->at(it)  << " " << gen_eta->at(it) << " " << gen_phi->at(it)<< " " << gen_pdgid->at(it) << "  " << gen_status->at(it) << " " << gen_pdgid->at(gen_motherindex->at(it)) <<" "  <<  gen_motherindex->at(it) << " " << gen_isprompt->at(it)  <<endl;
+	    //cout << it << " " << gen_pt->at(it)  << " " << gen_eta->at(it) << " " << gen_phi->at(it)<< " " << gen_PID->at(it) << "  " << gen_status->at(it) << " " << gen_PID->at(gen_mother_index->at(it)) <<" "  <<  gen_mother_index->at(it) << " " << gen_isprompt->at(it)  <<endl;
 	      
 	    //}
 	  }
@@ -1072,7 +1026,7 @@ void SKTreeFiller::ERRORMessage(TString comment){
 std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
 
   std::vector<KGenJet> genjets;
-  if(isData) return genjets;
+  if(IsData) return genjets;
   if(!SNUinput){
     if(k_inputgenjets){
       for(std::vector<KGenJet>::iterator kit  = k_inputgenjets->begin(); kit != k_inputgenjets->end(); kit++){
@@ -1082,9 +1036,9 @@ std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
     return genjets;
   }
   if(k_cat_version < 3){
-    for (UInt_t ijet=0; ijet< slimmedGenJets_pt->size(); ijet++) {
+    for (UInt_t ijet=0; ijet< slimmedGenJet_pt->size(); ijet++) {
       KGenJet jet;
-      jet.SetPtEtaPhiE(slimmedGenJets_pt->at(ijet), slimmedGenJets_eta->at(ijet), slimmedGenJets_phi->at(ijet), slimmedGenJets_energy->at(ijet));
+      jet.SetPtEtaPhiE(slimmedGenJet_pt->at(ijet), slimmedGenJet_eta->at(ijet), slimmedGenJet_phi->at(ijet), slimmedGenJet_energy->at(ijet));
       genjets.push_back(jet);
     }
     return genjets;
@@ -1114,88 +1068,88 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     return jets;
   }
 
-  for (UInt_t ijet=0; ijet< jets_eta->size(); ijet++) {
+  for (UInt_t ijet=0; ijet< jet_eta->size(); ijet++) {
     KJet jet;
-    if(jets_pt->at(ijet) != jets_pt->at(ijet)) continue;
+    if(jet_pt->at(ijet) != jet_pt->at(ijet)) continue;
 
-    if(isData){
-      jet.SetPtEtaPhiE(jets_pt->at(ijet), jets_eta->at(ijet), jets_phi->at(ijet), jets_energy->at(ijet));
+    if(IsData){
+      jet.SetPtEtaPhiE(jet_pt->at(ijet), jet_eta->at(ijet), jet_phi->at(ijet), jet_energy->at(ijet));
     }
     else{
-      jet.SetPtEtaPhiE(jets_pt->at(ijet), jets_eta->at(ijet), jets_phi->at(ijet), jets_energy->at(ijet));
+      jet.SetPtEtaPhiE(jet_pt->at(ijet), jet_eta->at(ijet), jet_phi->at(ijet), jet_energy->at(ijet));
 
       // https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution      
       /// Measurements show that the jet energy resolution (JER) in data is worse than in the simulation and the jets in MC need to be smeared to describe the data.
 
-      jet*= jets_smearedRes->at(ijet);
+      jet*= jet_smearedRes->at(ijet); // JSKIM
       jet.SetIsMCSmeared(true);
     }
-    jet.SetJetPassLooseID(jets_isLoose->at(ijet));
-    jet.SetJetPassTightID(jets_isTight->at(ijet));
-    jet.SetJetPassTightLepVetoID(jets_isTightLepVetoJetID->at(ijet));
+    jet.SetJetPassLooseID(jet_isLoose->at(ijet));
+    jet.SetJetPassTightID(jet_isTight->at(ijet));
+    jet.SetJetPassTightLepVetoID(jet_isTightLepVetoJetID->at(ijet));
     
-    jet.SetJetPileupIDMVA(jets_PileupJetId->at(ijet));
+    jet.SetJetPileupIDMVA(jet_PileupJetId->at(ijet));
 
-    if(jets_PileupJetId){ 
-      if(std::abs(jets_eta->at(ijet)) < 2.6){
-	if(jets_PileupJetId->at(ijet) > 0.3) jet.SetJetPileupIDLooseWP(true);
+    if(jet_PileupJetId){ 
+      if(std::abs(jet_eta->at(ijet)) < 2.6){
+	if(jet_PileupJetId->at(ijet) > 0.3) jet.SetJetPileupIDLooseWP(true);
 	else jet.SetJetPileupIDLooseWP(false);
-	if(jets_PileupJetId->at(ijet) > 0.7) jet.SetJetPileupIDMediumWP(true);
+	if(jet_PileupJetId->at(ijet) > 0.7) jet.SetJetPileupIDMediumWP(true);
 	else jet.SetJetPileupIDMediumWP(false);
-	if(jets_PileupJetId->at(ijet) > 0.9)jet.SetJetPileupIDTightWP(true);
+	if(jet_PileupJetId->at(ijet) > 0.9)jet.SetJetPileupIDTightWP(true);
 	else jet.SetJetPileupIDTightWP(false);
       }
       else{
-	if(jets_PileupJetId->at(ijet) > -0.55) jet.SetJetPileupIDLooseWP(true);
+	if(jet_PileupJetId->at(ijet) > -0.55) jet.SetJetPileupIDLooseWP(true);
         else jet.SetJetPileupIDLooseWP(false);
-        if(jets_PileupJetId->at(ijet) > -0.3) jet.SetJetPileupIDMediumWP(true);
+        if(jet_PileupJetId->at(ijet) > -0.3) jet.SetJetPileupIDMediumWP(true);
 	else jet.SetJetPileupIDMediumWP(false);
-        if(jets_PileupJetId->at(ijet) > -0.1)jet.SetJetPileupIDTightWP(true);
+        if(jet_PileupJetId->at(ijet) > -0.1)jet.SetJetPileupIDTightWP(true);
 	else jet.SetJetPileupIDTightWP(false);
       }
     }
     
     
     /// BTAG variables
-    if(jets_CSVInclV2) jet.SetBTagInfo(snu::KJet::CSVv2, jets_CSVInclV2->at(ijet));
-    if(jets_CMVAV2)    jet.SetBTagInfo(snu::KJet::cMVAv2, jets_CMVAV2->at(ijet));
-    if(jets_JetProbBJet)  jet.SetBTagInfo(snu::KJet::JETPROB, jets_JetProbBJet->at(ijet)); 
+    if(jet_CSVInclV2) jet.SetBTagInfo(snu::KJet::CSVv2, jet_CSVInclV2->at(ijet));
+    if(jet_CMVAV2)    jet.SetBTagInfo(snu::KJet::cMVAv2, jet_CMVAV2->at(ijet));
+    if(jet_JetProbBJet)  jet.SetBTagInfo(snu::KJet::JETPROB, jet_JetProbBJet->at(ijet)); 
     
-    //if(jets_iCSVCvsL) {
-    //      if(jets_iCSVCvsL->size() > 0)jet.SetCTagInfo(snu::KJet::iCSVCvsL, jets_iCSVCvsL->at(ijet));
+    //if(jet_iCSVCvsL) {
+    //      if(jet_iCSVCvsL->size() > 0)jet.SetCTagInfo(snu::KJet::iCSVCvsL, jet_iCSVCvsL->at(ijet));
     //    }
-    if(jets_CCvsLT){
-      if(jets_CCvsLT->size() > 0) jet.SetCTagInfo(snu::KJet::CCvsLT, jets_CCvsLT->at(ijet));
+    if(jet_CCvsLT){
+      if(jet_CCvsLT->size() > 0) jet.SetCTagInfo(snu::KJet::CCvsLT, jet_CCvsLT->at(ijet));
     }
-    if(jets_CCvsBT){
-      if(jets_CCvsBT->size() > 0)jet.SetCTagInfo(snu::KJet::CCvsBT, jets_CCvsBT->at(ijet));
+    if(jet_CCvsBT){
+      if(jet_CCvsBT->size() > 0)jet.SetCTagInfo(snu::KJet::CCvsBT, jet_CCvsBT->at(ijet));
     }
-    jet.SetVtxMass(jets_vtxMass->at(ijet));
-    jet.SetVtx3DVal(jets_vtx3DVal->at(ijet));
-    jet.SetVtx3DSig(jets_vtx3DSig->at(ijet));
-    jet.SetVtxNTracks(jets_vtxNtracks->at(ijet));
+    jet.SetVtxMass(jet_vtxMass->at(ijet));
+    jet.SetVtx3DVal(jet_vtx3DVal->at(ijet));
+    jet.SetVtx3DSig(jet_vtx3DSig->at(ijet));
+    jet.SetVtxNTracks(jet_vtxNtracks->at(ijet));
     
     // flavour
-    jet.SetJetPartonFlavour(jets_partonFlavour->at(ijet));
-    jet.SetJetHadronFlavour(jets_hadronFlavour->at(ijet));    
-    jet.SetJetPartonPdgId(jets_partonPdgId->at(ijet));
+    jet.SetJetPartonFlavour(jet_partonFlavour->at(ijet));
+    jet.SetJetHadronFlavour(jet_hadronFlavour->at(ijet));    
+    jet.SetJetPartonPdgId(jet_partonPdgId->at(ijet));
     
-    jet.SetJetChargedEmEF(jets_chargedEmEnergyFraction->at(ijet));
+    jet.SetJetChargedEmEF(jet_chargedEmEnergyFraction->at(ijet));
     /// JEC and uncertainties
-    jet.SetJetScaledDownEnergy(jets_shiftedEnDown->at(ijet));
-    jet.SetJetScaledUpEnergy(jets_shiftedEnUp->at(ijet));
-    jet.SetSmearedResDown(jets_smearedResDown->at(ijet));
-    jet.SetSmearedResUp(jets_smearedResUp->at(ijet));
-    jet.SetSmearedRes(jets_smearedRes->at(ijet));
+    jet.SetJetScaledDownEnergy(jet_shiftedEnDown->at(ijet));
+    jet.SetJetScaledUpEnergy(jet_shiftedEnUp->at(ijet));
+    jet.SetSmearedResDown(jet_smearedResDown->at(ijet));
+    jet.SetSmearedResUp(jet_smearedResUp->at(ijet));
+    jet.SetSmearedRes(jet_smearedRes->at(ijet));
     
-    if(jets_l1jetcorr){
-      jet.SetJetRawPt(jets_rawpt->at(ijet));
-      jet.SetJetRawEnergy(jets_rawenergy->at(ijet));
-      jet.SetL1JetCorr(jets_l1jetcorr->at(ijet));
-      jet.SetL2JetCorr(jets_l2jetcorr->at(ijet));
-      jet.SetL3JetCorr(jets_l3jetcorr->at(ijet));
-      jet.SetL2L3ResJetCorr(jets_l2l3resjetcorr->at(ijet));
-      jet.SetJetArea(jets_area->at(ijet));
+    if(jet_l1jetcorr){
+      jet.SetJetRawPt(jet_rawpt->at(ijet));
+      jet.SetJetRawEnergy(jet_rawenergy->at(ijet));
+      jet.SetL1JetCorr(jet_l1jetcorr->at(ijet));
+      jet.SetL2JetCorr(jet_l2jetcorr->at(ijet));
+      jet.SetL3JetCorr(jet_l3jetcorr->at(ijet));
+      jet.SetL2L3ResJetCorr(jet_l2l3resjetcorr->at(ijet));
+      jet.SetJetArea(jet_area->at(ijet));
     }
 
     jets.push_back(jet);
@@ -1224,87 +1178,87 @@ std::vector<KFatJet> SKTreeFiller::GetAllFatJets(){
     return fatjets;
   }
 
-  for (UInt_t ijet=0; ijet< fatjets_eta->size(); ijet++) {
+  for (UInt_t ijet=0; ijet< fatjet_eta->size(); ijet++) {
     KFatJet jet;
-    if(fatjets_pt->at(ijet) != fatjets_pt->at(ijet)) continue;
-    jet.SetPtEtaPhiE(fatjets_pt->at(ijet), fatjets_eta->at(ijet), fatjets_phi->at(ijet), fatjets_energy->at(ijet));
+    if(fatjet_pt->at(ijet) != fatjet_pt->at(ijet)) continue;
+    jet.SetPtEtaPhiE(fatjet_pt->at(ijet), fatjet_eta->at(ijet), fatjet_phi->at(ijet), fatjet_energy->at(ijet));
 
-    jet.SetJetPassLooseID(fatjets_isLoose->at(ijet));
-    jet.SetJetPassTightID(fatjets_isTight->at(ijet));
-    jet.SetJetPassTightLepVetoID(fatjets_isTightLepVetoJetID->at(ijet));
+    jet.SetJetPassLooseID(fatjet_isLoose->at(ijet));
+    jet.SetJetPassTightID(fatjet_isTight->at(ijet));
+    jet.SetJetPassTightLepVetoID(fatjet_isTightLepVetoJetID->at(ijet));
 
-    jet.SetJetPileupIDMVA(fatjets_PileupJetId->at(ijet));
+    jet.SetJetPileupIDMVA(fatjet_PileupJetId->at(ijet));
 
-    if(fatjets_PileupJetId){
-      if(std::abs(fatjets_eta->at(ijet)) < 2.6){
-        if(fatjets_PileupJetId->at(ijet) > 0.3) jet.SetJetPileupIDLooseWP(true);
+    if(fatjet_PileupJetId){
+      if(std::abs(fatjet_eta->at(ijet)) < 2.6){
+        if(fatjet_PileupJetId->at(ijet) > 0.3) jet.SetJetPileupIDLooseWP(true);
         else jet.SetJetPileupIDLooseWP(false);
-        if(fatjets_PileupJetId->at(ijet) > 0.7) jet.SetJetPileupIDMediumWP(true);
+        if(fatjet_PileupJetId->at(ijet) > 0.7) jet.SetJetPileupIDMediumWP(true);
         else jet.SetJetPileupIDMediumWP(false);
-        if(fatjets_PileupJetId->at(ijet) > 0.9)jet.SetJetPileupIDTightWP(true);
+        if(fatjet_PileupJetId->at(ijet) > 0.9)jet.SetJetPileupIDTightWP(true);
         else jet.SetJetPileupIDTightWP(false);
       }
       else{
-        if(fatjets_PileupJetId->at(ijet) > -0.55) jet.SetJetPileupIDLooseWP(true);
+        if(fatjet_PileupJetId->at(ijet) > -0.55) jet.SetJetPileupIDLooseWP(true);
         else jet.SetJetPileupIDLooseWP(false);
-        if(fatjets_PileupJetId->at(ijet) > -0.3) jet.SetJetPileupIDMediumWP(true);
+        if(fatjet_PileupJetId->at(ijet) > -0.3) jet.SetJetPileupIDMediumWP(true);
         else jet.SetJetPileupIDMediumWP(false);
-        if(fatjets_PileupJetId->at(ijet) > -0.1)jet.SetJetPileupIDTightWP(true);
+        if(fatjet_PileupJetId->at(ijet) > -0.1)jet.SetJetPileupIDTightWP(true);
         else jet.SetJetPileupIDTightWP(false);
       }
     }
 
 
     /// BTAG variables                                                                                                                                                                                                                                                                                          
-    if(fatjets_CSVInclV2) jet.SetBTagInfo(snu::KFatJet::CSVv2, fatjets_CSVInclV2->at(ijet));
-    if(fatjets_CMVAV2)    jet.SetBTagInfo(snu::KFatJet::cMVAv2, fatjets_CMVAV2->at(ijet));
-    if(fatjets_JetProbBJet)  jet.SetBTagInfo(snu::KFatJet::JETPROB, fatjets_JetProbBJet->at(ijet));
+    if(fatjet_CSVInclV2) jet.SetBTagInfo(snu::KFatJet::CSVv2, fatjet_CSVInclV2->at(ijet));
+    if(fatjet_CMVAV2)    jet.SetBTagInfo(snu::KFatJet::cMVAv2, fatjet_CMVAV2->at(ijet));
+    if(fatjet_JetProbBJet)  jet.SetBTagInfo(snu::KFatJet::JETPROB, fatjet_JetProbBJet->at(ijet));
 
-    if(fatjets_CCvsLT){
-      if(fatjets_CCvsLT->size() > 0) jet.SetCTagInfo(snu::KFatJet::CCvsLT, fatjets_CCvsLT->at(ijet));
+    if(fatjet_CCvsLT){
+      if(fatjet_CCvsLT->size() > 0) jet.SetCTagInfo(snu::KFatJet::CCvsLT, fatjet_CCvsLT->at(ijet));
     }
-    if(fatjets_CCvsBT){
-      if(fatjets_CCvsBT->size() > 0)jet.SetCTagInfo(snu::KFatJet::CCvsBT, fatjets_CCvsBT->at(ijet));
+    if(fatjet_CCvsBT){
+      if(fatjet_CCvsBT->size() > 0)jet.SetCTagInfo(snu::KFatJet::CCvsBT, fatjet_CCvsBT->at(ijet));
     }
-    jet.SetVtxMass(fatjets_vtxMass->at(ijet));
-    jet.SetVtx3DVal(fatjets_vtx3DVal->at(ijet));
-    jet.SetVtx3DSig(fatjets_vtx3DSig->at(ijet));
-    jet.SetVtxNTracks(fatjets_vtxNtracks->at(ijet));
+    jet.SetVtxMass(fatjet_vtxMass->at(ijet));
+    jet.SetVtx3DVal(fatjet_vtx3DVal->at(ijet));
+    jet.SetVtx3DSig(fatjet_vtx3DSig->at(ijet));
+    jet.SetVtxNTracks(fatjet_vtxNtracks->at(ijet));
 
     // flavour                                                                                                                                                                                                                                                                                                  
-    jet.SetJetPartonFlavour(fatjets_partonFlavour->at(ijet));
-    jet.SetJetHadronFlavour(fatjets_hadronFlavour->at(ijet));
-    jet.SetJetPartonPdgId(fatjets_partonPdgId->at(ijet));
+    jet.SetJetPartonFlavour(fatjet_partonFlavour->at(ijet));
+    jet.SetJetHadronFlavour(fatjet_hadronFlavour->at(ijet));
+    jet.SetJetPartonPdgId(fatjet_partonPdgId->at(ijet));
 
-    jet.SetJetChargedEmEF(fatjets_chargedEmEnergyFraction->at(ijet));
+    jet.SetJetChargedEmEF(fatjet_chargedEmEnergyFraction->at(ijet));
 
-    jet.SetJetScaledDownEnergy(fatjets_shiftedEnDown->at(ijet));
-    jet.SetJetScaledUpEnergy(fatjets_shiftedEnUp->at(ijet));
-    jet.SetSmearedResDown(fatjets_smearedResDown->at(ijet));
-    jet.SetSmearedResUp(fatjets_smearedResUp->at(ijet));
-    jet.SetSmearedRes(fatjets_smearedRes->at(ijet));
+    jet.SetJetScaledDownEnergy(fatjet_shiftedEnDown->at(ijet));
+    jet.SetJetScaledUpEnergy(fatjet_shiftedEnUp->at(ijet));
+    jet.SetSmearedResDown(fatjet_smearedResDown->at(ijet));
+    jet.SetSmearedResUp(fatjet_smearedResUp->at(ijet));
+    jet.SetSmearedRes(fatjet_smearedRes->at(ijet));
 
 
-    jet.SetTau1(fatjets_tau1->at(ijet));
-    jet.SetTau2(fatjets_tau2->at(ijet));
-    jet.SetTau3(fatjets_tau3->at(ijet));
+    jet.SetTau1(fatjet_tau1->at(ijet));
+    jet.SetTau2(fatjet_tau2->at(ijet));
+    jet.SetTau3(fatjet_tau3->at(ijet));
 
-    jet.SetPrunedMass(fatjets_prunedmass->at(ijet));
-    jet.SetSoftDropMass(fatjets_softdropmass->at(ijet));
+    jet.SetPrunedMass(fatjet_prunedmass->at(ijet));
+    jet.SetSoftDropMass(fatjet_softdropmass->at(ijet));
 
-    jet.SetPuppiTau1(fatjets_puppi_tau1->at(ijet));
-    jet.SetPuppiTau2(fatjets_puppi_tau2->at(ijet));
-    jet.SetPuppiTau3(fatjets_puppi_tau3->at(ijet));
-    jet.SetPuppiPt(fatjets_puppi_pt->at(ijet));
-    jet.SetPuppiEta(fatjets_puppi_eta->at(ijet));
-    jet.SetPuppiPhi(fatjets_puppi_phi->at(ijet));
-    jet.SetPuppiM(fatjets_puppi_m->at(ijet));
-    if(fatjets_l1jetcorr){
-      jet.SetL1JetCorr(fatjets_l1jetcorr->at(ijet));
-      jet.SetL2JetCorr(fatjets_l2jetcorr->at(ijet));
-      jet.SetL3JetCorr(fatjets_l3jetcorr->at(ijet));
-      jet.SetL2L3ResJetCorr(fatjets_l2l3resjetcorr->at(ijet));
-      jet.SetJetArea(fatjets_area->at(ijet));
+    jet.SetPuppiTau1(fatjet_puppi_tau1->at(ijet));
+    jet.SetPuppiTau2(fatjet_puppi_tau2->at(ijet));
+    jet.SetPuppiTau3(fatjet_puppi_tau3->at(ijet));
+    jet.SetPuppiPt(fatjet_puppi_pt->at(ijet));
+    jet.SetPuppiEta(fatjet_puppi_eta->at(ijet));
+    jet.SetPuppiPhi(fatjet_puppi_phi->at(ijet));
+    jet.SetPuppiM(fatjet_puppi_m->at(ijet));
+    if(fatjet_l1jetcorr){
+      jet.SetL1JetCorr(fatjet_l1jetcorr->at(ijet));
+      jet.SetL2JetCorr(fatjet_l2jetcorr->at(ijet));
+      jet.SetL3JetCorr(fatjet_l3jetcorr->at(ijet));
+      jet.SetL2L3ResJetCorr(fatjet_l2l3resjetcorr->at(ijet));
+      jet.SetJetArea(fatjet_area->at(ijet));
     }
       
     fatjets.push_back(jet);
@@ -1420,8 +1374,8 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       float min_Dr=0.1;
 
       for (UInt_t it=0; it< gen_pt->size(); it++ ){
-        if(gen_motherindex->at(it) <= 0)continue;
-        if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+        if(gen_mother_index->at(it) <= 0)continue;
+        if(gen_mother_index->at(it) >= int(gen_pt->size()))continue;
 	
 	if(gen_pt->at(it) < 5.) continue;
 
@@ -1442,10 +1396,10 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
         /// Match requires to status 1 muon
         if(gen_status->at(it) != 1) continue;
-        if(fabs(gen_pdgid->at(it)) != 13) continue;
+        if(fabs(gen_PID->at(it)) != 13) continue;
 	
 	if(matched_in_Dr){
-	  if(gen_motherindex->at(it) == gen_motherindex->at(matched_index)){
+	  if(gen_mother_index->at(it) == gen_mother_index->at(matched_index)){
 	    if (dr < 0.1){
 	      // in case 2+ electrons from same mother electron (conversion) also match in pt
 	      if( fabs(gen_pt->at(it)-muon_pt->at(ilep)) < fabs(gen_pt->at(matched_index)-muon_pt->at(ilep))) matched_index=it;
@@ -1479,7 +1433,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       
       if(matched_in_Dr){
         /// Find closest non muon ancesteror
-        float pdgid = gen_pdgid->at(matched_index);
+        float pdgid = gen_PID->at(matched_index);
 
         // mc_pdgid = closest matched status 1 pdgid
         mc_pdgid= int(pdgid);
@@ -1487,14 +1441,14 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
         // mindex = mother index: will loop to find first non el mother
         int mindex= matched_index;
 
-        while ( (fabs(gen_pdgid->at(mindex)) == 13)) {
-          pdgid = gen_pdgid->at(mindex);
-          mindex=gen_motherindex->at(mindex);
+        while ( (fabs(gen_PID->at(mindex)) == 13)) {
+          pdgid = gen_PID->at(mindex);
+          mindex=gen_mother_index->at(mindex);
         }
         /// pdgid is now of muon from non muon mother
         //  mindex = index for mother of non muon ancestor
 
-        if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
+        if( (fabs(gen_PID->at(mindex)) == 23) || (fabs(gen_PID->at(mindex)) == 24)) {
 	  /// Check if it is a chargeflip.
           mutype=1;
 	  
@@ -1503,38 +1457,38 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
 	  int n_mu_from_mother=0;
 	  for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
-	    if(gen_motherindex->at(itx) <= 0)continue;
-	    if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
+	    if(gen_mother_index->at(itx) <= 0)continue;
+	    if(gen_mother_index->at(itx) >= int(gen_pt->size()))continue;
 	    if(gen_pt->at(itx) < 0.001) continue;
-	    if(fabs(gen_pdgid->at(itx)) ==13) {
-	      if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) n_mu_from_mother++;
+	    if(fabs(gen_PID->at(itx)) ==13) {
+	      if(gen_mother_index->at(itx) == gen_mother_index->at(matched_index)) n_mu_from_mother++;
 	    }
 	  }
 	  if(n_mu_from_mother == 3)  muon.SetIsPhotonConversion(true);
 	  if(n_mu_from_mother == 5)  muon.SetIsPhotonConversion(true);
           mother_index=mindex;
-          mother_pdgid=gen_pdgid->at(mindex);
+          mother_pdgid=gen_PID->at(mindex);
           isprompt=true; /// means is prompt
         }/// end of Z/W
         else {
           if(gen_status->at(mindex) == 2){
-            if(fabs(gen_pdgid->at(mindex)) > 50) {isprompt=false; mother_pdgid=gen_pdgid->at(mindex); mother_index=mindex; from_tau=false;
+            if(fabs(gen_PID->at(mindex)) > 50) {isprompt=false; mother_pdgid=gen_PID->at(mindex); mother_index=mindex; from_tau=false;
 	      mutype=2;
 	    }
 	    else {
 	      isprompt=true;
 	      mutype=3;
 
-	      if(fabs(gen_pdgid->at(mindex)) == 22){
-		if(fabs(gen_pdgid->at(gen_motherindex->at(mindex))) > 50){
+	      if(fabs(gen_PID->at(mindex)) == 22){
+		if(fabs(gen_PID->at(gen_mother_index->at(mindex))) > 50){
                   mutype=4;
                 }
 		else                   mutype=5;
               } 
 	    }
 	    
-            if(fabs(gen_pdgid->at(mindex)) == 15){
-              isprompt=true; mother_pdgid=gen_pdgid->at(mindex);  mother_index=mindex; from_tau=true;
+            if(fabs(gen_PID->at(mindex)) == 15){
+              isprompt=true; mother_pdgid=gen_PID->at(mindex);  mother_index=mindex; from_tau=true;
               // Check if el from tau  is CF
 	      mutype=6;
 	      if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
@@ -1542,17 +1496,17 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
 	      int n_mu_from_mother=0;
 	      for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
-		if(gen_motherindex->at(itx) <= 0)continue;
-		if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
+		if(gen_mother_index->at(itx) <= 0)continue;
+		if(gen_mother_index->at(itx) >= int(gen_pt->size()))continue;
 		if(gen_pt->at(itx) < 0.001) continue;
-		if(fabs(gen_pdgid->at(itx)) ==13) {
-		  if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) n_mu_from_mother++;
+		if(fabs(gen_PID->at(itx)) ==13) {
+		  if(gen_mother_index->at(itx) == gen_mother_index->at(matched_index)) n_mu_from_mother++;
 		}
 	      }
 	      if(n_mu_from_mother == 3)  muon.SetIsPhotonConversion(true);
 	      if(n_mu_from_mother == 5)  muon.SetIsPhotonConversion(true);
 	     
-	      if(fabs(gen_pdgid->at(gen_motherindex->at(mother_index))) > 50) {isprompt=false; mutype=7;}
+	      if(fabs(gen_PID->at(gen_mother_index->at(mother_index))) > 50) {isprompt=false; mutype=7;}
             }
           }/// end of status 2 check
           else {
@@ -1566,22 +1520,22 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
             bool neutrino_invertex(false);
 
 	    for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
-	      if(gen_motherindex->at(itx) <= 0)continue;
-	      if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
+	      if(gen_mother_index->at(itx) <= 0)continue;
+	      if(gen_mother_index->at(itx) >= int(gen_pt->size()))continue;
 	      if(gen_pt->at(itx) < 0.001) continue;
-	      if(fabs(gen_pdgid->at(itx)) ==13) {
-		if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) n_mu_from_mother++;
+	      if(fabs(gen_PID->at(itx)) ==13) {
+		if(gen_mother_index->at(itx) == gen_mother_index->at(matched_index)) n_mu_from_mother++;
 		if(gen_status->at(itx) ==1){
 		  KTruth truthmu;
 		  truthmu.SetPtEtaPhiE(gen_pt->at(itx), gen_eta->at(itx), gen_phi->at(itx), gen_energy->at(itx));
 		  vmu_tmp.push_back(truthmu);
 		}
 	      }
-	      if(fabs(gen_pdgid->at(itx)) ==14) {
+	      if(fabs(gen_PID->at(itx)) ==14) {
 		
-		int index_mother_nu=gen_motherindex->at(itx);
+		int index_mother_nu=gen_mother_index->at(itx);
 		while (fabs(index_mother_nu) ==14){
-		  index_mother_nu=gen_motherindex->at(index_mother_nu);
+		  index_mother_nu=gen_mother_index->at(index_mother_nu);
 		}
 		
 		if(index_mother_nu == mindex) {
@@ -1604,7 +1558,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
 	    /// speacial treatment for signal                                                                                                                                                                                                                                   
 
-            if( fabs(gen_pdgid->at(mindex))>= 9900012 &&  fabs(gen_pdgid->at(mindex) < 9900025 ))mother_pdgid= gen_pdgid->at(mindex);
+            if( fabs(gen_PID->at(mindex))>= 9900012 &&  fabs(gen_PID->at(mindex) < 9900025 ))mother_pdgid= gen_PID->at(mindex);
 
 
           }
@@ -1613,16 +1567,16 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       else{
 	if(muon_q->size() ==2){
 	  for (UInt_t itxx=0; itxx< gen_pt->size(); itxx++ ){
-            if(gen_motherindex->at(itxx) <= 0)continue;
-            if(gen_motherindex->at(itxx) >= int(gen_pt->size()))continue;
+            if(gen_mother_index->at(itxx) <= 0)continue;
+            if(gen_mother_index->at(itxx) >= int(gen_pt->size()))continue;
             if(gen_pt->at(itxx) < 0.001) continue;
-	    //cout << itxx << " " << gen_pdgid->at(itxx) << " " << gen_pdgid->at(gen_motherindex->at(itxx)) << " " << gen_eta->at(itxx) << " " << gen_phi->at(itxx) << endl;
+	    //cout << itxx << " " << gen_PID->at(itxx) << " " << gen_PID->at(gen_mother_index->at(itxx)) << " " << gen_eta->at(itxx) << " " << gen_phi->at(itxx) << endl;
 	  }
 	}
         if(gen_pt){
 	  for (UInt_t it=0; it< gen_pt->size(); it++ ){
-            if(gen_motherindex->at(it) <= 0)continue;
-            if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+            if(gen_mother_index->at(it) <= 0)continue;
+            if(gen_mother_index->at(it) >= int(gen_pt->size()))continue;
             if(gen_pt->at(it) < 0.001) continue;
 
 	    bool already_matched=false;
@@ -1637,17 +1591,17 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
             if (dr <0.1){
               matched_in_Dr=true;
-              int mindex= gen_motherindex->at(it);
-              float pdgid = gen_pdgid->at(it);
+              int mindex= gen_mother_index->at(it);
+              float pdgid = gen_PID->at(it);
 	      
 	      /// Unlikely to have mother as muon but just in case
-              while ( (fabs(gen_pdgid->at(mindex)) == 13)) {
-                mindex=gen_motherindex->at(mindex);
+              while ( (fabs(gen_PID->at(mindex)) == 13)) {
+                mindex=gen_mother_index->at(mindex);
               }
               // isprompt = false since it failed status 1 matching
               isprompt=false;
               /// mother index of first non muon
-              mother_pdgid=gen_pdgid->at(mindex);
+              mother_pdgid=gen_PID->at(mindex);
               mother_index=mindex;
               matched_index = it;
 	      mc_pdgid= int(pdgid);
@@ -1660,7 +1614,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
               }
 
               int grandmother =0;
-              if(gen_motherindex->at(mindex) > 0)grandmother=gen_pdgid->at(gen_motherindex->at(mindex));
+              if(gen_mother_index->at(mindex) > 0)grandmother=gen_PID->at(gen_mother_index->at(mindex));
 
               if(fabs(pdgid) == 15){
 		from_tau=true;
@@ -1672,15 +1626,15 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
 		}
 	      }
-	      if(fabs(gen_pdgid->at(gen_motherindex->at(it))) == 13){
+	      if(fabs(gen_PID->at(gen_mother_index->at(it))) == 13){
 		mutype=15;
 		int n_mu_from_mother=0;
 		for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
-		  if(gen_motherindex->at(itx) <= 0)continue;
-		  if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
+		  if(gen_mother_index->at(itx) <= 0)continue;
+		  if(gen_mother_index->at(itx) >= int(gen_pt->size()))continue;
 		  if(gen_pt->at(itx) < 0.001) continue;
-		  if(fabs(gen_pdgid->at(itx)) ==13) {
-		    if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) n_mu_from_mother++;
+		  if(fabs(gen_PID->at(itx)) ==13) {
+		    if(gen_mother_index->at(itx) == gen_mother_index->at(matched_index)) n_mu_from_mother++;
 		  }
 		}
 		if(n_mu_from_mother == 3)  muon.SetIsPhotonConversion(true);
@@ -1780,7 +1734,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
   m_logger << DEBUG << "Filling Truth" << SNULogger::endmsg;
   std::vector<snu::KTruth> vtruth;
 
-  if(isData) return vtruth;
+  if(IsData) return vtruth;
 
   int counter=0;
 
@@ -1800,9 +1754,9 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
     if(counter == np)  break;
     KTruth truthp;
     truthp.SetPtEtaPhiE(double(gen_pt->at(it)), double(gen_eta->at(it)), double(gen_phi->at(it)), double(gen_energy->at(it)));
-    truthp.SetParticlePdgId(gen_pdgid->at(it));
+    truthp.SetParticlePdgId(gen_mother_PID->at(it));
     truthp.SetParticleStatus(gen_status->at(it));
-    truthp.SetParticleIndexMother(gen_motherindex->at(it));
+    truthp.SetParticleIndexMother(gen_mother_index->at(it));
     
     if(k_cat_version > 3){
       // To save space set a single int as the flag. 

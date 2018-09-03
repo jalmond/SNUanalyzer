@@ -62,9 +62,14 @@ namespace snu {
     /// MVA
     void SetMVA(double mva);
     void SetZZMVA(double zzmva);
-
+    void SetGSF(double pt, double eta, double phi, double m);
+    void SetSC(double eta, double phi);
+    
+    void SetElVariables(double electron_etaWidth, double electron_phiWidth, double electron_dEtaIn, double electron_dEtaInSeed, double electron_dPhiIn, double electron_sigmaIEtaIEta, double electron_Full5x5_SigmaIEtaIEta, double electron_HoverE, double electron_fbrem, double electron_eOverP);
     //// set   vertex variables
+
     void SetType(int eltype);
+
     void Setdxy(Double_t d_xy);
     void Setdxy_sig(Double_t d_xysig);
     void Setdz(Double_t d_z);
@@ -101,7 +106,8 @@ namespace snu {
     void SetPFNeutralHadronIso(Double_t cone,Double_t pf_ne);
 
     
-    void SetPFRelIso(Double_t cone, Double_t pf_rel);
+    void SetPFRelIsoRho(Double_t cone, Double_t pf_rel);
+    void SetPFRelIsoBeta(Double_t cone, Double_t pf_rel);
     void SetPFRelMiniIso( Double_t pf_rel);
     void SetPFAbsIso(Double_t cone, Double_t pf_abs);
 
@@ -114,16 +120,19 @@ namespace snu {
     void SetHasMatchedConvPhot(Bool_t hasmatchConvPhot);
     void SetMissingHits(Int_t mhits);
     
-    void SetShiftedEUp(Double_t Eup);
-    void SetShiftedEDown(Double_t Edown);
+    void SetScaleEUp(Double_t Eup);
+    void SetScaleEDown(Double_t Edown);
+    
+    void SetSmearEUp(Double_t Eup);
+    void SetSmearEDown(Double_t Edown);
+
 
     void SetTrkVx(Double_t trkvx);
     void SetTrkVy(Double_t trkvy);
     void SetTrkVz(Double_t trkvz);
 
-    void SetTrigMatch(TString match);
-    void SetIsTrigMVAValid(bool b);
-    //void SetIsTrigCUTValid(bool b);
+    void SetIsoMVA(Double_t mva);
+    void SetNonIsoMVA(Double_t mva);
 
     void SetIsPromptFlag(bool pflag);
 
@@ -135,10 +144,12 @@ namespace snu {
       return k_eltype;
     }
     inline Bool_t IsPromptFlag() const {return k_isprompt;}
-    inline Double_t MVA() const {return k_mva;}
-    inline Double_t ZZMVA() const {return k_zzmva;}
 
     inline Double_t SmearFactor() const {return k_smearfactor;}
+
+    inline Double_t IsoMVA() const {return k_mva_iso;}
+    inline Double_t NonIsoMVA() const {return k_mva_noniso;}
+
 
     inline Bool_t  IsEBFiducial() {return bool (fabs(SCEta()) < 1.442);}
     inline Bool_t  IsEB1() {return bool (fabs(SCEta()) < 0.8);}
@@ -166,13 +177,6 @@ namespace snu {
 
     // HEEP ID 6.0
     inline Bool_t PassHEEP() const{return pass_heep;}
-
-    // MVA ID
-    inline Bool_t PassTrigMVAMedium() const{return pass_trigmva_medium;}
-    inline Bool_t PassTrigMVATight() const{return pass_trigmva_tight;}
-    inline Bool_t PassNotrigMVAMedium() const{return pass_notrigmva_medium;}
-    inline Bool_t PassNotrigMVATight() const{return pass_notrigmva_tight;}
-    inline Bool_t PassMVAZZ() const{return pass_notrigmva_zz;}
 
     
     inline Bool_t MCMatched() const{
@@ -213,12 +217,13 @@ namespace snu {
     // charge variables
     
     inline Bool_t GsfCtfScPixChargeConsistency()  const {return k_gsf_ctscpix_charge;}
+    inline Bool_t GsfCtfScPixChargeConsistency()  const {return k_gsf_ctscpix_charge;}
+    inline Bool_t GsfCtfScPixChargeConsistency()  const {return k_gsf_ctscpix_charge;}
     
     // Conversion variables
     inline Bool_t PassesConvVeto() const {return k_hasmatchconvphot;}
     
 
-    inline Bool_t IsTrigMVAValid() const{return k_istrigmvavalid;}
     
     // Isolation Variables
     inline Double_t PFChargedHadronIso(double cone) const {
@@ -284,24 +289,30 @@ namespace snu {
 
     Double_t k_pf_chargedhad_iso03, k_pf_photon_iso03, k_pf_neutral_iso03, k_pf_chargedhad_iso04, k_pf_photon_iso04, k_pf_neutral_iso04, k_rel_iso03, k_rel_iso04, k_rel_miniiso;
     Double_t k_abs_iso03, k_abs_iso04;
-    Double_t k_dxy,k_dxy_sig, k_dz,k_trkvx,  k_trkvy,  k_trkvz;
-    Double_t k_sceta;
+    Double_t k_electron_dxyVTX,k_electron_dzVTX, k_electron_dxy, k_electron_sigdxy, k_electron_dz, k_electron_ip3D, k_electron_sigip3D, k_electron_dxyBS, k_electron_dzBS;
+    Double_t k_electron_AEff03, k_electron_chIso03, k_electron_nhIso03, k_electron_phIso03, k_electron_pcIso03, k_electron_puChIso03, k_electron_chIso04, k_electron_nhIso04, k_electron_phIso04, k_electron_pcIso04, k_electron_puChIso04;
+    Double_t k_electron_relIsoCom03, k_electron_relIsoCom04, k_electron_relIsoBeta03, k_electron_relIsoBeta04, k_electron_relIsoRho03;
+
     
-    Bool_t k_gsf_ctscpix_charge,pass_hltid,pass_tight, pass_veto, pass_medium, pass_loose, k_mc_matched,  k_is_cf,k_is_conv, k_is_fromtau,k_isPF,k_hasmatchconvphot, pass_heep, pass_trigmva_medium, pass_trigmva_tight, pass_notrigmva_medium, pass_notrigmva_tight, pass_notrigmva_zz, k_istrigmvavalid ;
+    Bool_t k_electron_isGsfCtfScPixChargeConsistent, electron_isGsfScPixChargeConsistent,electron_isGsfCtfChargeConsistent;
+    Bool_t pass_hltid,pass_tight, pass_veto, pass_medium, pass_loose, k_mc_matched,  k_is_cf,k_is_conv, k_is_fromtau,k_isPF,k_hasmatchconvphot, pass_heep;
     
-    Double_t k_pt_shifted_up, k_pt_shifted_down;
+    Double_t k_pt_scale_up, k_pt_scale_down, k_pt_smear_up, k_pt_smear_down;
     Int_t snu_id,k_mother_pdgid, k_mc_pdgid,k_mother_index, k_mc_index;
     TString k_trig_match;
     Int_t k_eltype;
     
-    Double_t k_mva, k_zzmva;
-    Int_t k_missing_hits;
-    Double_t k_smearfactor;
-    Bool_t k_in_conv;
+    Double_t k_mva_iso, k_mva_noniso;
+    Int_t k_electron_mHits;
+    Double_t  k_smear_up, k_smear_down,k_scale_up, k_scale_down;
+    Double_t k_gsf_pt, k_gsf_eta, k_gsf_phi, k_gsf_charge;
+    Double_t k_sceta, k_scphi;
+    Double_t k_electron_dEtaIn, k_electron_dEtaInSeed, k_electron_dPhiIn, k_electron_sigmaIEtaIEta, k_electron_Full5x5_SigmaIEtaIEta,electron_HoverE,electron_fbrem,electron_eOverP, electron_energyEC, electron_Pnorm,electron_InvEminusInvP;
+    Bool_t k_is_conv;
     Bool_t k_isprompt;
 
 
-    ClassDef(KElectron,31);
+    ClassDef(KElectron,32);
   }; 
   
 }//namespace snu
