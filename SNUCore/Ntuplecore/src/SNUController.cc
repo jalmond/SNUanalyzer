@@ -31,7 +31,7 @@
 
 SNUController::SNUController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"),skimName(""), jobName("Test"), tagName(""),treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),runnp(false), runcf(false), runtau(false), m_logger( "SNUCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0),v_user_flags(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kSNUInput(true) {
   
-  catversion_lq = none;
+  snuversion_lq = none;
   chain = NULL;
   h_timing_hist = new TH1F ("CycleTiming","Timing", 7,0.,7.);
   h_timing_hist->GetYaxis()->SetTitle("Time (s)");
@@ -92,7 +92,8 @@ void SNUController::SetOutPutStep(int step){
 
 void SNUController::SetName(TString name, Int_t version, TString dir) {
   
-  string out_dir = getenv("SNUANALYZER_OUTPUT_PATH");
+  string out_dir = getenv("ANALYZER_OUTPUT_PATH");
+  
   if(!dir.Contains("NULL")) out_dir = dir;
   
   completename = TString(out_dir) + name + "_";
@@ -197,9 +198,9 @@ std::pair<Double_t, Double_t>  SNUController::GetTotalEvents() throw (SNUError){
 
 void SNUController::SetChannel(TString ch){
   
-  if(catversion_lq== none) {
+  if(snuversion_lq== none) {
     m_logger << ERROR << "Failed to correctly set data period" << SNULogger::endmsg;
-    throw SNUError( "This is because catversion was not set... Fix this    ",          SNUError::StopExecution );
+    throw SNUError( "This is because snuversion was not set... Fix this    ",          SNUError::StopExecution );
   }
   if     (ch == "DoubleMuon")  channel = "DoubleMuon";
   else if     (ch == "DoubleMuon_CF")  channel = "DoubleMuon_CF";
@@ -213,23 +214,25 @@ void SNUController::SetChannel(TString ch){
 }
 void SNUController::SetDataPeriod(TString period){
   
-  if(catversion_lq== none) {
+  if(snuversion_lq== none) {
     m_logger << ERROR << "Failed to correctly set data period" << SNULogger::endmsg;
-    throw SNUError( "This is because catversion was not set... Fix this  ",            SNUError::StopExecution );
+    throw SNUError( "This is because snuversion was not set... Fix this  ",            SNUError::StopExecution );
   }
   
   if( period == "All") period = "ALL";
   k_period=period;
-  if( period == "ALL") k_period = getenv("catdatatag");
+  if( period == "ALL") k_period = getenv("snudatatag");
+
   target_luminosity = 1.;
 
 }
 
 int SNUController::VersionStamp(){
   
-  string cat_version=getenv("cat_version");
+  string snu_version=getenv("snu_version");
+
   int cv(0);
-  std::istringstream ss(cat_version);
+  std::istringstream ss(snu_version);
   ss >> cv;
   return cv;
 
@@ -272,7 +275,7 @@ void SNUController::SetInputList(TString list) throw( SNUError ){
 
   if(fin.is_open()){
     while(getline (fin,word)){
-      catversion_lq = GetCatVersion(word); 
+      snuversion_lq = GetSNUVersion(word); 
       break;
     }
   }
@@ -423,6 +426,7 @@ void SNUController::ExecuteCycle() throw( SNUError ) {
     throw SNUError( "SNUCycleController is not initialized",
     SNUError::StopExecution );
   }
+  
 
   TString muonfitParametersFile = "";
   GetMemoryConsumption("Start of ExecuteCycle");
@@ -543,7 +547,7 @@ void SNUController::ExecuteCycle() throw( SNUError ) {
     
     cycle->SetVersion(VersionStamp());
 
-    cycle->SetCatVersion(SetNTCatVersion());
+    cycle->SetSNUVersion(SetNTSNUVersion());
 
     cycle->SetTargetLumi(target_luminosity);
 
@@ -577,7 +581,7 @@ void SNUController::ExecuteCycle() throw( SNUError ) {
       m_logger <<  INFO << chain <<  SNULogger::endmsg;
       cycle->LoadTree(1);
       cycle->GetInputTree()->GetEntry(1,0);/// Get first entry in ntuple
-      bool alt_isdata =  cycle->isData;
+      bool alt_isdata =  cycle->IsData;
       if(alt_isdata) inputType = data;
       else inputType = mc;
       cycle->SetDataType(alt_isdata);
@@ -601,8 +605,7 @@ void SNUController::ExecuteCycle() throw( SNUError ) {
     else cycle->SetMCPeriod(-1); 
     
     /// Check the current branch is upto date wrt the catuples
-    string catversion_env = getenv("CATVERSION");
-    
+    string snuversion_env = getenv("SNUVERSION");
     // calculate weight from input 
     float ev_weight =  CalculateWeight();
     
@@ -630,6 +633,7 @@ void SNUController::ExecuteCycle() throw( SNUError ) {
     int m_nSkippedEvents(0);
     int m_nProcessedEvents(0);
 
+
     /// Get ints for 1/4 , 1/2 of the list to do timing checks
     //int entry_4 = int((nevents_to_process-n_ev_to_skip)/4.);
     //int entry_3_4 = 3*entry_4;
@@ -646,7 +650,7 @@ void SNUController::ExecuteCycle() throw( SNUError ) {
 	  cycle->ClearOutputVectors();
 	  cycle->BeginEvent();
 	  if(list_entry==0){
-	    if(!CheckBranch(cycle->GetCatVersion(kSNUInput), catversion_env)) throw SNUError( "Error in catversion.... Either you need to update SNUanalyzer or you are running on a directory name which does not contain the catuple version in the path ",SNUError::SkipCycle);
+	    if(!CheckBranch(cycle->GetSNUVersion(kSNUInput), snuversion_env)) throw SNUError( "Error in snuversion.... Either you need to update SNUanalyzer or you are running on a directory name which does not contain the skflatversion in the path ",SNUError::SkipCycle);
 	  }
 	  cycle->ExecuteEvents();
 	  cycle->EndEvent();
@@ -673,7 +677,7 @@ void SNUController::ExecuteCycle() throw( SNUError ) {
 	  cycle->ClearOutputVectors();
 	  cycle->BeginEvent();
 	  if(jentry==n_ev_to_skip){
-            if(!CheckBranch(cycle->GetCatVersion(kSNUInput), catversion_env)) throw SNUError( "Error in catversion.... Either you need to update SNUanalyzer or you are running on a directory name which does not contain the catuple version in the path ",SNUError::SkipCycle);
+            if(!CheckBranch(cycle->GetSNUVersion(kSNUInput), snuversion_env)) throw SNUError( "Error in snuversion.... Either you need to update SNUanalyzer or you are running on a directory name which does not contain the skflat version in the path ",SNUError::SkipCycle);
           }
 	  cycle->ExecuteEvents();
 	  cycle->EndEvent();
@@ -700,7 +704,7 @@ void SNUController::ExecuteCycle() throw( SNUError ) {
 	  cycle->BeginEvent();   
 	  /// executes analysis code
 	  if(jentry==n_ev_to_skip){
-            if(!CheckBranch(cycle->GetCatVersion(kSNUInput), catversion_env)) throw SNUError( "Error in catversion.... Either you need to update SNUanalyzer or you are running on a directory name which does not contain the catuple version in the path ",SNUError::SkipCycle);
+            if(!CheckBranch(cycle->GetSNUVersion(kSNUInput), snuversion_env)) throw SNUError( "Error in snuversion.... Either you need to update SNUanalyzer or you are running on a directory name which does not contain the catuple version in the path ",SNUError::SkipCycle);
           }
 	  m_logger << DEBUG << "cycle->ExecuteEvent start " << SNULogger::endmsg;
 
@@ -787,8 +791,8 @@ void SNUController::ExecuteCycle() throw( SNUError ) {
   
 }
  
-std::string SNUController::SetNTCatVersion(){
-  return string(getenv("CATVERSION"));
+std::string SNUController::SetNTSNUVersion(){
+  return string(getenv("SNUVERSION"));
 
 }
 
@@ -809,11 +813,11 @@ bool SNUController::CheckBranch(std::string ntuple_version, std::string version_
 }
   
 
-SNUController::_catversion  SNUController::GetCatVersion(std::string filepath) throw(SNUError){
+SNUController::_snuversion  SNUController::GetSNUVersion(std::string filepath) throw(SNUError){
   TString ts_path(filepath); 
-  if(ts_path.Contains(getenv("CATVERSION"))) return v801;
+  if(ts_path.Contains(getenv("SNUVERSION"))) return v941;
   
-  else cout << "WARNING CATVERSION cannot be found in input dir name... " << endl;
+  else cout << "WARNING SNUVERSION cannot be found in input dir name... " << endl;
   //throw SNUError( "CATVERSION cannot be found in input dir name... If you are running your own sample make give the input dir a name with /v-X-X-X/ corresponding to catversion you are using!",   SNUError::StopExecution );
   
 }

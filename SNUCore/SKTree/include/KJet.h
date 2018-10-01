@@ -38,10 +38,12 @@ namespace snu {
 
 
     enum Tagger{CSVv2=0,
-		cMVAv2,
+		DeepCSV,
 		JETPROB,
 		CCvsLT,
-		CCvsBT  };
+		CCvsBT ,
+		DeepCCvsLT,
+		DeepCCvsBT    };
     
     enum WORKING_POINT{Loose=0,
 		       Medium,
@@ -63,7 +65,6 @@ namespace snu {
     KJet& operator= (const KJet& obj);
     
     /// ID cut on jet
-    void SetJetPassLooseID(int looseID);
     void SetJetPassTightID(int tightID);
     void SetJetPassTightLepVetoID(int tightID);
     
@@ -75,57 +76,49 @@ namespace snu {
     void SetJetPileupIDTightWP(bool pass);
     void SetJetPileupIDMVA(double mva);
     
-    
-    //Multiplicities
-    //// Pileup MVA to be added
-    
+       
     bool PassPileUpMVA(TString puwp);
 
     /// BTAG
     void SetBTagInfo(Tagger tag, double val);
     void SetCTagInfo(Tagger tag, double val);
-    void SetVtxMass(double mass);
-    void SetVtx3DVal(double val);
-    void SetVtx3DSig(double sig);
-    void SetVtxNTracks(int ntrk);
-    /// Tracking
 
     /// Energy fractions
     void SetJetChargedEmEF(double chargeEmEF);
-    
+    void SetJetNeutralEmEF(double neutralEmEF);
+    void SetJetChargedHadEF(double chargeEmEF);
+    void SetJetNeutralHadEF(double neutralEmEF);
+    void SetJetChargedMultiplicity(double chargeEmEF);
+    void SetJetNeutralMultiplicity(double neutralEmEF);
+
+
     //flavour
     void SetJetPartonFlavour(int pf);
     void SetJetHadronFlavour(int pf);
     void SetJetPartonPdgId(int pf);
 
     /// JET CORRECTIONS
-    void SetJetRawPt(double rawpt);
-    void SetJetRawEnergy(double rawe);
-    void SetJetJECUnc(double jecunc);
     void SetJetScaledDownEnergy(double jetscaleEdown);
     void SetJetScaledUpEnergy(double jetscaleEup);
     void SetSmearedResDown(double jetsmearresdown);
     void SetSmearedResUp(double jetsmearresup);
     void SetSmearedRes(double jetsmearresup);
-    
-    
+        
     void SetL1JetCorr(double jec);
-    void SetL2JetCorr(double jec);
-    void SetL3JetCorr(double jec);
-    void SetL2L3ResJetCorr(double jec);
+    void SetFullJetCorr(double jec);
     void SetJetArea(double area);
+
+    void SetJetMass(double mass);
     
     /// JEC
     inline Double_t L1JetCorr() const{return k_l1jetcorr;}
-    inline Double_t L2JetCorr() const{return k_l2jetcorr;}
-    inline Double_t L3JetCorr() const{return k_l3jetcorr;}
-    inline Double_t L2L3ResJetCorr() const{return k_l2l3resjetcorr;}
+    inline Double_t FullJetCorr() const{return k_fulljetcorr;}
 
     inline Double_t JetArea() const{return k_jetarea;}
+    inline Double_t Mass() const{return k_jet_mass;}
 
 
     /// ID
-    inline Int_t PassLooseID() const {return k_jet_passLooseID;}
     inline Int_t PassTightID() const {return k_jet_passTightID;}
     inline Int_t PassTightLepVetoID() const {return k_jet_passTightLepVetoID;}
 
@@ -136,28 +129,21 @@ namespace snu {
 
     inline Int_t PileupJetIDFlag() const {return k_jet_pileup_flag;}
     inline Double_t PileupJetIDMVA() const {return k_jet_pileup_mva;}
-    
-   
+       
     inline Bool_t IsMCSmeared() const {return k_ismcsmeared;}
 
     /// BTAG variables
     Double_t BJetTaggerValue(Tagger tag) const; 
+    Double_t CJetTaggerValue(Tagger tag) const; 
+
+
     inline Double_t CSVInclV2() const {return BJetTaggerValue(CSVv2);}
+
     inline Bool_t IsBTagged(Tagger tag, WORKING_POINT  wp) const {
       if(tag== CSVv2){
 	if(wp==Loose) return (BJetTaggerValue(tag) >= WP_BTAG_CSVv2L);
 	if(wp==Medium) return (BJetTaggerValue(tag) >= WP_BTAG_CSVv2M);
 	if(wp==Tight) return (BJetTaggerValue(tag) >= WP_BTAG_CSVv2T);
-      }
-      if(tag== cMVAv2){
-	if(wp==Loose) return (BJetTaggerValue(tag) >= WP_BTAG_cMVAv2L);
-	if(wp==Medium) return (BJetTaggerValue(tag) >= WP_BTAG_cMVAv2M);
-	if(wp==Tight) return (BJetTaggerValue(tag) >= WP_BTAG_cMVAv2T);
-      }
-      if(tag== JETPROB ){
-	if(wp==Loose) return (BJetTaggerValue(tag) >= WP_BTAG_JPL);
-        if(wp==Medium) return (BJetTaggerValue(tag) >= WP_BTAG_JPM);
-        if(wp==Tight) return (BJetTaggerValue(tag) >= WP_BTAG_JPT);
       }
       return true;
     }
@@ -165,28 +151,25 @@ namespace snu {
 
     /// Energy Fraction
     inline Double_t ChargedEMEnergyFraction() const {return k_jet_chargeEmEF;}
+    inline Double_t NeutralEMEnergyFraction() const {return k_jet_neutralEmEF;}
+    inline Double_t ChargedHADEnergyFraction() const {return k_jet_chargeHadEF;}
+    inline Double_t NeutralHADEnergyFraction() const {return k_jet_neutralHadEF;}
+    inline Double_t ChargedMultiplicity() const {return k_jet_chargeMultiplicity;}
+    inline Double_t NeutralMultiplicity() const {return k_jet_neutralMultiplicity;}
+
+
     // flavour
     inline Int_t PartonFlavour() const {return k_jet_partonflavour;}
     inline Int_t HadronFlavour() const {return k_jet_hadronflavour;}
     inline Int_t PartonPdgId() const {return k_jet_partonpdgid;}
 
-    /// Tracking Variables
-    
-    inline Double_t VtxMass() const {return k_vtx_mass;}
-    inline Double_t Vtx3DVal() const {return k_vtx_3dval;}
-    inline Double_t Vtx3DSig() const {return k_vtx_3dsig;}
-    inline Int_t VtxNtrack() const {return k_vtx_ntrack;}
 
     // Errors
-    inline Double_t JECUncertainty() const {return k_jet_error_jec;}
     inline Double_t ScaledDownEnergy() const {return k_jet_scaled_down_energy;}
     inline Double_t ScaledUpEnergy() const {return k_jet_scaled_up_energy;}
     inline Double_t SmearedResDown() const {return k_jet_smeared_down_energy;}
     inline Double_t SmearedResUp() const {return k_jet_smeared_up_energy;}
     inline Double_t SmearedRes() const {return k_jet_smeared_energy;}
-
-    inline Double_t RawPt() const {return k_jet_pt_raw;}
-    inline Double_t RawE() const {return k_jet_energy_raw;}
     
 
   protected:
@@ -196,34 +179,29 @@ namespace snu {
   private:
     
     /// ID 
-    Bool_t  k_jet_passLooseID ,k_jet_passTightID, k_jet_passTightLepVetoID;
-    /// Multiplicities  
-    
-    Double_t k_jet_pt_raw, k_jet_energy_raw;
+    Bool_t  k_jet_passTightID, k_jet_passTightLepVetoID;
+
+
     /// BTAG variables  
-    Double_t k_jet_csv2 ,k_jet_cmva2, k_jet_jetprobbjet, k_jet_cc_vs_lt,k_jet_cc_vs_bt, k_vtx_mass, k_vtx_3dval,k_vtx_3dsig;
-    
-    Int_t k_vtx_ntrack;
+    Double_t k_jet_csv ,k_jet_deepcsv,  k_jet_cc_vs_lt,k_jet_cc_vs_bt,k_jet_deepcc_vs_lt,k_jet_deepcc_vs_bt;
 
     /// Energy Fraction     
-    Double_t k_jet_chargeEmEF;
+    Double_t k_jet_chargeEmEF,k_jet_neutralEmEF, k_jet_chargeHadEF, k_jet_neutralHadEF, k_jet_chargeMultiplicity, k_jet_neutralMultiplicity, k_jet_mass;
     
     // flavour          
     Int_t k_jet_partonflavour, k_jet_hadronflavour, k_jet_partonpdgid;
-    
-    /// Tracking Variables
-    
+        
     // Errors
-    Double_t  k_jet_error_jec,k_jet_scaled_down_energy,k_jet_scaled_up_energy,k_jet_smeared_down_energy,k_jet_smeared_up_energy, k_jet_smeared_energy;
+    Double_t  k_jet_scaled_down_energy,k_jet_scaled_up_energy,k_jet_smeared_down_energy,k_jet_smeared_up_energy, k_jet_smeared_energy;
     
     Bool_t k_jet_passpileup_loose, k_jet_passpileup_medium ,k_jet_passpileup_tight;
     Int_t k_jet_pileup_flag;
     Double_t k_jet_pileup_mva;
     Bool_t k_ismcsmeared;
 
-    Double_t k_l1jetcorr, k_l2jetcorr,k_l3jetcorr,k_l2l3resjetcorr,k_jetarea;
+    Double_t k_l1jetcorr, k_fulljetcorr,k_jetarea;
 
-    ClassDef(KJet,15)
+    ClassDef(KJet,16)
   }; 
   
 

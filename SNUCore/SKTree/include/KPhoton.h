@@ -30,10 +30,9 @@ namespace snu {
     void SetIsLoose   (bool b);
     void SetIsMedium  (bool b);
     void SetIsTight   (bool b);
-    void SetPassMVA   (bool b);
-    void SetMCMatched (bool b);
+    void SetPassMVA80   (bool b);
+    void SetPassMVA90   (bool b);
     void SetHasPixSeed(bool b);
-    void SetPassElVeto(bool b);
 
     // Double
     
@@ -51,7 +50,7 @@ namespace snu {
     void SetSCEta(double d); 
     void SetSCPhi(double d); 
     void SetSCRawE(double d); 
-    void SetSCPreShowerE(double d);
+    void SetPtUncorr(double d);
     
     ///////// ///////// ///////// ///////// ///////// ///////// ///////// 
     ///// Functions to call class variables
@@ -61,7 +60,8 @@ namespace snu {
     inline Bool_t  isLoose()    const {return k_ph_isloose;}
     inline Bool_t  isMedium()   const {return k_ph_ismedium;}
     inline Bool_t  isTight()    const {return k_ph_istight;}
-    inline Bool_t  passMVA()    const {return k_ph_passmva;}
+    inline Bool_t  passMVA80()    const {return k_ph_passmva80;}
+    inline Bool_t  passMVA90()    const {return k_ph_passmva90;}
     inline Bool_t  mcMatched()  const {return k_mc_matched;}
     inline Bool_t  hasPixSeed() const {return k_ph_haspixseed;}
     inline Bool_t  passElVeto() const {return k_ph_passelveto;}
@@ -82,6 +82,7 @@ namespace snu {
     inline Double_t SCPhi()                const {return k_ph_scphi;}
     inline Double_t SCRawE()               const {return k_ph_scrawe;}
     inline Double_t SCPreShowerE()         const {return k_ph_scpreshower_e;}
+    inline Double_t PtUncorr()             const {return k_ph_uncorr;}
 
     /// Int
     
@@ -94,12 +95,12 @@ namespace snu {
   private:
     /// decalre private functions
 
-    Double_t k_ph_chhadiso_noEA, k_ph_puchhadiso_noEA, k_ph_nhadiso_noEA, k_ph_phiso_noEA, k_ph_rhoiso, k_ph_chhadiso, k_ph_photoniso, k_ph_nhadiso, k_ph_sigietaieta, k_ph_r9, k_ph_hovere, k_ph_sceta, k_ph_scphi, k_ph_scrawe, k_ph_scpreshower_e;
+    Double_t k_ph_chhadiso_noEA, k_ph_puchhadiso_noEA, k_ph_nhadiso_noEA, k_ph_phiso_noEA, k_ph_rhoiso, k_ph_chhadiso, k_ph_photoniso, k_ph_nhadiso, k_ph_sigietaieta, k_ph_r9, k_ph_hovere, k_ph_sceta, k_ph_scphi, k_ph_scrawe, k_ph_scpreshower_e,k_ph_uncorr;
     
-    Bool_t k_ph_isloose, k_ph_ismedium, k_ph_istight, k_ph_passmva, k_mc_matched, k_ph_haspixseed, k_ph_passelveto;
+    Bool_t k_ph_isloose, k_ph_ismedium, k_ph_istight, k_ph_passmva80,k_ph_passmva90, k_mc_matched, k_ph_haspixseed, k_ph_passelveto;
     
 
-    ClassDef(KPhoton,3);
+    ClassDef(KPhoton,4);
   }; 
   
 }//namespace snu

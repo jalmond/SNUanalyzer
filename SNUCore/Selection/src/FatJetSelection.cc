@@ -34,19 +34,16 @@ void FatJetSelection::Selection(std::vector<KFatJet>& jetColl){
   
   for (std::vector<KFatJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
 
-    bool pileupjet=false;
-    if(applypileuptool) pileupjet =  ( !jit->PileupJetIDLoose());  ///---> CHECK THIS
-
 
     if(apply_ID) {
       if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max &&
            fabs(jit->Eta()) < eta_cut
-           &&PassUserID(k_id, *jit) && !pileupjet)  jetColl.push_back(*jit);
+           &&PassUserID(k_id, *jit))  jetColl.push_back(*jit);
     }
     else{
       if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max &&
            fabs(jit->Eta()) < eta_cut
-           && PassUserID(PFJET_LOOSE, *jit)&& !pileupjet)  jetColl.push_back(*jit);
+           && PassUserID(PFJET_LOOSE, *jit))  jetColl.push_back(*jit);
     }
   }
 
@@ -80,33 +77,28 @@ void FatJetSelection::Selection(std::vector<KFatJet>& jetColl, bool LepVeto, std
 
     if(!Syst_JER){
       *jit *= jit->SmearedRes();
-      cout << "jit->PrunedMass() = " << jit->PrunedMass() << endl;
-      jit->SetPrunedMass(jit->PrunedMass()* jit->SmearedRes());
+      cout << "jit->SoftDropMass() = " << jit->SoftDropMass() << endl;
+      jit->SetSoftDropMass(jit->SoftDropMass()* jit->SmearedRes());
     }
-    if     (Syst_JES && SystDir>0) {*jit *= jit->ScaledUpEnergy(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledUpEnergy());}
-    else if(Syst_JES && SystDir<0) {*jit *= jit->ScaledDownEnergy(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledDownEnergy());}
-    else if(Syst_JER && SystDir>0) {*jit *= jit->SmearedResUp();  jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedResUp());}
-    else if(Syst_JER && SystDir<0) {*jit *= jit->SmearedResDown();   jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedResDown());}
-    else if(Syst_JMR && SystDir>0) {*jit *= jit->SmearedMassResUp();  jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedMassResUp());}
-    else if(Syst_JMR && SystDir<0) {*jit *= jit->SmearedMassResDown(); jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedMassResUp());}
-    else if(Syst_JMS && SystDir>0) {*jit *= jit->ScaledMassUp(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledMassUp());}
-    else if(Syst_JMS && SystDir<0) {*jit *= jit->ScaledMassDown(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledMassDown());}
+    if     (Syst_JES && SystDir>0) {*jit *= jit->ScaledUpEnergy(); jit->SetSoftDropMass(jit->SoftDropMass()*jit->ScaledUpEnergy());}
+    else if(Syst_JES && SystDir<0) {*jit *= jit->ScaledDownEnergy(); jit->SetSoftDropMass(jit->SoftDropMass()*jit->ScaledDownEnergy());}
+    else if(Syst_JER && SystDir>0) {*jit *= jit->SmearedResUp();  jit->SetSoftDropMass(jit->SoftDropMass()*jit->SmearedResUp());}
+    else if(Syst_JER && SystDir<0) {*jit *= jit->SmearedResDown();   jit->SetSoftDropMass(jit->SoftDropMass()*jit->SmearedResDown());}
+    else if(Syst_JMR && SystDir>0) {*jit *= jit->SmearedMassResUp();  jit->SetSoftDropMass(jit->SoftDropMass()*jit->SmearedMassResUp());}
+    else if(Syst_JMR && SystDir<0) {*jit *= jit->SmearedMassResDown(); jit->SetSoftDropMass(jit->SoftDropMass()*jit->SmearedMassResUp());}
+    else if(Syst_JMS && SystDir>0) {*jit *= jit->ScaledMassUp(); jit->SetSoftDropMass(jit->SoftDropMass()*jit->ScaledMassUp());}
+    else if(Syst_JMS && SystDir<0) {*jit *= jit->ScaledMassDown(); jit->SetSoftDropMass(jit->SoftDropMass()*jit->ScaledMassDown());}
 
     
-  
-    bool pileupjet=false;
-    if(applypileuptool) pileupjet =  ( !jit->PileupJetIDLoose());  ///---> CHECK THIS
-
-
     if(apply_ID) {
       if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max &&
 	   fabs(jit->Eta()) < eta_cut
-	   &&PassUserID(k_id, *jit) && !pileupjet)  prejetColl.push_back(*jit);
+	   &&PassUserID(k_id, *jit))  prejetColl.push_back(*jit);
     }
     else{
       if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max && 
 	   fabs(jit->Eta()) < eta_cut
-	   && PassUserID(PFJET_LOOSE, *jit)&& !pileupjet)  prejetColl.push_back(*jit);
+	   && PassUserID(PFJET_LOOSE, *jit))  prejetColl.push_back(*jit);
     }
   } 
 
@@ -193,8 +185,8 @@ void FatJetSelection::SelectFatJets(std::vector<KFatJet>& jetColl, std::vector<K
     if (!PassUserID(*jit, vids)) pass_selection=false;
     if(jit->Tau2()/jit->Tau1() > tau21cut) pass_selection=false;
 
-    if(jit->PrunedMass() < masscut_min)  pass_selection=false;
-    if(jit->PrunedMass() > masscut_max)  pass_selection=false;
+    if(jit->SoftDropMass() < masscut_min)  pass_selection=false;
+    if(jit->SoftDropMass() > masscut_max)  pass_selection=false;
     if ( (jit->Pt() >= ptcut)  && fabs(jit->Eta()) < etacut && pass_selection )  pre_jetColl.push_back(*jit);
 
   }
@@ -237,9 +229,6 @@ bool FatJetSelection::PassUserID (snu::KFatJet jet,vector<pair<TString, TString>
   for(unsigned int idel =0; idel < vids.size(); idel++){
     if(vids[idel].second == "false") continue;
 
-    if(vids[idel].first == "LooseID") {
-      if(!jet.PassLooseID()) return false;
-    }
     if(vids[idel].first == "TightID") {
       if(!jet.PassTightID())  return false;
     }
@@ -255,7 +244,7 @@ bool FatJetSelection::PassUserID (snu::KFatJet jet,vector<pair<TString, TString>
 
 bool FatJetSelection::PassUserID_PFFatJetLoose ( snu::KFatJet jet){
   
-  return jet.PassLooseID();
+  return true;
 }
 
 

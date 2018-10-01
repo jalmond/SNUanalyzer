@@ -10,6 +10,6 @@ INCDIR  = include
 include $(ANALYZER_DIR)/Makefile.common
 
 INCLUDES += -I$(ANALYZER_DIR)/${Flag}Core/SKTree/include/
-#INCLUDES += -I$(LQANALYZER_DIR)/SNUTree/include/
+#INCLUDES += -I$(ANALYZER_DIR)/SNUTree/include/
 
 

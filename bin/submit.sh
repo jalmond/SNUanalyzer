@@ -1,9 +1,9 @@
 #!/bin/sh
 ############################################################                                                                                                                  ################# Do not change anything after this line                                                                                                                      ############################################################                                                                                                                    
 
-if [ -z ${LQANALYZER_DIR} ]
+if [ -z ${ANALYZER_DIR} ]
     then
-    setupLQANALYZER
+    setupANALYZER
 fi
 
 #### FULL LIST OF OPTIONS                                                                                                                                                       
@@ -24,13 +24,12 @@ efflumi=$(makeParseVariable 'E' ${efflumi})
 remove=$(makeParseVariable 'w' ${remove_workspace})
 skinput=$(makeParseVariable 'S' ${skinput})
 runevent=$(makeParseVariable 'R' ${runevent})
-useCATv742ntuples=$(makeParseVariable 'N' ${useCATv742ntuples})
 LibList=$(makeParseVariable 'L' ${LibList})
 useskim=$(makeParseVariable 'm' ${useskim})
 runnp=$(makeParseVariable 'P' ${runnp})
 runtau=$(makeParseVariable 'G' ${runtau})
 runcf=$(makeParseVariable 'Q' ${runcf})
-catversion=$(makeParseVariable 'v' ${catversion})
+catversion=$(makeParseVariable 'v' ${snuversion})
 skflag=$(makeParseVariable 'f' ${skflag})
 DEBUG=$(makeParseVariable 'D' ${DEBUG})
 usebatch=$(makeParseVariable 'b' ${usebatch})
@@ -52,7 +51,7 @@ do
         line=${line:${#prefix}}
         cat_email=$line
     fi
-done < ${LQANALYZER_DIR}/bin/catconfig
+done < ${ANALYZER_DIR}/bin/catconfig
 
 runcommand=""
 if [[ $njobs == "-j 1" ]]; then
@@ -77,21 +76,21 @@ samplelist=$sample_list_string
 if [[ $runcommand  == "" ]]; 
 then
     tagger=$1
-    statdir="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"$USER
+    statdir="/data1/SNUAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"$USER
     if [[ ! -d "${statdir}" ]]; then
         mkdir ${statdir}
     fi
-    python   ${LQANALYZER_DIR}/python/SubmittionConfig.py  -p ${samplelist} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi}  ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger} -u $cat_email -B ${run_in_bkg} ${drawhists} ${queue} ${setnjobs} ${submitallfiles} ${runtau} ${tmpfilename} ${sendemail}
+    python   ${ANALYZER_DIR}/python/SubmittionConfig.py  -p ${samplelist} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi}  ${skinput} ${runevent} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger} -u $cat_email -B ${run_in_bkg} ${drawhists} ${queue} ${setnjobs} ${submitallfiles} ${runtau} ${tmpfilename} ${sendemail}
 else 
     for i in ${input_samples[@]}
     do
         tagger=$1
-        statdir="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"$USER
+        statdir="/data1/SNUAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"$USER
         if [[ ! -d "${statdir}" ]]; then
             mkdir ${statdir}
         fi
-	mkdir /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/$tagger/
-        logfile=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/$tagger/statlog_$i$tagger.txt
+	mkdir /data1/SNUAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/$tagger/
+        logfile=/data1/SNUAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/$tagger/statlog_$i$tagger.txt
         echo "user "$USER >> $logfile
         echo $cycle >> $logfile
         echo $catversion >> $logfile
@@ -103,7 +102,7 @@ else
         echo "cattag "$CATTAG >> $logfile
         date >> $logfile
         echo "############################" >> $logfile
-        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}  ${queue} ${setnjobs} ${runtau}
+        python ${ANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent}  ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}  ${queue} ${setnjobs} ${runtau}
 	rm $logfile
         #rm /data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${tagger)/${i}clust.txt
     done

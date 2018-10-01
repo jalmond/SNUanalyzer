@@ -179,10 +179,6 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
   map_sig["h_leadingLeptonRelIso_EC"]    = SetupHist("h_leadingLeptonRelIso_EC"      + name,"leading lepton relIso",100,-1.,1. ,"Iso_{EC} (GeV");
   map_sig["h_LeptonDZ_EC"]               = SetupHist("h_LeptonDZ_EC_"          + name," leading lepton DZ", 1000, -10. , 10., "d_{Z} (EC)");
   map_sig["h_LeptonDZ_B"]               = SetupHist("h_LeptonDZ_B_"          + name," leading lepton DZ", 1000, -10. , 10.,"d_{Z} (B)");
-  map_sig["h_LeptonDXY_EC"]              = SetupHist("h_LeptonDXY_EC_"         + name," lepton DXY_{ec}", 1000, -0.25 , 0.25, "d_{XY} (EC)");
-  map_sig["h_LeptonDXY_B"]              = SetupHist("h_LeptonDXY_B_"         + name," lepton DXY_{b}", 1000, -0.25 , 0.25,"d_{XY} (B)");
-  map_sig["h_LeptonDXY"]              = SetupHist("h_LeptonDXY_"         + name," leading lepton DXY", 1000, -1. , 1.25,"d_{XY}");
-  map_sig["h_LeptonDXYSig"]              = SetupHist("h_LeptonDXYSig_"         + name," leading lepton DXYSig", 1000, -50. , 50.,"SIP");
 
 
   /// Lepton/Jet/Lepton dR                                                                                                                                                                                                                                                                                                                    
@@ -785,18 +781,8 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_LeptonE", muit->Energy(),weight);
     Fill("h_LeptonPhi",muit->Phi(),weight);
     Fill("h_LeptonEta",muit->Eta(),weight);
-    Fill("h_LeptonDXY", muit->dXY(),weight);
-    Fill("h_LeptonDXYSig", muit->dXYSig() ,weight);
 
 
-    if(fabs(muit->Eta()) > 1.5) {
-      Fill("h_LeptonDXY_EC", muit->dXY(),weight);
-      Fill("h_LeptonDZ_EC", muit->dZ(),weight);
-    }
-    else{
-      Fill("h_LeptonDXY_B", muit->dXY(),weight);
-      Fill("h_LeptonDZ_B", muit->dZ(),weight);
-    }
    
     float mu_reliso_04 =  muit->RelIso04();
     float mu_minireliso = muit->RelMiniIso();

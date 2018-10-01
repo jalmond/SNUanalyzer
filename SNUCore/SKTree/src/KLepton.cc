@@ -10,8 +10,8 @@ KLepton::KLepton() :
   KParticle(),
   k_flavour(KLepton::NOTSET),
   k_dz(-999),
-  k_dxy(-999),
-  k_dxy_sig(-999),
+  k_ip2d(-999),
+  k_sip3d(-999),
   k_reliso(-999),
   k_leptype(-999),
   k_mciscf(false),
@@ -25,8 +25,8 @@ KLepton::KLepton(const KLepton& lep) :
   KParticle(lep),
   k_flavour(lep.LeptonFlavour()),
   k_dz(lep.dZ()),
-  k_dxy(lep.dXY()),
-  k_dxy_sig(lep.dXYSig()),
+  k_ip2d(lep.IP2D()),
+  k_sip3d(lep.SIP3D()),
   k_reliso(lep.RelIso()),
   k_leptype(lep.GetType()),
   k_mciscf(lep.MCIsCF())
@@ -39,8 +39,8 @@ KLepton::KLepton(const snu::KMuon& muon) :
   KParticle(muon),
   k_flavour(KLepton::MUON),
   k_dz(muon.dZ()),
-  k_dxy(muon.dXY()),
-  k_dxy_sig(muon.dXYSig()),
+  k_ip2d(muon.IP2D()),
+  k_sip3d(muon.SIP3D()),
   k_reliso(muon.RelIso04()),
   k_leptype(muon.GetType()),
   k_mciscf(muon.MCIsCF()),
@@ -54,9 +54,9 @@ KLepton::KLepton(const snu::KElectron& electron) :
   KParticle(electron),
   k_flavour(KLepton::ELECTRON),
   k_dz(electron.dz()),
-  k_dxy(electron.dxy()),
-  k_dxy_sig(electron.dxySig()),
-  k_reliso(electron.PFRelIso(0.3)),
+  k_ip2d(electron.IP2D()),
+  k_sip3d(electron.SIP3D()),
+  k_reliso(electron.PFRelIsoBeta(0.3)),
   k_leptype(electron.GetType()),
   k_mciscf(electron.MCIsCF()),
   MuonPtr(NULL),
@@ -75,8 +75,8 @@ KLepton& KLepton::operator= (const KLepton& lep){
     KParticle::operator=(lep);
     k_flavour = lep.k_flavour;
     k_dz = lep.k_dz;
-    k_dxy = lep.k_dxy;
-    k_dxy_sig = lep.k_dxy_sig;
+    k_ip2d = lep.k_ip2d;
+    k_sip3d = lep.k_sip3d;
     k_reliso = lep.k_reliso;
     k_leptype = lep.k_leptype;
     k_mciscf = lep.k_mciscf;
@@ -93,8 +93,8 @@ KLepton& KLepton::operator= (const snu::KMuon& muon){
   KParticle::operator=(muon);
   k_flavour = KLepton::MUON;
   k_dz = muon.dZ();
-  k_dxy = muon.dXY();
-  k_dxy_sig = muon.dXYSig();
+  k_ip2d = muon.IP2D();
+  k_sip3d = muon.SIP3D();
   k_reliso = muon.RelIso04();
   k_leptype = muon.GetType();
   k_mciscf = muon.MCIsCF();
@@ -110,9 +110,9 @@ KLepton& KLepton::operator= (const snu::KElectron& electron){
   KParticle::operator=(electron);
   k_flavour = KLepton::ELECTRON;
   k_dz = electron.dz();
-  k_dxy = electron.dxy();
-  k_dxy_sig = electron.dxySig();
-  k_reliso = electron.PFRelIso(0.3);
+  k_ip2d = electron.IP2D();
+  k_sip3d = electron.SIP3D();
+  k_reliso = electron.PFRelIsoBeta(0.3);
   k_leptype = electron.GetType();
   k_mciscf = electron.MCIsCF();
   MuonPtr = NULL;

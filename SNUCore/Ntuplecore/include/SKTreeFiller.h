@@ -39,6 +39,14 @@ class SKTreeFiller : public Data, public AnalysisBase {
   void ERRORMessage(TString comment);
   snu::KParticle::PartType partType;
 
+
+  float miniIsoDr(double pt);
+  double CalcMiniIso(double pt, double ch, double nh, double ph, double pu, double rho, double EA);
+  double CalcPFIso(double j_PFCH04,double j_PFNH04, double j_PFPH04, double j_PU04);
+
+  double EA(double eta);
+  double ElectronEA(double eta);
+
   bool SkipTrigger(TString trigname);
   Int_t VertexN;
   Bool_t *goodVerticies;

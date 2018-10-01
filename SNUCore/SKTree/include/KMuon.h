@@ -39,6 +39,9 @@ namespace snu {
     ///Return the type of this object, i.e. KMuon.h              
     virtual std::string Type() const;
     
+    void SetTrkIso(double iso);
+    void SetECalIso(double iso);
+    void SetHCalIso(double iso);
     void SetRelIso(double cone, double reliso);
     void SetRelMiniIso( double relminiiso);
     void SetMiniAODRelIso (double cone, double reliso);
@@ -49,13 +52,13 @@ namespace snu {
 
     void SetType(int mutype);
     void SetRochPt(double pt);
-    void SetRochEta(double eta);
-    void SetRochPhi(double phi);
-    void SetRochM(double m);
-    void SetRochE(double e);
+    void SetRochSF(double pt);
+    void SetRochSFUp(double eta);
     void Setdz(double dz);
-    void Setdxy(double dxy);
-    void Setdxy_sig(double dxysig);
+    void SetIP2D(double dxy);
+    void SetIP3D(double dxy);
+    void SetSIP3D(double dxy);
+
     void SetGlobalchi2(double glob_chi2);
     void SetValidHits(int validhits);
     void SetPixelValidHits(int valid_pix_hits);
@@ -66,10 +69,13 @@ namespace snu {
     void SetTrackVz(double vtz);
     void SetISPF(bool ispf);
     void SetIsGlobal(bool isglobal);
+    void SetIsStandAlone(bool isstandalone);
     void SetIsTracker(bool istracker);
-    void SetIsLoose(bool isLoose);
+
     void SetIsTight(bool isTight);
     void SetIsMedium(bool isMedium);
+    void SetIsSoft(bool isSoft);
+    void SetIsHighPt(bool ishighpt);
 
     void SetIsChargeFlip(Bool_t iscf);
     void SetIsPhotonConversion(Bool_t isconv);
@@ -79,19 +85,12 @@ namespace snu {
     void SetMotherTruthIndex(Int_t mindex);
     void SetMCTruthIndex(Int_t t_index);
 
-    void SetIsSoft(bool isSoft);
-
-    void SetShiftedEUp(double pt_up);
-    void SetShiftedEDown(double pt_down);
-
-    void SetTrigMatch(TString match);
-
     void SetIsPromptFlag(bool pflag);
 
-    bool TriggerMatched(TString path);
 
     inline Bool_t IsPF() const {return k_muon_ispf;}
     inline Bool_t IsGlobal() const {return k_muon_isglobal;}
+    inline Bool_t IsStandAlone() const {return k_muon_isstandalone;}
     inline Bool_t IsTracker() const {return k_muon_istracker;}
     inline Int_t validHits() const {return k_muon_valid_hits;}
     inline Int_t validPixHits() const {return k_muon_valid_pixhits;}
@@ -104,19 +103,19 @@ namespace snu {
 
     inline Bool_t IsPromptFlag() const {return k_isprompt;}
     inline Double_t dZ() const {return k_dz;}
-    inline Double_t dXY() const {return k_dxy;}
-    inline Double_t dXYSig() const {return k_dxy_sig;}
-    inline Double_t  dxy() const {return  k_dxy;}
-    inline Double_t  dxySig() const {return  k_dxy_sig;}
-    inline Double_t  dz() const {return  k_dz;}
+    inline Double_t IP2D() const {return k_ip2d;}
+    inline Double_t IP3D() const {return k_ip3d;}
+    inline Double_t SIP3D() const {return  k_sip3d;}
 
 
     inline Double_t GlobalChi2() const {return k_globmuon_chi2;}
 
-    inline Bool_t   IsLoose () const {return k_isloose;}
+    inline Bool_t   IsLoose () const {return k_muon_ispf && (k_muon_isglobal||k_muon_istracker);}
     inline Bool_t   IsTight () const {return k_istight;}
     inline Bool_t   IsMedium () const {return k_ismedium;}
     inline Bool_t   IsSoft () const {return k_issoft;}
+    inline Bool_t   IsHighPt () const {return k_ishighpt;}
+
     inline Bool_t   MCMatched () const {
       if(k_is_fromtau) return true;
       return k_matched;
@@ -153,17 +152,17 @@ namespace snu {
     inline Double_t PFRelMiniIso() const { return k_muon_relminiiso; }
 
 
+    inline Double_t TrkIso()  const {return k_muon_trkiso;}
+    inline Double_t EcalIso()  const {return k_muon_ecaliso;}
+    inline Double_t HcalIso()  const {return k_muon_hcaliso;}
+
+
     inline Double_t MiniAODPt() const {return muon_maod_pt;}
-    inline Double_t PtShiftedUp() const {return muon_pt_up;}
-    inline Double_t PtShiftedDown() const {return muon_pt_down;}
-    
-    inline TString TrigMatch() const{return k_trig_match;}
+
     
     inline Double_t RochPt() const{return k_roch_pt;}
-    inline Double_t RochPhi() const{return k_roch_phi;}
-    inline Double_t RochEta() const{return k_roch_eta;}
-    inline Double_t RochM() const{return k_roch_m;}
-    inline Double_t RochE() const{return k_roch_e;}
+    inline Double_t RochSF() const{return k_roch_sf;}
+    inline Double_t RochSFUp() const{return k_roch_sf_up;}
 
     inline KMuon::MuonType GetParticleType() const{
       if(k_is_conv&&k_is_cf) return KMuon::CONV_CF;
@@ -190,23 +189,23 @@ namespace snu {
   private:
     /// decalre private functions
   
-    Double_t k_dz, k_dxy ,k_dxy_sig,k_globmuon_chi2, k_muonVtx, k_muonVty, k_muonVtz;
+    Double_t k_dz, k_ip2d ,k_ip3d,  k_sip3d,k_globmuon_chi2, k_muonVtx, k_muonVty, k_muonVtz;
     Int_t k_muon_valid_hits, k_muon_valid_pixhits, k_muon_valid_stations, k_muon_layer_with_meas;
-    Bool_t k_muon_ispf, k_muon_isglobal, k_muon_istracker;
+    Bool_t k_muon_ispf, k_muon_isglobal,k_muon_isstandalone, k_muon_istracker;
 
-    Double_t muon_pt_up, muon_pt_down,muon_maod_pt,  k_muon_reliso03, k_muon_reliso04,k_muon_relminiiso,k_muon_maod_reliso03, k_muon_maod_reliso04;
+    Double_t muon_maod_pt,  k_muon_reliso03, k_muon_reliso04,k_muon_relminiiso,k_muon_maod_reliso03, k_muon_maod_reliso04, k_muon_trkiso, k_muon_ecaliso, k_muon_hcaliso ;
 
-    Double_t k_roch_pt,k_roch_phi,k_roch_eta,k_roch_m,k_roch_e;
+    Double_t k_roch_pt, k_roch_sf,k_roch_sf_up;
 
-    Bool_t k_isloose, k_istight, k_matched,k_is_cf,k_is_conv,k_is_fromtau,k_ismedium, k_issoft;
+    Bool_t  k_istight, k_matched,k_is_cf,k_is_conv,k_is_fromtau,k_ismedium, k_issoft, k_ishighpt;
     Int_t k_mother_pdgid, k_mc_pdgid,k_mother_index, k_mc_index;
 
-    TString k_trig_match;
+
     Bool_t k_corrected_rc;
     
     Int_t k_mctype;
     Bool_t k_isprompt;
-    ClassDef(KMuon,23)
+    ClassDef(KMuon,24)
   };   
 }//namespace snu
 

@@ -1449,7 +1449,7 @@ parser.add_option("-p", "--period", dest="period", default="A",help="which data 
 parser.add_option("-s", "--stream", dest="stream", default="NULL", help="Which data channel- ee,or mumu?")
 parser.add_option("-j", "--jobs", dest="jobs", default=1, help="Name of Job")
 parser.add_option("-c", "--cycle", dest="cycle", default="Analyzer", help="which cycle")
-parser.add_option("-t", "--tree", dest="tree", default="ntuple/event", help="What is input tree name?")
+parser.add_option("-t", "--tree", dest="tree", default="recoTree/SKFlat", help="What is input tree name?")
 parser.add_option("-g", "--tmpfilename", dest="tmpfilename", default="", help="")
 parser.add_option("-o", "--logstep", dest="logstep", default=-1, help="How many events betwene log messages")
 parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How much data are you running on/ needed to weight mc?")

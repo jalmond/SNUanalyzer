@@ -267,9 +267,6 @@ bool JetSelection::PassUserID (snu::KJet jet,vector<pair<TString, TString> > vid
     if(vids[idel].first == "pileup") { 
       if (!jet.PassPileUpMVA(vids[idel].second)) return false;
     }
-    if(vids[idel].first == "LooseID") {
-      if(!jet.PassLooseID()) return false;
-    }
     if(vids[idel].first == "TightID") {
       if(!jet.PassTightID())  return false;
     }
@@ -285,7 +282,7 @@ bool JetSelection::PassUserID (snu::KJet jet,vector<pair<TString, TString> > vid
 
 bool JetSelection::PassUserID_PFJetLoose ( snu::KJet jet){
   
-  return jet.PassLooseID();
+  return true;
 }
 
 

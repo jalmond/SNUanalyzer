@@ -10,8 +10,10 @@ ClassImp(KMuon)
 KMuon::KMuon() :
   KParticle(),
   k_dz(-999.),
-  k_dxy(-999.),
-  k_dxy_sig(-999.),
+  k_ip2d(-999.),
+  k_ip3d(-999.),
+  k_sip3d(-999.),
+
   k_globmuon_chi2(-999.),
   k_muonVtx(-999.),
   k_muonVty(-999.),
@@ -23,10 +25,9 @@ KMuon::KMuon() :
   k_muon_layer_with_meas(-999),
   k_muon_ispf(0),
   k_muon_isglobal(0),
+  k_muon_isstandalone(0),
   k_muon_istracker(0),
 
-  muon_pt_up(-999.), 
-  muon_pt_down(-999.),
   muon_maod_pt(-999.),
   k_muon_reliso03(-999.),
   k_muon_reliso04(-999.),
@@ -34,13 +35,14 @@ KMuon::KMuon() :
   k_muon_maod_reliso03(-999.),
   k_muon_maod_reliso04(-999.),
 
+  k_muon_trkiso(-999.),
+  k_muon_ecaliso(-999.), 
+  k_muon_hcaliso(-999.),
+  
   k_roch_pt(-999.),
-  k_roch_eta(-999.),
-  k_roch_phi(-999.),
-  k_roch_m(-999.),
-  k_roch_e(-999.),
+  k_roch_sf(-999.),
+  k_roch_sf_up(-999.),
 
-  k_isloose(0),
   k_istight(0),
   k_matched(0),
   k_is_cf(0),
@@ -48,6 +50,7 @@ KMuon::KMuon() :
   k_is_fromtau(0),
   k_ismedium(0),
   k_issoft(0),
+  k_ishighpt(0),
   
 
   k_mother_pdgid(-1),
@@ -55,7 +58,6 @@ KMuon::KMuon() :
   k_mother_index(-1),
   k_mc_index(-1),
   
-  k_trig_match(""),
   k_corrected_rc(false),
   k_mctype(-999),
   k_isprompt(false)
@@ -70,8 +72,10 @@ KMuon::KMuon() :
 KMuon::KMuon(const KMuon& muon) :
   KParticle(muon),
   k_dz(muon.k_dz),
-  k_dxy(muon.k_dxy),
-  k_dxy_sig(muon.k_dxy_sig),
+  k_ip2d(muon.k_ip2d),
+  k_ip3d(muon.k_ip3d),
+  k_sip3d(muon.k_sip3d),
+
   k_globmuon_chi2(muon.k_globmuon_chi2),
   k_muonVtx(muon.k_muonVtx),
   k_muonVty(muon.k_muonVty),
@@ -84,10 +88,9 @@ KMuon::KMuon(const KMuon& muon) :
 
   k_muon_ispf(muon.k_muon_ispf),
   k_muon_isglobal(muon.k_muon_isglobal),
+  k_muon_isstandalone(muon.k_muon_isstandalone),
   k_muon_istracker(muon.k_muon_istracker),
 
-  muon_pt_up(muon.muon_pt_up),
-  muon_pt_down(muon.muon_pt_down),
   muon_maod_pt(muon.muon_maod_pt),
   k_muon_reliso03(muon.k_muon_reliso03),
   k_muon_reliso04(muon.k_muon_reliso04),
@@ -95,14 +98,13 @@ KMuon::KMuon(const KMuon& muon) :
   k_muon_maod_reliso03(muon.k_muon_maod_reliso03),
   k_muon_maod_reliso04(muon.k_muon_maod_reliso04),
 
+  k_muon_trkiso(muon.k_muon_trkiso),
+  k_muon_ecaliso(muon.k_muon_ecaliso),
+  k_muon_hcaliso(muon.k_muon_hcaliso),
 
   k_roch_pt(muon.k_roch_pt),
-  k_roch_eta(muon.k_roch_eta),
-  k_roch_phi(muon.k_roch_phi),
-  k_roch_m(muon.k_roch_m),
-  k_roch_e(muon.k_roch_e),
-
-  k_isloose(muon.k_isloose),
+  k_roch_sf(muon.k_roch_sf),
+  k_roch_sf_up(muon.k_roch_sf_up),
   k_istight(muon.k_istight), 
   k_matched(muon.k_matched), 
   k_is_cf(muon.k_is_cf),
@@ -110,13 +112,13 @@ KMuon::KMuon(const KMuon& muon) :
   k_is_fromtau(muon.k_is_fromtau),
   k_ismedium(muon.k_ismedium),
   k_issoft(muon.k_issoft),
+  k_ishighpt(muon.k_ishighpt),
 
   k_mother_pdgid(muon.k_mother_pdgid),
   k_mc_pdgid(muon.k_mc_pdgid),
   k_mother_index(muon.k_mother_index),
   k_mc_index(muon.k_mc_index),
 
-  k_trig_match(muon.k_trig_match),
   k_corrected_rc(muon.k_corrected_rc),
   k_mctype(muon.k_mctype),
   k_isprompt(muon.k_isprompt)
@@ -133,8 +135,10 @@ void KMuon::Reset()
 {
   KParticle::Reset();
   k_dz=-999.;
-  k_dxy=-999.;
-  k_dxy_sig=-999.;
+  k_ip2d=-999.;
+  k_ip3d=-999.;
+  k_sip3d=-999.;
+
   k_globmuon_chi2=-999;
   k_muonVtx=-999.;
   k_muonVty=-999.;
@@ -148,39 +152,40 @@ void KMuon::Reset()
   
   k_muon_ispf=false;
   k_muon_isglobal=false;
+  k_muon_isstandalone=false;
   k_muon_istracker=false;
   
-  muon_pt_up=0.;
-  muon_pt_down=0.;
   muon_maod_pt=0.;
   k_muon_reliso03=-999.;
   k_muon_reliso04=-999.;
   k_muon_relminiiso=-999.;
   k_muon_maod_reliso03=-999.;
   k_muon_maod_reliso04=-999.;
+
+  k_muon_trkiso = -999;
+  k_muon_ecaliso = -999;
+  k_muon_hcaliso = -999;
+
   k_roch_pt=-999.;
-  k_roch_eta=-999.;
-  k_roch_phi=-999.;
-  k_roch_m=-999.;
-  k_roch_e=-999.;
+  k_roch_sf=-999.;
+  k_roch_sf_up=-999.;
 
 
 
-  k_isloose=false;
   k_istight=false;
   k_matched=false;
   k_is_cf=false;
   k_is_conv=false;
   k_is_fromtau=false;
   k_ismedium=false;
-  k_issoft=false;
+  k_issoft=false; 
+  k_ishighpt=false;
 
   k_mother_pdgid=-1;
   k_mc_pdgid=1;
   k_mother_index=-1;
   k_mc_index=-1;
 
-  k_trig_match= "";
   k_corrected_rc=false;
   k_mctype=-999;
   k_isprompt=false;
@@ -194,21 +199,22 @@ KMuon& KMuon::operator= (const KMuon& p)
         KParticle::operator=(p);
 	k_muon_ispf = p.IsPF();
 	k_muon_isglobal = p.IsGlobal();
+	k_muon_isstandalone = p.IsStandAlone();
 	k_muon_istracker = p.IsTracker();
 	k_dz=p.dZ();
-	k_dxy=p.dXY();
-	k_dxy_sig=p.dXYSig();
+	k_ip2d=p.IP2D();
+	k_ip3d=p.IP3D();
+	k_sip3d=p.SIP3D();
+
 	k_globmuon_chi2=p.GlobalChi2();
 	k_muon_valid_hits=p.validHits();
 	k_muon_valid_pixhits=p.validPixHits();
 	k_muon_valid_stations=p.validStations();
 	k_muon_layer_with_meas=p.ActiveLayer();
-	//i_muonVtx = p.MuonVertexIndex();       
-	muon_pt_up = p.PtShiftedUp();
-	muon_pt_down = p.PtShiftedDown();
-	k_isloose = p.IsLoose();
+
 	k_istight = p.IsTight();
 	k_issoft = p.IsSoft();
+	k_ishighpt = p.IsHighPt();
         k_ismedium = p.IsMedium();
 	k_matched = p.MCMatched();
 	k_is_cf=p.MCIsCF();
@@ -229,16 +235,16 @@ KMuon& KMuon::operator= (const KMuon& p)
 	k_muon_maod_reliso03 = p.RelMiniAODIso03();
         k_muon_maod_reliso04 = p.RelMiniAODIso04();
 	
-	k_roch_pt=p.RochPt();
-	k_roch_eta=p.RochEta();
-	k_roch_phi=p.RochPhi();
-	k_roch_m=p.RochM();
-	k_roch_e=p.RochE();
+	k_muon_trkiso = p.TrkIso();
+	k_muon_ecaliso = p.EcalIso();
+	k_muon_hcaliso = p.HcalIso();
 
+	k_roch_pt=p.RochPt();
+	k_roch_sf=p.RochSF();
+	k_roch_sf_up=p.RochSFUp();
 	k_muonVtx=p.muonVtx();
 	k_muonVty=p.muonVty();
 	k_muonVtz=p.muonVtz();
-	k_trig_match= p.TrigMatch();
 	k_corrected_rc=p.IsRochesterCorrected();
 	k_mctype = p.GetType();
 	k_isprompt=p.IsPromptFlag();
@@ -261,11 +267,7 @@ void KMuon::SetIsPromptFlag(bool pflag){
   k_isprompt=pflag;
 }
 
-bool KMuon::TriggerMatched(TString path){
-  TString trig = k_trig_match;
-  if(trig.Contains(path)) return true;
-  return false;
-}
+
 
 void KMuon::SetType(int type){
   k_mctype= type;
@@ -287,29 +289,19 @@ void KMuon::SetIsPhotonConversion(bool isconv){
 }
 
 
-void KMuon::SetRochM(double m){
+void KMuon::SetRochPt(double m){
+
+  k_roch_pt=m;
+}
+
+void KMuon::SetRochSF(double m){
   
-  k_roch_m=m;
+  k_roch_sf=m;
 }
 
-void KMuon::SetRochPt(double pt){
+void KMuon::SetRochSFUp(double pt){
 
-  k_roch_pt=pt;
-}
-
-void KMuon::SetRochEta(double eta){
-
-  k_roch_eta=eta;
-}
-
-void KMuon::SetRochPhi(double phi){
-
-  k_roch_phi=phi;
-}
-
-void KMuon::SetRochE(double e){
-
-  k_roch_e=e;
+  k_roch_sf_up=pt;
 }
 
 
@@ -340,16 +332,20 @@ void KMuon::Setdz(double dz){
   k_dz = dz;
 }
 
-void KMuon::Setdxy(double dxy){
+void KMuon::SetIP2D(double ip2d){
 
-  k_dxy = dxy;
+  k_ip2d = ip2d;
 }
 
-void KMuon::Setdxy_sig(double dxysig){
+void KMuon::SetIP3D(double ip3d){
 
-  k_dxy_sig = dxysig;
+  k_ip3d = ip3d;
 }
 
+void KMuon::SetSIP3D(double sip3d){
+
+  k_sip3d = sip3d;
+}
 
 void KMuon::SetTrackVx(double vtx){
   
@@ -403,24 +399,18 @@ void KMuon::SetIsGlobal(bool isglobal){
   k_muon_isglobal =isglobal;
 }
 
+void KMuon::SetIsStandAlone(bool isstandalone){
+
+  k_muon_isstandalone =isstandalone;
+}
+
 void KMuon::SetIsTracker(bool istracker){
 
   k_muon_istracker =istracker;
 }
 
 
-void KMuon::SetShiftedEUp(double pt_up){
-  muon_pt_up= pt_up;
-}
 
-void KMuon::SetShiftedEDown(double pt_down){
-  muon_pt_down= pt_down;
-}
-
-
-void KMuon::SetIsLoose(bool isloose){
-  k_isloose= isloose;
-}
 void KMuon::SetIsTight(bool istight){
   k_istight= istight;
 }
@@ -430,6 +420,9 @@ void KMuon::SetIsMedium(bool ismedium){
 }
 void KMuon::SetIsSoft(bool issoft){
   k_issoft= issoft;
+}
+void KMuon::SetIsHighPt(bool ishighpt){
+  k_ishighpt= ishighpt;
 }
 
 
@@ -449,6 +442,20 @@ void KMuon::SetRelMiniIso( double iso){
 }
 
 
+void KMuon::SetTrkIso( double iso){
+  k_muon_trkiso = iso;
+}
+
+void KMuon::SetECalIso( double iso){
+  k_muon_ecaliso = iso;
+}
+
+void KMuon::SetHCalIso( double iso){
+
+  k_muon_hcaliso = iso;
+}
+
+
 void KMuon::SetMiniAODRelIso (double cone, double iso){
   if(cone == 0.3) k_muon_maod_reliso03= iso;
   else if(cone ==  0.4) k_muon_maod_reliso04= iso;
@@ -459,7 +466,3 @@ void KMuon::SetMiniAODPt(double maodpt){
 }
 
 
-
-void KMuon::SetTrigMatch(TString match){
-  k_trig_match= match;
-}

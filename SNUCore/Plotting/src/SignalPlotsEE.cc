@@ -130,57 +130,6 @@ SignalPlotsEE::SignalPlotsEE(TString name, int nel): StdPlots(name){
 
   map_sig2["EtaRegion"]           = SetupHist2("EtaRegion_el_"  + name,"eta " , 8, 0., 8., 8, 0.,8.);
   map_sig2["JetEtaRegion"]           = SetupHist2("JetEtaRegion_el_"  + name,"eta " , 8, 0., 8., 8, 0.,8.);
-  map_sig2["h_Lepton_C1_mvapt"]           = SetupHist2("h_LeptonC1_mvapt_"         + name,"el mva C1",200, 10., 410., 200, -1.,1.);
-  map_sig2["h_Lepton_C2_mvapt"]           = SetupHist2("h_LeptonC2_mvapt_"         + name,"el mva C1",200, 10., 410.,200, -1.,1.);
-  map_sig2["h_Lepton_C3_mvapt"]           = SetupHist2("h_LeptonC3_mvapt_"         + name,"el mva C1",200, 10., 410.,200, -1.,1.);
-
-  map_sig["h_Lepton_C1_mva"]           = SetupHist("h_LeptonC1_mva_"         + name,"el mva C1",200, -1.,1.);
-  map_sig["h_Lepton_C2_mva"]           = SetupHist("h_LeptonC2_mva_"         + name,"el mva C2",200, -1.,1.);
-  map_sig["h_Lepton_C3_mva"]           = SetupHist("h_LeptonC3_mva_"         + name,"el mva C3",200, -1.,1.);
-  map_sig["h_Lepton_C4_mva"]           = SetupHist("h_LeptonC4_mva_"         + name,"el mva C1",200, -1.,1.);
-  map_sig["h_Lepton_C5_mva"]           = SetupHist("h_LeptonC5_mva_"         + name,"el mva C2",200, -1.,1.);
-  map_sig["h_Lepton_C6_mva"]           = SetupHist("h_LeptonC6_mva_"         + name,"el mva C3",200, -1.,1.);
-  map_sig["h_Lepton_C7_mva"]           = SetupHist("h_LeptonC7_mva_"         + name,"el mva C1",200, -1.,1.);
-  map_sig["h_Lepton_C8_mva"]           = SetupHist("h_LeptonC8_mva_"         + name,"el mva C2",200, -1.,1.);
-  map_sig["h_Lepton_C9_mva"]           = SetupHist("h_LeptonC9_mva_"         + name,"el mva C3",200, -1.,1.);
-  map_sig["h_Lepton_C10_mva"]           = SetupHist("h_LeptonC10_mva_"         + name,"el mva C3",200, -1.,1.);
-  map_sig["h_Lepton_C11_mva"]           = SetupHist("h_LeptonC11_mva_"         + name,"el mva C1",200, -1.,1.);
-  map_sig["h_Lepton_C12_mva"]           = SetupHist("h_LeptonC12_mva_"         + name,"el mva C2",200, -1.,1.);
-  map_sig["h_Lepton_C13_mva"]           = SetupHist("h_LeptonC13_mva_"         + name,"el mva C3",200, -1.,1.);
-  map_sig["h_Lepton_C14_mva"]           = SetupHist("h_LeptonC14_mva_"         + name,"el mva C1",200, -1.,1.);
-  map_sig["h_Lepton_C15_mva"]           = SetupHist("h_LeptonC15_mva_"         + name,"el mva C2",200, -1.,1.);
-  map_sig["h_Lepton_C16_mva"]           = SetupHist("h_LeptonC16_mva_"         + name,"el mva C3",200, -1.,1.);
-  map_sig["h_Lepton_C17_mva"]           = SetupHist("h_LeptonC17_mva_"         + name,"el mva C1",200, -1.,1.);
-  map_sig["h_Lepton_C18_mva"]           = SetupHist("h_LeptonC18_mva_"         + name,"el mva C2",200, -1.,1.);
-
-
-  map_sig2["h_Lepton_C1_mva_iso"]           = SetupHist2("h_LeptonC1_mva_iso_"         + name,"el mva_iso C1",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C2_mva_iso"]           = SetupHist2("h_LeptonC2_mva_iso_"         + name,"el mva_iso C2",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C3_mva_iso"]           = SetupHist2("h_LeptonC3_mva_iso_"         + name,"el mva_iso C3",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C4_mva_iso"]           = SetupHist2("h_LeptonC4_mva_iso_"         + name,"el mva_iso C1",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C5_mva_iso"]           = SetupHist2("h_LeptonC5_mva_iso_"         + name,"el mva_iso C2",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C6_mva_iso"]           = SetupHist2("h_LeptonC6_mva_iso_"         + name,"el mva_iso C3",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C7_mva_iso"]           = SetupHist2("h_LeptonC7_mva_iso_"         + name,"el mva_iso C1",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C8_mva_iso"]           = SetupHist2("h_LeptonC8_mva_iso_"         + name,"el mva_iso C2",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C9_mva_iso"]           = SetupHist2("h_LeptonC9_mva_iso_"         + name,"el mva_iso C3",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C10_mva_iso"]           = SetupHist2("h_LeptonC10_mva_iso_"         + name,"el mva_iso C3",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C11_mva_iso"]           = SetupHist2("h_LeptonC11_mva_iso_"         + name,"el mva_iso C1",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C12_mva_iso"]           = SetupHist2("h_LeptonC12_mva_iso_"         + name,"el mva_iso C2",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C13_mva_iso"]           = SetupHist2("h_LeptonC13_mva_iso_"         + name,"el mva_iso C3",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C14_mva_iso"]           = SetupHist2("h_LeptonC14_mva_iso_"         + name,"el mva_iso C1",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C15_mva_iso"]           = SetupHist2("h_LeptonC15_mva_iso_"         + name,"el mva_iso C2",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C16_mva_iso"]           = SetupHist2("h_LeptonC16_mva_iso_"         + name,"el mva_iso C3",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C17_mva_iso"]           = SetupHist2("h_LeptonC17_mva_iso_"         + name,"el mva_iso C1",200, -1.,1., 200, 0., 2.);
-  map_sig2["h_Lepton_C18_mva_iso"]           = SetupHist2("h_LeptonC18_mva_iso_"         + name,"el mva_iso C2",200, -1.,1., 200, 0., 2.);
-
-
-
-  map_sig["h_Lepton_C0_zzmva"]           = SetupHist("h_LeptonC0_zzmva_"         + name,"el mva C0",200, -1.,1.);
-  map_sig["h_Lepton_C1_zzmva"]           = SetupHist("h_LeptonC1_zzmva_"         + name,"el mva C1",200, -1.,1.);
-  map_sig["h_Lepton_C2_zzmva"]           = SetupHist("h_LeptonC2_zzmva_"         + name,"el mva C2",200, -1.,1.);
-  map_sig["h_Lepton_C3_zzmva"]           = SetupHist("h_LeptonC3_zzmva_"         + name,"el mva C3",200, -1.,1.);
-  map_sig["h_Lepton_C4_zzmva"]           = SetupHist("h_LeptonC4_zzmva_"         + name,"el mva C4",200, -1.,1.);
-  map_sig["h_Lepton_C5_zzmva"]           = SetupHist("h_LeptonC5_zzmva_"         + name,"el mva C5",200, -1.,1.);
   
   map_sig["h_missinghits"]           = SetupHist("h_missinghits"      + name,"missing hits", 5,0, 5.); 
   if(nel > 1 || nel < 0) {
@@ -212,19 +161,6 @@ SignalPlotsEE::SignalPlotsEE(TString name, int nel): StdPlots(name){
   map_sig["h_leadingLeptonMiniRelIso"]    = SetupHist("h_leadingLeptonMiniRelIso_"      + name,"leading lepton mini relIso",100,0,1.);
   map_sig["h_LeptonDZ_EC"]               = SetupHist("h_LeptonDZ_EC_"          + name," leading lepton DZ", 400, -0.5 , 0.5);
   map_sig["h_LeptonDZ_B"]               = SetupHist("h_LeptonDZ_B_"          + name," leading lepton DZ", 400, -0.5 , 0.5);
-  map_sig["h_LeptonDXY_EC"]              = SetupHist("h_LeptonDXY_EC_"         + name," lepton DXY_{ec}", 1000, -0.25 , 0.25);
-  map_sig["h_LeptonDXY_B"]              = SetupHist("h_LeptonDXY_B_"         + name," lepton DXY_{b}", 1000, -0.25 , 0.25);
-  map_sig["h_LeptonDXY_pt1_EC"]              = SetupHist("h_LeptonDXY_pt1_EC_"         + name," lepton DXY_{ec}", 1000, -0.25 , 0.25);
-  map_sig["h_LeptonDXY_pt1_B"]              = SetupHist("h_LeptonDXY_pt1_B_"         + name," lepton DXY_{b}", 1000, -0.25 , 0.25);
-  map_sig["h_LeptonDXY_pt2_EC"]              = SetupHist("h_LeptonDXY_pt2_EC_"         + name," lepton DXY_{ec}", 1000, -0.25 , 0.25);
-  map_sig["h_LeptonDXY_pt2_B"]              = SetupHist("h_LeptonDXY_pt2_B_"         + name," lepton DXY_{b}", 1000, -0.25 , 0.25);
-  map_sig["h_LeptonDXY_pt3_EC"]              = SetupHist("h_LeptonDXY_pt3_EC_"         + name," lepton DXY_{ec}", 1000, -0.25 , 0.25);
-  map_sig["h_LeptonDXY_pt3_B"]              = SetupHist("h_LeptonDXY_pt3_B_"         + name," lepton DXY_{b}", 1000, -0.25 , 0.25);
-
-
-  map_sig["h_LeptonDXY"]              = SetupHist("h_LeptonDXY_"         + name," leading lepton DXY", 1000, -0.25 , 0.25);
-  map_sig["h_LeptonDXYSig"]              = SetupHist("h_LeptonDXYSig_"         + name," leading lepton DXYSig", 1000, -10. , 10.);
-  
   
   /// Lepton/Jet/Lepton dR
   map_sig["h_LeptonJetdR"]            = SetupHist("h_LeptonJetdR_"       + name,"lepton jet dR",50,0,5);
@@ -251,7 +187,6 @@ SignalPlotsEE::SignalPlotsEE(TString name, int nel): StdPlots(name){
   map_sig["h_jets_pt"]                = SetupHist("h_jets_pt_"           + name,"jet pt",60,0,300);
   map_sig["h_jets_eta"]               = SetupHist("h_jets_eta_"          + name,"#eta distribution of the two jets",120,-3,3);
   map_sig["h_jets_phi"]               = SetupHist("h_jets_phi_"          + name,"#phi distribution of the two jets",140,-3.5,3.5);
-  map_sig["h_PileupJetIDMVA"]         = SetupHist("h_pileupJetIDMVA_"    + name, "" ,100, -1.,1.);
   map_sig["h_bTag"]                   = SetupHist("h_bTag_"              + name,"bTag discrimant",100,-1,3);
   map_sig["h_Njets"]                  = SetupHist("h_Njets_"             + name,"number of jets",10,0,10);
   map_sig["h_Nfatjets"]                  = SetupHist("h_Nfatjets_"             + name,"number of jets",10,0,10);
@@ -792,117 +727,13 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_LeptonPhi",elit->Phi(),weight);
     Fill("h_LeptonEta",elit->Eta(),weight);
 
-    if(elit->Pt() < 10.){
-      if(elit->Pt() > 5.){
-	if(fabs(elit->Eta()) < 0.8)     Fill("h_Lepton_C0_zzmva",elit->ZZMVA(), weight);
-	else if(fabs(elit->Eta()) < 1.5)  Fill("h_Lepton_C1_zzmva",elit->ZZMVA(), weight);
-	else     Fill("h_Lepton_C2_zzmva",elit->ZZMVA(), weight);
-      }
-    }
-    else {
-      if(fabs(elit->Eta()) < 0.8)    Fill("h_Lepton_C3_zzmva",elit->ZZMVA(), weight);
-      else if(fabs(elit->Eta()) < 1.5)Fill("h_Lepton_C4_zzmva",elit->ZZMVA(), weight);
-      else Fill("h_Lepton_C5_zzmva",elit->ZZMVA(), weight);
-      
-      
-      if(fabs(elit->Eta()) < 0.8)    Fill("h_Lepton_C1_mva",elit->MVA(), weight);
-      else if(fabs(elit->Eta()) < 1.5)Fill("h_Lepton_C2_mva",elit->MVA(), weight);
-      else Fill("h_Lepton_C3_mva",elit->MVA(), weight);
-      if(elit->Pt() < 15.){
-	if(fabs(elit->Eta()) < 0.8)    Fill("h_Lepton_C4_mva",elit->MVA(), weight);
-	else if(fabs(elit->Eta()) < 1.5)Fill("h_Lepton_C5_mva",elit->MVA(), weight);
-	else Fill("h_Lepton_C6_mva",elit->MVA(), weight);
-      }
-      else if	(elit->Pt() < 20.){
-        if(fabs(elit->Eta()) < 0.8)    Fill("h_Lepton_C7_mva",elit->MVA(), weight);
-        else if(fabs(elit->Eta()) < 1.5)Fill("h_Lepton_C8_mva",elit->MVA(), weight);
-	else Fill("h_Lepton_C9_mva",elit->MVA(), weight);
-      }
-      if(elit->Pt() < 30.){
-	if(fabs(elit->Eta()) < 0.8)    Fill("h_Lepton_C10_mva",elit->MVA(), weight);
-        else if(fabs(elit->Eta()) < 1.5)Fill("h_Lepton_C11_mva",elit->MVA(), weight);
-        else Fill("h_Lepton_C12_mva",elit->MVA(), weight);
-      }
-      else  if(elit->Pt() < 50.){
-        if(fabs(elit->Eta()) < 0.8)    Fill("h_Lepton_C13_mva",elit->MVA(), weight);
-        else if(fabs(elit->Eta()) < 1.5)Fill("h_Lepton_C14_mva",elit->MVA(), weight);
-        else Fill("h_Lepton_C15_mva",elit->MVA(), weight);
-      }
-      else{
-	if(fabs(elit->Eta()) < 0.8)    Fill("h_Lepton_C16_mva",elit->MVA(), weight);
-        else if(fabs(elit->Eta()) < 1.5)Fill("h_Lepton_C17_mva",elit->MVA(), weight);
-        else Fill("h_Lepton_C18_mva",elit->MVA(), weight);
-      }
-
-      if(fabs(elit->Eta()) < 0.8)    Fill("h_Lepton_C1_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-      else if(fabs(elit->Eta()) < 1.5)Fill("h_Lepton_C2_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-      else Fill("h_Lepton_C3_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-      if(elit->Pt() < 15.){
-        if(fabs(elit->Eta()) < 0.8)    Fill("h_Lepton_C4_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-	else if(fabs(elit->Eta()) < 1.5)Fill("h_Lepton_C5_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-        else Fill("h_Lepton_C6_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-      }
-      else if   (elit->Pt() < 20.){
-        if(fabs(elit->Eta()) < 0.8)    Fill("h_Lepton_C7_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-        else if(fabs(elit->Eta()) < 1.5)Fill("h_Lepton_C8_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-        else Fill("h_Lepton_C9_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-      }
-      if(elit->Pt() < 30.){
-        if(fabs(elit->Eta()) < 0.8)    Fill("h_Lepton_C10_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-        else if(fabs(elit->Eta()) < 1.5)Fill("h_Lepton_C11_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-        else Fill("h_Lepton_C12_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-      }
-      else  if(elit->Pt() < 50.){
-        if(fabs(elit->Eta()) < 0.8)    Fill("h_Lepton_C13_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-        else if(fabs(elit->Eta()) < 1.5)Fill("h_Lepton_C14_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-        else Fill("h_Lepton_C15_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-      }
-      else{
-	if(fabs(elit->Eta()) < 0.8)    Fill("h_Lepton_C16_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-        else if(fabs(elit->Eta()) < 1.5)Fill("h_Lepton_C17_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-        else Fill("h_Lepton_C18_mva_iso",elit->MVA(),elit->PFRelIso(0.3), weight);
-      }
-
-
-
-      if(fabs(elit->Eta()) < 0.8)  Fill("h_Lepton_C1_mvapt" ,elit->Pt(), elit->MVA(), weight);
-      else if(fabs(elit->Eta()) < 1.5) Fill("h_Lepton_C2_mvapt" ,elit->Pt(), elit->MVA(), weight);
-      else  Fill("h_Lepton_C3_mvapt" ,elit->Pt(), elit->MVA(), weight);
-    }
 
     Fill("h_missinghits", elit->MissingHits(), weight);
-    if(fabs(elit->Eta()) > 1.5) {
-      Fill("h_LeptonDXY_EC", elit->dxy(),weight);
-      Fill("h_LeptonDZ_EC", elit->dz(),weight);
-      if(elit->Pt() < 20.){
-	Fill("h_LeptonDXY_pt1_EC", elit->dxy(),weight);
-      }
-      else   if(elit->Pt() < 50.){
-	Fill("h_LeptonDXY_pt2_EC", elit->dxy(),weight);
-      }
-      else         Fill("h_LeptonDXY_pt3_EC", elit->dxy(),weight);
-
-    }    
-    else{
-      Fill("h_LeptonDZ_B", elit->dz(),weight);
-      Fill("h_LeptonDXY_B", elit->dxy(),weight);
-      if(elit->Pt() < 20.){
-	Fill("h_LeptonDXY_pt1_B", elit->dxy(),weight);
-      }      
-      else   if(elit->Pt() < 50.){
-	Fill("h_LeptonDXY_pt2_B", elit->dxy(),weight);
-      }
-      else   Fill("h_LeptonDXY_pt3_B", elit->dxy(),weight);
-    }
-    Fill("h_LeptonDXY", elit->dxy(),weight);
-    Fill("h_LeptonDXYSig", elit->dxySig() ,weight);
 
      
     float el_reliso_03 =  elit->PFRelIso(0.3);
-    float el_iso_03 = elit->PFAbsIso(0.3);
     float el_minireliso = elit->PFRelMiniIso();
-    
-    Fill("h_LeptonIso", el_iso_03,weight);
+
     Fill("h_LeptonRelIso", el_reliso_03,weight);
     if(iel==2){
       Fill("h_thirdLeptonPt", elit->Pt(),weight);
@@ -1015,7 +846,6 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     if(j==2)     Fill("h_third_jets_eta",jets[j].Eta(),weight);
     if(j==3)     Fill("h_fourth_jets_eta",jets[j].Eta(),weight);
 
-    Fill("h_PileupJetIDMVA", jets[j].PileupJetIDMVA(),weight);
     Fill("h_jets_phi",jets[j].Phi(),weight);
     Fill("h_bTag",jets[j].CSVInclV2(),weight);
     
@@ -1256,24 +1086,11 @@ SignalPlotsEE::~SignalPlotsEE() {
 
 snu::KJet SignalPlotsEE::GetCorrectedJetCloseToLepton(snu::KElectron el, snu::KJet jet){
   //jet_LepAwareJECv2 = (raw_jet * L1 - lepton) * L2L3Res + lepton                                                                                                        
-  float rawpt= jet.RawPt();
-  float rawe= jet.RawE();
 
-  float L1corr = jet.L1JetCorr();
-  float l2l3res = jet.L2L3ResJetCorr();
-  float leppt = el.Pt();
-  float corr_pt = (rawpt*L1corr - leppt)*l2l3res + leppt;
   
   snu::KJet jet_corr(jet);
   return jet_corr;
-  if(1){
-    TLorentzVector v;
-    v.SetPtEtaPhiM(jet.Pt(), jet.Eta(), jet.Phi(), jet.M());
-    v=v*(corr_pt/jet.Pt());
-    jet_corr.SetPtEtaPhiM(v.Pt(), v.Eta(), v.Phi(), v.M());
-    return jet_corr;
-  }
-  return jet_corr;
+
 }
 
 

@@ -22,8 +22,6 @@ void MuonPlots::Fill(Double_t weight, std::vector<snu::KMuon> muons){
     Fill("h_muonvty",muit->muonVty() ,  weight);
     Fill("h_muonvtz",muit->muonVtz() ,  weight);
     Fill("h_dz",muit->dZ() ,  weight);
-    Fill("h_dxy",muit->dXY() ,  weight);
-    Fill("h_sigdxy",muit->dXYSig() ,  weight);
     Fill("h_chi2",muit->GlobalChi2() ,  weight);
     Fill("h_isloose",muit->IsLoose() ,  weight);
     Fill("h_ismedium",muit->IsMedium() ,  weight);
@@ -77,8 +75,6 @@ MuonPlots::MuonPlots(TString name) : StdPlots(name) {
   map_muon["h_muonvty"] = new TH1D ("h_muonvty" + name ,"",1000,-3.  , 3.);
   map_muon["h_muonvtz"] = new TH1D ("h_muonvtz" + name ,"",1000,-50.  ,50. );
   map_muon["h_dz"] = new TH1D ("h_dz" + name ,"",1000,-1.  ,1. );
-  map_muon["h_dxy"] = new TH1D ("h_dxy" + name ,"",1000,-1.  ,1. );
-  map_muon["h_sigdxy"] = new TH1D ("h_sigdxy" + name ,"",1000,-4.  ,4.  );
   map_muon["h_chi2"] = new TH1D ("h_chi2" + name ,"",500,0.  ,50. );
   map_muon["h_isloose"] = new TH1D ("h_isloose" + name ,"",2,0.  ,2. );
   map_muon["h_ismedium"] = new TH1D ("h_ismedium" + name ,"",2,0.  ,2.  );
@@ -118,8 +114,6 @@ MuonPlots::MuonPlots(TString name) : StdPlots(name) {
   titles["h_muonvty"] = "Muon Vertex_{y}";
   titles["h_muonvtz"] = "Muon Vertex_{z}";
   titles["h_dz"] =  "Muon d_{z}";
-  titles["h_dxy"] =  "Muon d_{xy}";
-  titles["h_sigdxy"] =  "Muon d_{xy}/#{sigma}_{xy}"; 
   titles["h_chi2"] = "Muon Global #Chi^{2}";
   titles["h_isloose"] = "Muon isLoose";
   titles["h_ismedium"] = "Muon isMedium";

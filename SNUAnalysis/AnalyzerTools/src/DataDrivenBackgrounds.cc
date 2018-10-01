@@ -320,8 +320,8 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EM(bool geterr, vector<snu::KE
 
    float val1(0.), val2(0.);
    if(variable=="ptcone"){
-     val1 = k_electrons[0].PTCone(_electron_isocone,dd_eventbase->GetElectronSel()->IsoCutValue(k_electrons.at(0),IDel));
-     val2 = k_muons[0].PTCone(_muon_isocone,dd_eventbase->GetMuonSel()->IsoCutValue(k_muons.at(0),IDmu));     
+     val1 = k_electrons[0].PTCone(dd_eventbase->GetElectronSel()->IsoCutValue(k_electrons.at(0),IDel));
+     val2 = k_muons[0].PTCone(dd_eventbase->GetMuonSel()->IsoCutValue(k_muons.at(0),IDmu));     
    }
    else if(variable=="pt"){
      val1=  electrons[0].Pt();
@@ -369,8 +369,8 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_MM(bool geterr, vector<snu::KM
     float val1(0.), val2(0.);
     
     if(variable=="ptcone"){
-     val1 = k_muons[0].PTCone(_muon_isocone,dd_eventbase->GetMuonSel()->IsoCutValue(k_muons.at(0),ID));
-     val2 = k_muons[1].PTCone(_muon_isocone,dd_eventbase->GetMuonSel()->IsoCutValue(k_muons.at(1),ID));
+     val1 = k_muons[0].PTCone(dd_eventbase->GetMuonSel()->IsoCutValue(k_muons.at(0),ID));
+     val2 = k_muons[1].PTCone(dd_eventbase->GetMuonSel()->IsoCutValue(k_muons.at(1),ID));
     }
     else if(variable=="pt"){
       val1=  muons[0].Pt();
@@ -487,7 +487,7 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_M(bool geterr, vector<snu::KMu
   
   vector<TLorentzVector> muons=MakeTLorentz(k_muons);
   
-  float f=  m_fakeobj->getFakeRate(k_muons[0].PTCone(_muon_isocone,dd_eventbase->GetMuonSel()->IsoCutValue(k_muons.at(0),IDmu)),fabs(k_muons.at(0).Eta()), tag,10.);
+  float f=  m_fakeobj->getFakeRate(k_muons[0].PTCone(dd_eventbase->GetMuonSel()->IsoCutValue(k_muons.at(0),IDmu)),fabs(k_muons.at(0).Eta()), tag,10.);
   float r=  1.;
   
   bool debug(false);
@@ -537,8 +537,8 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr, vector<snu::KE
     float val1(0.), val2(0.);
 
     if(variable=="ptcone"){
-      val1 = k_electrons[0].PTCone(_electron_isocone,dd_eventbase->GetElectronSel()->IsoCutValue(k_electrons.at(0),ID));
-      val2 = k_electrons[1].PTCone(_electron_isocone,dd_eventbase->GetElectronSel()->IsoCutValue(k_electrons.at(1),ID));
+      val1 = k_electrons[0].PTCone(dd_eventbase->GetElectronSel()->IsoCutValue(k_electrons.at(0),ID));
+      val2 = k_electrons[1].PTCone(dd_eventbase->GetElectronSel()->IsoCutValue(k_electrons.at(1),ID));
     }
     else if(variable=="pt"){
       val1=  k_electrons[0].Pt();

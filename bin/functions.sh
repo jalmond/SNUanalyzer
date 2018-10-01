@@ -6,7 +6,7 @@ cycle=""
 njobs=1
 data_lumi=""
 LibList="NULL"
-outputdir=${LQANALYZER_DIR}/data/output/
+outputdir=${ANALYZER_DIR}/data/output/
 loglevel="INFO"
 remove_workspace="True"
 logstep=-1
@@ -19,7 +19,6 @@ targetlumi=-1.
 efflumi=-1.
 remove="True"
 skinput="True"
-useCATv742ntuples="True"
 runevent=-1
 DEBUG="False"
 useskim="Lepton"
@@ -62,8 +61,8 @@ function checkAndMakeDir() {
     fi  
 }
 
-function setupLQanalyzer() {
-    if [ -z "$LQANALYZER_DIR" ]; then
+function setupanalyzer() {
+    if [ -z "$ANALYZER_DIR" ]; then
 	cd ../
 	source setup.sh
 	cd -

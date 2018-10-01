@@ -20,8 +20,7 @@ MCDataCorrections::MCDataCorrections() {
   corr_isdata=false;
   k_period=-1;
 
-  string lqdir = getenv("LQANALYZER_DIR");
-  rc =  new RoccoR(lqdir + "/data/rochester/80X/rcdata.2016.v3");  
+  string lqdir = getenv("ANALYZER_DIR");
   
   deg_etaptmap_leg1.clear();
   deg_etaptmap_leg2.clear();
@@ -49,7 +48,6 @@ MCDataCorrections::MCDataCorrections(bool isdata) {
   
 
 MCDataCorrections::~MCDataCorrections(){
-  delete rc;
   delete reweightPU;
   for( std::map<float, std::vector<float>* >::iterator mit = deg_etaptmap_leg1.begin(); mit != deg_etaptmap_leg1.end(); mit++){
     delete mit->second;
@@ -82,7 +80,7 @@ void MCDataCorrections::PrintSummary(){
 
 void  MCDataCorrections::SetupDoubleEGTriggerSF(int ileg, string sleg){
 
-  string analysisdir = getenv("LQANALYZER_DIR");
+  string analysisdir = getenv("ANALYZER_DIR");
 
   string file = analysisdir + sleg;
   ifstream trigsf_file(file.c_str());
@@ -154,7 +152,7 @@ void  MCDataCorrections::SetupDoubleEGTriggerSF(int ileg, string sleg){
 
 void MCDataCorrections::FillCorrectionHists(){
 
-  string file = string(getenv("LQANALYZER_DIR")) + "/CATConfig/CattupleConfig/corrections_"+string(getenv("CATVERSION"))+".txt" ;
+  string file = string(getenv("ANALYZER_DIR")) + "/SNUConfig/SNUtupleConfig/corrections_"+string(getenv("SNUVERSION"))+".txt" ;
   cout << "Correction file = " << file << endl;
   ifstream corr_file(file.c_str());
   string sline;
@@ -539,7 +537,7 @@ double MCDataCorrections::TriggerScaleFactorPeriodDependant( vector<snu::KElectr
     f2_ptthreshold = 200.;
     
     for(unsigned int iel = 0; iel < el.size(); iel++){
-      if(!el.at(iel).TriggerMatched(trigname)) continue;
+      //if(!el.at(iel).TriggerMatched(trigname)) continue;
       float elpt = el.at(iel).Pt();
       if(elpt >  f2_ptthreshold) elpt = (f2_ptthreshold-1.);
       if(elpt < f1_ptthreshold) return 1.;
@@ -1535,7 +1533,7 @@ double MCDataCorrections::ElectronRecoScaleFactor(vector<snu::KElectron> el, int
 float MCDataCorrections::UserPileupWeight(snu::KEvent ev, int nj){
   
   if(corr_isdata) return 1.;
-  return reweightPU->GetWeight(ev.nVertices(),TString(getenv("CATVERSION")), nj);
+  return reweightPU->GetWeight(ev.nVertices(),TString(getenv("SNUVERSION")), nj);
 }
 
 
@@ -1623,31 +1621,15 @@ void MCDataCorrections::CorrectMuonMomentum(vector<snu::KMuon>& k_muons, vector<
     double scalefactor = 1.;
     if(it->IsRochesterCorrected()) return;
     if(it->RochPt() < 0.){
-      if(it->IsPF() && (it->IsGlobal()==1 || it->IsTracker() == 1)&& it->Pt() > 5. && fabs(it->Eta()) < 2.5){
-	if (corr_isdata) scalefactor = rc->kScaleDT(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(),0,0);
-	else {
-	  //gRandom->SetSeed(1111.);
-	  double u1 = gRandom->Rndm();
-	  double u2 = gRandom->Rndm();
-	  
-	  unsigned int mu_index = it->MCTruthIndex();
-	  float genpt(-999.);
-	  if(mu_index > 0 && mu_index < truth.size()) {
-	    if(fabs(truth.at(mu_index).PdgId() ) == 13) genpt = truth.at(mu_index).Pt();
-	  }
-	  
-	  
-	  if ( genpt> 0.)  scalefactor = rc->kScaleFromGenMC(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(), it->ActiveLayer(), genpt, u1,0, 0);
-	  else scalefactor = rc->kScaleAndSmearMC(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(), it->ActiveLayer(), u1, u2, 0,0);
-	}
-      }
+      double scalefactor = it->RochSF();
       it->SetRelIso(0.3,it->RelMiniAODIso03()/scalefactor);
       it->SetRelIso(0.4,it->RelMiniAODIso04()/scalefactor);
       it->SetPtEtaPhiM( (scalefactor*it->Pt() ), it->Eta(), it->Phi(), it->M());
       it->SetIsRochesterCorrected(true);
     }
     else{
-      scalefactor = it->RochPt() / it->Pt();
+      double scalefactor = it->RochSF();
+
       it->SetRelIso(0.3,it->RelMiniAODIso03()/scalefactor);
       it->SetRelIso(0.4,it->RelMiniAODIso04()/scalefactor);
       it->SetPtEtaPhiM( (scalefactor*it->Pt() ), it->Eta(), it->Phi(), it->M());
@@ -1679,23 +1661,8 @@ void MCDataCorrections::CorrectMuonMomentum(vector<snu::KMuon>& k_muons, vector<
 }
 
 float MCDataCorrections::GetCorrectedMuonMomentum(snu::KMuon muon, std::vector<snu::KTruth> truth){
-  double scalefactor = 1.;
-  if (corr_isdata) scalefactor = rc->kScaleDT(float(muon.Charge()), muon.Pt(), muon.Eta(), muon.Phi(),0,0);
-  else {
-    //gRandom->SetSeed(1111);
-    double u1 = gRandom->Rndm();
-    double u2 = gRandom->Rndm();
 
-    int mu_index = muon.MCTruthIndex();
-    float genpt(-999.);
-
-    if(mu_index > 0&& mu_index < truth.size()) {
-      if(fabs(truth.at(mu_index).PdgId() ) == 13) genpt = truth.at(mu_index).Pt();
-    }
-    
-    if ( genpt> 0.)  scalefactor = rc->kScaleFromGenMC(float(muon.Charge()), muon.Pt(), muon.Eta(), muon.Phi(), muon.ActiveLayer(), genpt, u1,0, 0);
-    else scalefactor = rc->kScaleAndSmearMC(float(muon.Charge()), muon.Pt(), muon.Eta(), muon.Phi(), muon.ActiveLayer(), u1, u2, 0,0);
-  }
+  double scalefactor = muon.RochSF();;
   
   return (scalefactor*muon.Pt());
 }

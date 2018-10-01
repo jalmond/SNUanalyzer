@@ -35,7 +35,6 @@ SignalPlotsEM::SignalPlotsEM(TString name): StdPlots(name){
   map_sig["h_LeptonIso"]              =     new TH1D("h_LeptonIso_"         + name,"leading lepton relIso",50,0,10.);
   map_sig["h_LeptonRelIso"]           =     new TH1D("h_LeptonRelIso_"      + name,"leading lepton relIso",100,0,1.);
   map_sig["h_LeptonDZ"]               =     new TH1D("h_LeptonDZ_"          + name," leading lepton DZ", 400, -0.5 , 0.5);
-  map_sig["h_LeptonDXY"]              =     new TH1D("h_LeptonDXY_"         + name," leading lepton DXY", 1000, -0.25 , 0.25);
   
   
   /// Lepton/Jet/Lepton dR
@@ -220,14 +219,11 @@ void SignalPlotsEM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_LeptonPt", elit->Pt(),weight);
     Fill("h_LeptonEta",elit->Eta(),weight);
     Fill("h_LeptonPhi",elit->Phi(),weight);
-    Fill("h_LeptonDXY", elit->dxy(),weight);
     Fill("h_LeptonDZ", elit->dz(),weight);
      
     float el_reliso_03 =  elit->PFRelIso(0.3);
-    float el_iso_03 = elit->PFAbsIso(0.3);
     
     
-    Fill("h_LeptonIso", el_iso_03,weight);
     Fill("h_LeptonRelIso", el_reliso_03,weight);
     if(iel==1){
       Fill("h_secondLeptonPt", elit->Pt(),weight);
@@ -248,7 +244,6 @@ void SignalPlotsEM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_LeptonPt", muit->Pt(),weight);
     Fill("h_LeptonPhi",muit->Phi(),weight);
     Fill("h_LeptonEta",muit->Eta(),weight);
-    Fill("h_LeptonDXY", muit->dXY(),weight);
     Fill("h_LeptonDZ", muit->dZ(),weight);
 
     float mu_reliso_03 =  muit->RelIso03();

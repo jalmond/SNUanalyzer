@@ -39,7 +39,7 @@
 // STL include(s):                                                                                                      
 #include <sstream>
 
-Data::Data() : SNUCycleBaseNTuple(), SNUinput(true), k_inputmuons(0),  k_inputelectrons(0),k_inputphotons(0),  k_inputjets(0),k_inputfatjets(0), k_inputgenjets(0),k_inputevent(0),k_inputtrigger(0),k_inputtruth(0), setting_ntuple_data(-1),TargetLumi(0.),k_flags(0), k_cat_version(-1)
+Data::Data() : SNUCycleBaseNTuple(), SNUinput(true), k_inputmuons(0),  k_inputelectrons(0),k_inputphotons(0),  k_inputjets(0),k_inputfatjets(0), k_inputgenjets(0),k_inputevent(0),k_inputtrigger(0),k_inputtruth(0), setting_ntuple_data(-1),TargetLumi(0.),k_flags(0), k_snu_version(-1)
   
 {
 
@@ -223,7 +223,6 @@ void Data::Reset(){
   jet_hadronFlavour = 0;
   jet_CSVv2 = 0;
   jet_DeepCSV = 0;
-  jet_DeepFlavour = 0;
   jet_CvsL = 0;
   jet_CvsB = 0;
   jet_DeepCvsL = 0;
@@ -242,6 +241,12 @@ void Data::Reset(){
   jet_PileupJetId = 0;
   jet_shiftedEnUp = 0;
   jet_shiftedEnDown = 0;
+  jet_smearedRes = 0;
+  jet_smearedResUp = 0;
+  jet_smearedResDown = 0;
+  jet_JECL1FastJet = 0;
+  jet_JECFull = 0;
+
   fatjet_pt = 0;
   fatjet_eta = 0;
   fatjet_phi = 0;
@@ -250,12 +255,6 @@ void Data::Reset(){
   fatjet_partonFlavour = 0;
   fatjet_hadronFlavour = 0;
   fatjet_CSVv2 = 0;
-  fatjet_DeepCSV = 0;
-  fatjet_DeepFlavour = 0;
-  fatjet_CvsL = 0;
-  fatjet_CvsB = 0;
-  fatjet_DeepCvsL = 0;
-  fatjet_DeepCvsB = 0;
   fatjet_tightJetID = 0;
   fatjet_tightLepVetoJetID = 0;
   fatjet_partonPdgId = 0;
@@ -274,6 +273,10 @@ void Data::Reset(){
   fatjet_neutralMultiplicity = 0;
   fatjet_shiftedEnUp = 0;
   fatjet_shiftedEnDown = 0;
+  fatjet_smearedRes = 0;
+  fatjet_smearedResUp = 0;
+  fatjet_smearedResDown = 0;
+
   electron_MVAIso = 0;
   electron_MVANoIso = 0;
   electron_Energy = 0;
@@ -286,16 +289,10 @@ void Data::Reset(){
   electron_pt_Scale_Down = 0;
   electron_pt_Smear_Up = 0;
   electron_pt_Smear_Down = 0;
-  electron_Px = 0;
-  electron_Py = 0;
-  electron_Pz = 0;
   electron_eta = 0;
   electron_phi = 0;
   electron_charge = 0;
   electron_gsfpt = 0;
-  electron_gsfPx = 0;
-  electron_gsfPy = 0;
-  electron_gsfPz = 0;
   electron_gsfEta = 0;
   electron_gsfPhi = 0;
   electron_gsfCharge = 0;
@@ -313,23 +310,22 @@ void Data::Reset(){
   electron_eOverP = 0;
   electron_InvEminusInvP = 0;
   electron_dxyVTX = 0;
+  electron_dxyerrVTX = 0;
   electron_dzVTX = 0;
+  electron_dzerrVTX = 0;
+  electron_3DIPVTX = 0;
+  electron_3DIPerrVTX = 0 ;
   electron_dxy = 0;
   electron_sigdxy = 0;
   electron_dz = 0;
-  electron_ip3D = 0;
-  electron_sigip3D = 0;
   electron_dxyBS = 0;
   electron_dzBS = 0;
   electron_chIso03 = 0;
   electron_nhIso03 = 0;
   electron_phIso03 = 0;
   electron_puChIso03 = 0;
-  electron_relIsoCom03 = 0;
-  electron_relIsoCom04 = 0;
-  electron_relIsoBeta03 = 0;
-  electron_relIsoBeta04 = 0;
-  electron_relIsoRho03 = 0;
+  electron_RelPFIso_dBeta = 0;
+  electron_RelPFIso_Rho = 0;
   electron_passConversionVeto = 0;
   electron_isGsfCtfScPixChargeConsistent = 0;
   electron_isGsfScPixChargeConsistent = 0;
@@ -344,8 +340,6 @@ void Data::Reset(){
   electron_E15 = 0;
   electron_E25 = 0;
   electron_E55 = 0;
-  electron_RelPFIso_dBeta = 0;
-  electron_RelPFIso_Rho = 0;
   electron_passVetoID = 0;
   electron_passLooseID = 0;
   electron_passMediumID = 0;
@@ -356,6 +350,10 @@ void Data::Reset(){
   electron_passMVAID_iso_WP90 = 0;
   electron_passHEEPID = 0;
   electron_EnergyUnCorr = 0;
+  electron_chMiniIso = 0;
+  electron_nhMiniIso = 0;
+  electron_phMiniIso = 0;
+
   muon_PfChargedHadronIsoR04 = 0;
   muon_PfNeutralHadronIsoR04 = 0;
   muon_PfGammaIsoR04 = 0;
@@ -378,9 +376,6 @@ void Data::Reset(){
   muon_eta = 0;
   muon_pt = 0;
   muon_mass = 0;
-  muon_Px = 0;
-  muon_Py = 0;
-  muon_Pz = 0;
   muon_trkiso = 0;
   muon_hcaliso = 0;
   muon_ecaliso = 0;
@@ -413,50 +408,40 @@ void Data::Reset(){
   muon_vz = 0;
   muon_Best_pt = 0;
   muon_Best_ptError = 0;
-  muon_Best_Px = 0;
-  muon_Best_Py = 0;
-  muon_Best_Pz = 0;
   muon_Best_eta = 0;
   muon_Best_phi = 0;
   muon_Inner_pt = 0;
   muon_Inner_ptError = 0;
-  muon_Inner_Px = 0;
-  muon_Inner_Py = 0;
-  muon_Inner_Pz = 0;
   muon_Inner_eta = 0;
   muon_Inner_phi = 0;
   muon_Outer_pt = 0;
   muon_Outer_ptError = 0;
-  muon_Outer_Px = 0;
-  muon_Outer_Py = 0;
-  muon_Outer_Pz = 0;
   muon_Outer_eta = 0;
   muon_Outer_phi = 0;
   muon_GLB_pt = 0;
   muon_GLB_ptError = 0;
-  muon_GLB_Px = 0;
-  muon_GLB_Py = 0;
-  muon_GLB_Pz = 0;
   muon_GLB_eta = 0;
   muon_GLB_phi = 0;
   muon_TuneP_pt = 0;
   muon_TuneP_ptError = 0;
-  muon_TuneP_Px = 0;
-  muon_TuneP_Py = 0;
-  muon_TuneP_Pz = 0;
   muon_TuneP_eta = 0;
   muon_TuneP_phi = 0;
   muon_roch_sf = 0;
   muon_roch_sf_up = 0;
+
+  muon_PfChargedHadronMiniIso = 0;
+  muon_PfNeutralHadronMiniIso = 0;
+  muon_PfGammaMiniIso = 0;
+  muon_PFSumPUMiniIso = 0;
+
+
   PDFWeights_Scale = 0;
   PDFWeights_Error = 0;
   PDFWeights_AlphaS = 0;
+
   gen_phi = 0;
   gen_eta = 0;
   gen_pt = 0;
-  gen_Px = 0;
-  gen_Py = 0;
-  gen_Pz = 0;
   gen_E = 0;
   gen_mother_PID = 0;
   gen_mother_pt = 0;
@@ -515,12 +500,12 @@ void Data::SetSNUNtupleInputType(bool lq){
   SNUinput= lq;
 }
 
-std::string  Data::GetCatVersion(bool runSNU){
+std::string  Data::GetSNUVersion(bool runSNU){
   
   if(runSNU) {
-    return CatVersion;
+    return SNUVersion;
   }
-  else return k_inputevent->CatVersion();
+  else return k_inputevent->SNUVersion();
   
 }
 
@@ -528,8 +513,8 @@ void Data::SetTargetLumi(float tlumi){
   TargetLumi=tlumi;
 }
 
-void Data::SetCatVersion(std::string cv){
-  CatVersion=cv;
+void Data::SetSNUVersion(std::string cv){
+  SNUVersion=cv;
 }
 
 
@@ -585,7 +570,7 @@ void Data::ConnectVariables(bool setall, int setting_data){
 }
 
 void Data::SetVersion(int ver){
-  k_cat_version=ver; 
+  k_snu_version=ver; 
 }
 
 void Data::ConnectEvent(int setting_data){
@@ -600,15 +585,12 @@ void Data::ConnectEvent(int setting_data){
   ConnectVariable("PUweight",PUweight,b_PUweight);
   ConnectVariable("Flag_HBHENoiseFilter", Flag_HBHENoiseFilter, b_Flag_HBHENoiseFilter);
   ConnectVariable("Flag_HBHENoiseIsoFilter",Flag_HBHENoiseIsoFilter, b_Flag_HBHENoiseIsoFilter);
-  ConnectVariable("Flag_globalTightHalo2016Filter",Flag_globalTightHalo2016Filter,b_Flag_globalTightHalo2016Filter);
+  ConnectVariable("Flag_globalSuperTightHalo2016Filter",Flag_globalSuperTightHalo2016Filter,b_Flag_globalSuperTightHalo2016Filter);
   ConnectVariable("Flag_eeBadScFilter",Flag_eeBadScFilter , b_Flag_eeBadScFilter);
   ConnectVariable("Flag_ecalBadCalibFilter",Flag_ecalBadCalibFilter , b_Flag_ecalBadCalibFilter);
   ConnectVariable("Flag_goodVertices", Flag_goodVertices, b_Flag_goodVertices);
   ConnectVariable("Flag_BadChargedCandidateFilter",Flag_BadChargedCandidateFilter,b_Flag_BadChargedCandidateFilter);
   ConnectVariable("Flag_BadPFMuonFilter",Flag_BadPFMuonFilter,b_Flag_BadPFMuonFilter);
-  ConnectVariable("Flag_badMuons",Flag_badMuons,b_Flag_badMuons);
-  ConnectVariable("Flag_duplicateMuons",Flag_duplicateMuons,b_Flag_duplicateMuons);
-  ConnectVariable("Flag_noBadMuons",Flag_noBadMuons,b_Flag_noBadMuons);
   ConnectVariable("Flag_EcalDeadCellTriggerPrimitiveFilter",Flag_EcalDeadCellTriggerPrimitiveFilter,b_Flag_EcalDeadCellTriggerPrimitiveFilter);
 
   ConnectVariable("nPV", nPV, b_nPV);
@@ -673,9 +655,6 @@ void Data::ConnectMuons(){
   ConnectVariable("muon_eta", muon_eta, b_muon_eta);
   ConnectVariable("muon_pt", muon_pt, b_muon_pt);
   ConnectVariable("muon_mass", muon_mass, b_muon_mass);
-  ConnectVariable("muon_Px", muon_Px, b_muon_Px);
-  ConnectVariable("muon_Py", muon_Py, b_muon_Py);
-  ConnectVariable("muon_Pz", muon_Pz, b_muon_Pz);
   ConnectVariable("muon_trkiso", muon_trkiso, b_muon_trkiso);
   ConnectVariable("muon_hcaliso", muon_hcaliso, b_muon_hcaliso);
   ConnectVariable("muon_ecaliso", muon_ecaliso, b_muon_ecaliso);
@@ -716,41 +695,31 @@ void Data::ConnectMuons(){
   ConnectVariable("muon_vz", muon_vz, b_muon_vz);
   ConnectVariable("muon_Best_pt", muon_Best_pt, b_muon_Best_pt);
   ConnectVariable("muon_Best_ptError", muon_Best_ptError, b_muon_Best_ptError);
-  ConnectVariable("muon_Best_Px", muon_Best_Px, b_muon_Best_Px);
-  ConnectVariable("muon_Best_Py", muon_Best_Py, b_muon_Best_Py);
-  ConnectVariable("muon_Best_Pz", muon_Best_Pz, b_muon_Best_Pz);
   ConnectVariable("muon_Best_eta", muon_Best_eta, b_muon_Best_eta);
   ConnectVariable("muon_Best_phi", muon_Best_phi, b_muon_Best_phi);
   ConnectVariable("muon_Inner_pt", muon_Inner_pt, b_muon_Inner_pt);
   ConnectVariable("muon_Inner_ptError", muon_Inner_ptError, b_muon_Inner_ptError);
-  ConnectVariable("muon_Inner_Px", muon_Inner_Px, b_muon_Inner_Px);
-  ConnectVariable("muon_Inner_Py", muon_Inner_Py, b_muon_Inner_Py);
-  ConnectVariable("muon_Inner_Pz", muon_Inner_Pz, b_muon_Inner_Pz);
   ConnectVariable("muon_Inner_eta", muon_Inner_eta, b_muon_Inner_eta);
   ConnectVariable("muon_Inner_phi", muon_Inner_phi, b_muon_Inner_phi);
   ConnectVariable("muon_Outer_pt", muon_Outer_pt, b_muon_Outer_pt);
   ConnectVariable("muon_Outer_ptError", muon_Outer_ptError, b_muon_Outer_ptError);
-  ConnectVariable("muon_Outer_Px", muon_Outer_Px, b_muon_Outer_Px);
-  ConnectVariable("muon_Outer_Py", muon_Outer_Py, b_muon_Outer_Py);
-  ConnectVariable("muon_Outer_Pz", muon_Outer_Pz, b_muon_Outer_Pz);
   ConnectVariable("muon_Outer_eta", muon_Outer_eta, b_muon_Outer_eta);
   ConnectVariable("muon_Outer_phi", muon_Outer_phi, b_muon_Outer_phi);
   ConnectVariable("muon_GLB_pt", muon_GLB_pt, b_muon_GLB_pt);
   ConnectVariable("muon_GLB_ptError", muon_GLB_ptError, b_muon_GLB_ptError);
-  ConnectVariable("muon_GLB_Px", muon_GLB_Px, b_muon_GLB_Px);
-  ConnectVariable("muon_GLB_Py", muon_GLB_Py, b_muon_GLB_Py);
-  ConnectVariable("muon_GLB_Pz", muon_GLB_Pz, b_muon_GLB_Pz);
   ConnectVariable("muon_GLB_eta", muon_GLB_eta, b_muon_GLB_eta);
   ConnectVariable("muon_GLB_phi", muon_GLB_phi, b_muon_GLB_phi);
   ConnectVariable("muon_TuneP_pt", muon_TuneP_pt, b_muon_TuneP_pt);
   ConnectVariable("muon_TuneP_ptError", muon_TuneP_ptError, b_muon_TuneP_ptError);
-  ConnectVariable("muon_TuneP_Px", muon_TuneP_Px, b_muon_TuneP_Px);
-  ConnectVariable("muon_TuneP_Py", muon_TuneP_Py, b_muon_TuneP_Py);
-  ConnectVariable("muon_TuneP_Pz", muon_TuneP_Pz, b_muon_TuneP_Pz);
   ConnectVariable("muon_TuneP_eta", muon_TuneP_eta, b_muon_TuneP_eta);
   ConnectVariable("muon_TuneP_phi", muon_TuneP_phi, b_muon_TuneP_phi);
   ConnectVariable("muon_roch_sf", muon_roch_sf, b_muon_roch_sf);
   ConnectVariable("muon_roch_sf_up", muon_roch_sf_up, b_muon_roch_sf_up);
+  ConnectVariable("muon_PfChargedHadronMiniIso", muon_PfChargedHadronMiniIso, b_muon_PfChargedHadronMiniIso);
+  ConnectVariable("muon_PfNeutralHadronMiniIso", muon_PfNeutralHadronMiniIso, b_muon_PfNeutralHadronMiniIso);
+  ConnectVariable("muon_PfGammaMiniIso", muon_PfGammaMiniIso, b_muon_PfGammaMiniIso);
+  ConnectVariable("muon_PFSumPUMiniIso", muon_PFSumPUMiniIso, b_muon_PFSumPUMiniIso);
+
 
 
 
@@ -760,6 +729,15 @@ void Data::ConnectMuons(){
 
 
 void Data::ConnectPhotons(){
+  
+  ConnectVariable("photon_pt", photon_pt, b_photon_pt);
+  ConnectVariable("photon_eta", photon_eta, b_photon_eta);
+  ConnectVariable("photon_phi", photon_phi, b_photon_phi);
+  ConnectVariable("photon_scEta", photon_scEta, b_photon_scEta);
+  ConnectVariable("photon_scPhi", photon_scPhi, b_photon_scPhi);
+  ConnectVariable("photon_HoverE", photon_HoverE, b_photon_HoverE);
+  ConnectVariable("photon_hasPixelSeed", photon_hasPixelSeed, b_photon_hasPixelSeed);
+  ConnectVariable("photon_Full5x5_SigmaIEtaIEta", photon_Full5x5_SigmaIEtaIEta, b_photon_Full5x5_SigmaIEtaIEta);
   ConnectVariable("photon_ChIso", photon_ChIso, b_photon_ChIso);
   ConnectVariable("photon_NhIso", photon_NhIso, b_photon_NhIso);
   ConnectVariable("photon_PhIso", photon_PhIso, b_photon_PhIso);
@@ -772,6 +750,7 @@ void Data::ConnectPhotons(){
   ConnectVariable("photon_passMediumID", photon_passMediumID, b_photon_passMediumID);
   ConnectVariable("photon_passTightID", photon_passTightID, b_photon_passTightID);
   ConnectVariable("photon_ptUnCorr", photon_ptUnCorr, b_photon_ptUnCorr);
+
   
  }
 
@@ -791,16 +770,10 @@ void Data::ConnectElectrons(){
   ConnectVariable("electron_pt_Scale_Down", electron_pt_Scale_Down, b_electron_pt_Scale_Down);
   ConnectVariable("electron_pt_Smear_Up", electron_pt_Smear_Up, b_electron_pt_Smear_Up);
   ConnectVariable("electron_pt_Smear_Down", electron_pt_Smear_Down, b_electron_pt_Smear_Down);
-  ConnectVariable("electron_Px", electron_Px, b_electron_Px);
-  ConnectVariable("electron_Py", electron_Py, b_electron_Py);
-  ConnectVariable("electron_Pz", electron_Pz, b_electron_Pz);
   ConnectVariable("electron_eta", electron_eta, b_electron_eta);
   ConnectVariable("electron_phi", electron_phi, b_electron_phi);
   ConnectVariable("electron_charge", electron_charge, b_electron_charge);
   ConnectVariable("electron_gsfpt", electron_gsfpt, b_electron_gsfpt);
-  ConnectVariable("electron_gsfPx", electron_gsfPx, b_electron_gsfPx);
-  ConnectVariable("electron_gsfPy", electron_gsfPy, b_electron_gsfPy);
-  ConnectVariable("electron_gsfPz", electron_gsfPz, b_electron_gsfPz);
   ConnectVariable("electron_gsfEta", electron_gsfEta, b_electron_gsfEta);
   ConnectVariable("electron_gsfPhi", electron_gsfPhi, b_electron_gsfPhi);
   ConnectVariable("electron_gsfCharge", electron_gsfCharge, b_electron_gsfCharge);
@@ -860,6 +833,10 @@ void Data::ConnectElectrons(){
   ConnectVariable("electron_passMVAID_iso_WP90", electron_passMVAID_iso_WP90, b_electron_passMVAID_iso_WP90);
   ConnectVariable("electron_passHEEPID", electron_passHEEPID, b_electron_passHEEPID);
   ConnectVariable("electron_EnergyUnCorr", electron_EnergyUnCorr, b_electron_EnergyUnCorr);
+  ConnectVariable("electron_chMiniIso", electron_chMiniIso, b_electron_chMiniIso);
+  ConnectVariable("electron_nhMiniIso", electron_nhMiniIso, b_electron_nhMiniIso);
+  ConnectVariable("electron_phMiniIso", electron_phMiniIso, b_electron_phMiniIso);
+  ConnectVariable("electron_puChMiniIso", electron_puChMiniIso, b_electron_puChMiniIso);
 
 
   return;
@@ -882,7 +859,6 @@ void Data::ConnectPFJets(){
   ConnectVariable("jet_hadronFlavour", jet_hadronFlavour, b_jet_hadronFlavour);
   ConnectVariable("jet_CSVv2", jet_CSVv2, b_jet_CSVv2);
   ConnectVariable("jet_DeepCSV", jet_DeepCSV, b_jet_DeepCSV);
-  ConnectVariable("jet_DeepFlavour", jet_DeepFlavour, b_jet_DeepFlavour);
   ConnectVariable("jet_CvsL", jet_CvsL, b_jet_CvsL);
   ConnectVariable("jet_CvsB", jet_CvsB, b_jet_CvsB);
   ConnectVariable("jet_DeepCvsL", jet_DeepCvsL, b_jet_DeepCvsL);
@@ -907,6 +883,12 @@ void Data::ConnectPFJets(){
   ConnectVariable("jet_PileupJetId", jet_PileupJetId, b_jet_PileupJetId);
   ConnectVariable("jet_shiftedEnUp", jet_shiftedEnUp, b_jet_shiftedEnUp);
   ConnectVariable("jet_shiftedEnDown", jet_shiftedEnDown, b_jet_shiftedEnDown);
+  ConnectVariable("jet_smearedRes", jet_smearedRes, b_jet_smearedRes);
+  ConnectVariable("jet_smearedResUp", jet_smearedResUp, b_jet_smearedResUp);
+  ConnectVariable("jet_smearedResDown", jet_smearedResDown, b_jet_smearedResDown);
+  ConnectVariable("jet_JECL1FastJet", jet_JECL1FastJet, b_jet_JECL1FastJet);
+  ConnectVariable("jet_JECFull", jet_JECFull, b_jet_JECFull);
+
 
   return;}
 
@@ -947,6 +929,9 @@ void Data::ConnectPFFatJets(){
   ConnectVariable("fatjet_neutralMultiplicity", fatjet_neutralMultiplicity, b_fatjet_neutralMultiplicity);
   ConnectVariable("fatjet_shiftedEnUp", fatjet_shiftedEnUp, b_fatjet_shiftedEnUp);
   ConnectVariable("fatjet_shiftedEnDown", fatjet_shiftedEnDown, b_fatjet_shiftedEnDown);
+  ConnectVariable("fatjet_smearedRes", fatjet_smearedRes, b_fatjet_smearedRes);
+  ConnectVariable("fatjet_smearedResUp",fatjet_smearedResUp, b_fatjet_smearedResUp);
+  ConnectVariable("fatjet_smearedResDown", fatjet_smearedResDown, b_fatjet_smearedResDown);
 
   return;
 }
@@ -955,35 +940,23 @@ void Data::ConnectPFFatJets(){
 void Data::ConnectMET(){
 
   //#####   MET branches
-  ConnectVariable("pfMET_pt", pfMET_pt, b_pfMET_pt);
-  ConnectVariable("pfMET_phi", pfMET_phi, b_pfMET_phi);
   ConnectVariable("pfMET_Px", pfMET_Px, b_pfMET_Px);
   ConnectVariable("pfMET_Py", pfMET_Py, b_pfMET_Py);
   ConnectVariable("pfMET_SumEt", pfMET_SumEt, b_pfMET_SumEt);
-  ConnectVariable("pfMET_Type1_pt", pfMET_Type1_pt, b_pfMET_Type1_pt);
-  ConnectVariable("pfMET_Type1_phi", pfMET_Type1_phi, b_pfMET_Type1_phi);
   ConnectVariable("pfMET_Type1_Px", pfMET_Type1_Px, b_pfMET_Type1_Px);
   ConnectVariable("pfMET_Type1_Py", pfMET_Type1_Py, b_pfMET_Type1_Py);
   ConnectVariable("pfMET_Type1_SumEt", pfMET_Type1_SumEt, b_pfMET_Type1_SumEt);
-  ConnectVariable("pfMET_Type1_PhiCor_pt", pfMET_Type1_PhiCor_pt, b_pfMET_Type1_PhiCor_pt);
-  ConnectVariable("pfMET_Type1_PhiCor_phi", pfMET_Type1_PhiCor_phi, b_pfMET_Type1_PhiCor_phi);
   ConnectVariable("pfMET_Type1_PhiCor_Px", pfMET_Type1_PhiCor_Px, b_pfMET_Type1_PhiCor_Px);
   ConnectVariable("pfMET_Type1_PhiCor_Py", pfMET_Type1_PhiCor_Py, b_pfMET_Type1_PhiCor_Py);
   ConnectVariable("pfMET_Type1_PhiCor_SumEt", pfMET_Type1_PhiCor_SumEt, b_pfMET_Type1_PhiCor_SumEt);
 
   // shifts
-  ConnectVariable("pfMET_pt_shifts", pfMET_pt_shifts, b_pfMET_pt_shifts);
-  ConnectVariable("pfMET_phi_shifts", pfMET_phi_shifts, b_pfMET_phi_shifts);
   ConnectVariable("pfMET_Px_shifts", pfMET_Px_shifts, b_pfMET_Px_shifts);
   ConnectVariable("pfMET_Py_shifts", pfMET_Py_shifts, b_pfMET_Py_shifts);
   ConnectVariable("pfMET_SumEt_shifts", pfMET_SumEt_shifts, b_pfMET_SumEt_shifts);
-  ConnectVariable("pfMET_Type1_pt_shifts", pfMET_Type1_pt_shifts, b_pfMET_Type1_pt_shifts);
-  ConnectVariable("pfMET_Type1_phi_shifts", pfMET_Type1_phi_shifts, b_pfMET_Type1_phi_shifts);
   ConnectVariable("pfMET_Type1_Px_shifts", pfMET_Type1_Px_shifts, b_pfMET_Type1_Px_shifts);
   ConnectVariable("pfMET_Type1_Py_shifts", pfMET_Type1_Py_shifts, b_pfMET_Type1_Py_shifts);
   ConnectVariable("pfMET_Type1_SumEt_shifts", pfMET_Type1_SumEt_shifts, b_pfMET_Type1_SumEt_shifts);
-  ConnectVariable("pfMET_Type1_PhiCor_pt_shifts", pfMET_Type1_PhiCor_pt_shifts, b_pfMET_Type1_PhiCor_pt_shifts);
-  ConnectVariable("pfMET_Type1_PhiCor_phi_shifts", pfMET_Type1_PhiCor_phi_shifts, b_pfMET_Type1_PhiCor_phi_shifts);
   ConnectVariable("pfMET_Type1_PhiCor_Px_shifts", pfMET_Type1_PhiCor_Px_shifts, b_pfMET_Type1_PhiCor_Px_shifts);
   ConnectVariable("pfMET_Type1_PhiCor_Py_shifts", pfMET_Type1_PhiCor_Py_shifts, b_pfMET_Type1_PhiCor_Py_shifts);
   ConnectVariable("pfMET_Type1_PhiCor_SumEt_shifts", pfMET_Type1_PhiCor_SumEt_shifts, b_pfMET_Type1_PhiCor_SumEt_shifts);
@@ -1004,8 +977,12 @@ void Data::ConnectTruth(int setting_data){
   ConnectVariable("PDFWeights_AlphaS" ,PDFWeights_AlphaS ,b_PDFWeights_AlphaS);
   ConnectVariable("PDFWeights_Error"  ,PDFWeights_Error  ,b_PDFWeights_Error);
   ConnectVariable("PDFWeights_Scale"  ,PDFWeights_Scale  ,b_PDFWeights_Scale);
-  ConnectVariable("gen_mother_PID", gen_mother_PID, b_gen_mother_PID);
-  ConnectVariable("gen_mother_pt", gen_mother_pt, b_gen_mother_pt);
+
+
+  ConnectVariable("gen_phi", gen_phi, b_gen_phi);
+  ConnectVariable("gen_eta", gen_eta, b_gen_eta);
+  ConnectVariable("gen_pt", gen_pt, b_gen_pt);
+  ConnectVariable("gen_E", gen_E, b_gen_E);
   ConnectVariable("gen_mother_index", gen_mother_index, b_gen_mother_index);
   ConnectVariable("gen_charge", gen_charge, b_gen_charge);
   ConnectVariable("gen_status", gen_status, b_gen_status);

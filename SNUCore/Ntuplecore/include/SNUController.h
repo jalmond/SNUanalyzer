@@ -18,16 +18,8 @@ class SNUController  {
 
  public:
   
-  enum _catversion {none=0,
-		    v744=1,
-		    v745=2,
-		    v762=3,
-		    v763=4,
-		    v764=5,
-		    v765=6,
-		    v766=7,
-		    v801=8,
-		    v802=9};
+  enum _snuversion {none=0,
+		    v941=1};
 
   
   //// constructors
@@ -73,9 +65,9 @@ class SNUController  {
   void SetSNUInput(bool lq);
   void SetUserFlag(TString flag);
 
-  std::string SetNTCatVersion();
+  std::string SetNTSNUVersion();
 
-  _catversion GetCatVersion(std::string filepath)  throw( SNUError ); 
+  _snuversion GetSNUVersion(std::string filepath)  throw( SNUError ); 
   bool CheckBranch(std::string ntuple_version, std::string env_version);
 
 
@@ -126,7 +118,7 @@ class SNUController  {
   TString channel;
   TString k_period;
   bool kSNUInput;
-  _catversion catversion_lq;
+  _snuversion snuversion_lq;
 
   TH1F* h_timing_hist;
   TH1F* h_virtmemory_hist;

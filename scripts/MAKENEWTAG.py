@@ -18,12 +18,12 @@ while  not inputm == "Y":
 
 inputm =""
 while  not inputm == "Y":
-    inputm = raw_input("have you added CATConfig/CattupleConfig/corrections_v... file  Y/N" )
+    inputm = raw_input("have you added SNUConfig/SNUtupleConfig/corrections_v... file  Y/N" )
 
 
 inputm =""
 while  not inputm == "Y":
-     inputm = raw_input("have you added CATConfig/CattupleConfig/vXXX.conf file Y/N")
+     inputm = raw_input("have you added SNUConfig/SNUtupleConfig/vXXX.conf file Y/N")
 
 inputm =""
 while  not inputm == "Y":

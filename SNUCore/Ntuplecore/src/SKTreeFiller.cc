@@ -21,26 +21,7 @@ bool SKTreeFiller::SkipTrigger(TString tname){
   
   m_logger << DEBUG << "Trigger: " << tname << SNULogger::endmsg;  
   /// Remove extra unnecisary  triggers (from v7-6-4+ this will not be needed))
-  if((tname.Contains("Jpsi")
-       || tname.Contains("NoFilters")
-       || tname.Contains("Upsilon")
-       || tname.Contains("7p5")
-       || tname.Contains("Save")
-       || tname.Contains("R9Id")
-       || tname.Contains("PFMET")
-       || tname.Contains("PFHT")
-       || tname.Contains("NoHE")
-       || tname.Contains("HE10")
-       || tname.Contains("PFJet50")
-       || tname.Contains("Boost")
-       || tname.Contains("LooseIso")
-       || tname.Contains("MediumIso")
-       || tname.Contains("Mass")
-       || tname.Contains("Central")
-       || tname.Contains("MW")
-       || tname.Contains("EBOnly_VBF")
-       || tname.Contains("dEta18"))) return true;
-  
+
   return false;
 }
 
@@ -60,29 +41,26 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   std::vector<int> vHLTInsideDatasetTriggerPrescales;
   
 
-  /// trignames should only be empty id user is running on Catuples and not SKTreeMaker. In this case all triggers are used 
+  /// trignames should only be empty id user is running on SKFlat and not SKTreeMaker. In this case all triggers are used 
   if(trignames.size() == 0 ){
     for (UInt_t i=0; i< HLT_TriggerName->size(); i++) {
       std::string tgname = HLT_TriggerName->at(i);
       Int_t ps = HLT_TriggerPrescale->at(i);
       vHLTInsideDatasetTriggerNames.push_back(tgname);
-      if(ps > 0) vHLTInsideDatasetTriggerDecisions.push_back(true);
-      else vHLTInsideDatasetTriggerDecisions.push_back(false);
+      vHLTInsideDatasetTriggerDecisions.push_back(HLT_TriggerFired->at(i));
       vHLTInsideDatasetTriggerPrescales.push_back(ps);
     }
   }
 
   
-  /// vtrigname is vector of ALL triggers in Catuples
+  /// vtrigname is vector of ALL triggers in SKFlat
   for (UInt_t i=0 ; i< HLT_TriggerName->size(); i++) {
     // trignames is vector of trigger names that we want to store in SKTrees
     // trigname contains names substrings X (where X is for example "HLT_mu") and we store all triggers that start with X
 
     
     std::string tgname = HLT_TriggerName->at(i);
-    if(TString(CatVersion).Contains("v7-6-2")) {
-      if(SkipTrigger(TString(tgname)))continue;
-    }
+
 
     Int_t ps = HLT_TriggerPrescale->at(i);
 
@@ -94,8 +72,7 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
       if ( tmpHLT.BeginsWith(*it)){
 	
 	vHLTInsideDatasetTriggerNames.push_back(tgname);
-	if(ps > 0) vHLTInsideDatasetTriggerDecisions.push_back(true);
-	else vHLTInsideDatasetTriggerDecisions.push_back(false);
+	vHLTInsideDatasetTriggerDecisions.push_back(HLT_TriggerFired->at(i));
 	vHLTInsideDatasetTriggerPrescales.push_back(ps);
 	
 	// if trigger is accepted break from loop
@@ -108,6 +85,8 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   ktrigger.SetHLTInsideDatasetTriggerDecisions(vHLTInsideDatasetTriggerDecisions);
   ktrigger.SetHLTInsideDatasetTriggerPrescales(vHLTInsideDatasetTriggerPrescales);
     
+  m_logger << DEBUG << "Filled  trigger Info" << SNULogger::endmsg;
+
   return ktrigger;
   
 }
@@ -118,22 +97,30 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 
   if(!SNUinput){
     kevent = *k_inputevent;
-    if(k_cat_version < 3){
-      if(!TString(kevent.CatVersion()).Contains("v7-4"))kevent.SetCatVersion(CatVersion);
-    }
     return kevent;
   }
-  //  lumimask = snu::KEvent::gold
+
+  /// not added yet
+  /*
+    Int_t           nTotal;
+  Int_t           PVtrackSize;
+  Double_t        PVchi2;
+  Double_t        PVndof;
+  Double_t        PVnormalizedChi2;
+  Double_t        genWeight_alphaQCD;
+  Double_t        genWeight_alphaQED;
+  
+  */
+
 
   m_logger << DEBUG << "Filling Event Info" << SNULogger::endmsg;
   
   // New variable to set catversion. Add this to flat ntuples for next iteration
-  kevent.SetCatVersion(CatVersion);
 
   /// type 1
-  // type 1 + ohi corrections
-  double met_type1xy = sqrt(pfMET_Type1_PhiCor_Px*pfMET_Type1_PhiCor_Px + pfMET_Type1_Py*pfMET_Type1_Py);
-  double phi_type1xy =  TMath::ATan2(pfMET_Type1_Py,pfMET_Type1_Px);
+  // type 1 + phi corrections
+  double met_type1xy = sqrt(pfMET_Type1_PhiCor_Px*pfMET_Type1_PhiCor_Px + pfMET_Type1_PhiCor_Py*pfMET_Type1_PhiCor_Py);
+  double phi_type1xy =  TMath::ATan2(pfMET_Type1_PhiCor_Py, pfMET_Type1_PhiCor_Px);
   
   
   /// Default MET is now xy shifted typ1
@@ -149,33 +136,14 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     
   }
     /// set unsmeared met variables
+  kevent.SetPFRawMETx(pfMET_Px);
+  kevent.SetPFRawMETx(pfMET_Py);
+
   kevent.SetPFMETType1Unsmearedx(pfMET_Type1_Px);
   kevent.SetPFMETType1Unsmearedy(pfMET_Type1_Py);
   kevent.SetPFMETType1xyUnsmearedx(pfMET_Type1_PhiCor_Px);
   kevent.SetPFMETType1xyUnsmearedy(pfMET_Type1_PhiCor_Py);
     
-  double topreweight=1.;
-  bool settopweight=false;
-  if(k_sample_name.Contains("TTLL_powheg"))settopweight=true;
-  if(k_sample_name.Contains("TTLJ_powheg"))settopweight=true;
-  if(k_sample_name.Contains("TT_powheg"))settopweight=true;
-  if(k_sample_name.Contains("TTJets_aMC"))settopweight=true;
-  
-  
-  if(settopweight){
-    for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
-      if(fabs(gen_PID->at(itx))==6 && fabs(gen_status->at(itx))<30 && fabs(gen_status->at(itx))>20){
-	topreweight*=exp(0.0615-0.0005*gen_pt->at(itx));
-      }
-    }
-  }
-
-  kevent.SetTopPtReweight(topreweight);
-
-  if(jet_rho){
-    if(jet_rho->size() > 0)kevent.SetRho(jet_rho->at(0));
-    else kevent.SetRho(-999.);
-  }
   m_logger << DEBUG << "Filling Event Info [2]" << SNULogger::endmsg;
   /// Since some versions of catuples have no metNoHF due to bug in met code 
   
@@ -202,6 +170,19 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       kevent.SetScaleWeights(w1store);
     }
   }
+
+  if(PDFWeights_AlphaS){
+    if(PDFWeights_AlphaS->size() > 0){
+      std::vector<double>* w1= PDFWeights_AlphaS;
+      std::vector<double> w1store;
+
+      for(unsigned int i=0; i < w1->size(); i++){
+        w1store.push_back(w1->at(i));
+      }
+
+      kevent.SetAlphaSWeights(w1store);
+    }
+  }
   
   
   if(!IsData){
@@ -215,7 +196,6 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 	if(muon_pt->at(im) < 10.) continue;
 	if(fabs(muon_eta->at(im)) > 2.5) continue;
 	// find full definition for 13 TeV
-	//if(muon_relIso04->at(im) > 0.2)  continue;
         double dr = sqrt( pow(fabs( jet_eta->at(ij) - muon_eta->at(im)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( jet_phi->at(ij) - muon_phi->at(im))),2.0));
 	if(dr < 0.4){
 	  close_to_lepton=true;
@@ -224,7 +204,6 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       for(unsigned int iel=0; iel < electron_pt->size(); iel++){
 	if(electron_pt->at(iel) < 10.) continue;
         if(fabs(electron_eta->at(iel)) > 2.5) continue;
-	// find full definition for 13 TeV                                                                                                                                          if(electrons_relIso03->at(ilep) > 0.15)  continue;
         double dr = sqrt( pow(fabs( jet_eta->at(ij) - electron_eta->at(iel)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( jet_phi->at(ij) - electron_phi->at(iel))),2.0));
         if(dr < 0.4){
           close_to_lepton=true;
@@ -238,20 +217,19 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       jpx +=  jet_px;
       jpy +=  jet_py;
       
-      // JS jet_smearedRes ?
       if(!IsData){
-	sjpx +=  1. *jet_px;
-	sjpy +=  1. *jet_py;
+	sjpx +=  jet_smearedRes->at(ij) *jet_px;
+	sjpy +=  jet_smearedRes->at(ij) *jet_py;
       }
       else{
 	sjpx +=  jet_px;
         sjpy +=  jet_py;
       }
-      sjpxup +=  1. *jet_px;
-      sjpyup +=  1. *jet_py;
+      sjpxup +=  jet_smearedResUp->at(ij) *jet_px;
+      sjpyup +=  jet_smearedResUp->at(ij) *jet_py;
       
-      sjpxdown +=  1. *jet_px;
-      sjpydown +=  1. *jet_py;
+      sjpxdown +=  jet_smearedResDown->at(ij) *jet_px;
+      sjpydown +=  jet_smearedResDown->at(ij) *jet_py;
 
     }
 
@@ -292,25 +270,31 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   
 
   /*
-    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_up*met_muonEn_Px_up + met_muonEn_Py_up*met_muonEn_Py_up));
-    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_down*met_muonEn_Px_down + met_muonEn_Py_down*met_muonEn_Py_up));
-    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_up*met_electronEn_Px_up + met_electronEn_Py_up*met_electronEn_Py_up));
-    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_down*met_electronEn_Px_down + met_electronEn_Py_down*met_electronEn_Py_down));
-    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_up->at(0)*met_unclusteredEn_Px_up->at(0) + met_unclusteredEn_Py_up->at(0)*met_unclusteredEn_Py_up->at(0)));
-    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_down->at(0)*met_unclusteredEn_Px_down->at(0) + met_unclusteredEn_Py_down->at(0)*met_unclusteredEn_Py_down->at(0)));
-    kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::Unclustered,met_unclusteredEn_SumEt_up->at(0));
-    kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::Unclustered,met_unclusteredEn_SumEt_down->at(0));
-    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetEn,      sqrt(met_jetEn_Px_up->at(0)*met_jetEn_Px_up->at(0) + met_jetEn_Py_up->at(0)*met_jetEn_Py_up->at(0)));
-    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetEn,      sqrt(met_jetEn_Px_down->at(0)*met_jetEn_Px_down->at(0) + met_jetEn_Py_down->at(0)*met_jetEn_Py_down->at(0)));
-    kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetEn,      met_jetEn_SumEt_up->at(0));
-    kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetEn,      met_jetEn_SumEt_down->at(0));
+
+      // ---- members for MET corrections ----
+      enum METUncertainty {
+       JetResUp=0, JetResDown=1, JetEnUp=2, JetEnDown=3,
+       MuonEnUp=4, MuonEnDown=5, ElectronEnUp=6, ElectronEnDown=7,
+       TauEnUp=8, TauEnDown=9, UnclusteredEnUp=10, UnclusteredEnDown=11,
+       PhotonEnUp=12, PhotonEnDown=13, NoShift=14, METUncertaintySize=15,
+       JetResUpSmear=16, JetResDownSmear=17, METFullUncertaintySize=18
+      };
   */
-  /// https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_25/PhysicsTools/PatUtils/python/patPFMETCorrections_cff.py
-  /// jets > 15 GeV in mc smeared. This is not done in cattolls so branches have no change,
-  /// Apply this here
-  /// 
   
-  
+  kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::MuonEn,     sqrt(pfMET_Type1_PhiCor_Px_shifts->at(4)*pfMET_Type1_PhiCor_Px_shifts->at(4) +pfMET_Type1_PhiCor_Py_shifts->at(4)*pfMET_Type1_PhiCor_Py_shifts->at(4) ));
+  kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::MuonEn,     sqrt(pfMET_Type1_PhiCor_Px_shifts->at(5)*pfMET_Type1_PhiCor_Px_shifts->at(5) +pfMET_Type1_PhiCor_Py_shifts->at(5)*pfMET_Type1_PhiCor_Py_shifts->at(5) ));
+  kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::ElectronEn, sqrt(pfMET_Type1_PhiCor_Px_shifts->at(6)*pfMET_Type1_PhiCor_Px_shifts->at(6) +pfMET_Type1_PhiCor_Py_shifts->at(6)*pfMET_Type1_PhiCor_Py_shifts->at(6) ));
+  kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::ElectronEn, sqrt(pfMET_Type1_PhiCor_Px_shifts->at(7)*pfMET_Type1_PhiCor_Px_shifts->at(7) +pfMET_Type1_PhiCor_Py_shifts->at(7)*pfMET_Type1_PhiCor_Py_shifts->at(7) ));
+  kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::Unclustered, sqrt(pfMET_Type1_PhiCor_Px_shifts->at(10)*pfMET_Type1_PhiCor_Px_shifts->at(10) +pfMET_Type1_PhiCor_Py_shifts->at(10)*pfMET_Type1_PhiCor_Py_shifts->at(10) ));
+  kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::Unclustered, sqrt(pfMET_Type1_PhiCor_Px_shifts->at(11)*pfMET_Type1_PhiCor_Px_shifts->at(11) +pfMET_Type1_PhiCor_Py_shifts->at(11)*pfMET_Type1_PhiCor_Py_shifts->at(11) ));
+  kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::Unclustered,pfMET_Type1_PhiCor_SumEt_shifts->at(10));
+  kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::Unclustered, pfMET_Type1_PhiCor_SumEt_shifts->at(11));
+  kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetEn,    sqrt(pfMET_Type1_PhiCor_Px_shifts->at(2)*pfMET_Type1_PhiCor_Px_shifts->at(2) +pfMET_Type1_PhiCor_Py_shifts->at(2)*pfMET_Type1_PhiCor_Py_shifts->at(2) ));
+																       								 
+  kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetEn,    sqrt(pfMET_Type1_PhiCor_Px_shifts->at(3)*pfMET_Type1_PhiCor_Px_shifts->at(3) +pfMET_Type1_PhiCor_Py_shifts->at(3)*pfMET_Type1_PhiCor_Py_shifts->at(3) ));
+  kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetEn,    pfMET_Type1_PhiCor_SumEt_shifts->at(2)); 
+  kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetEn,     pfMET_Type1_PhiCor_SumEt_shifts->at(3));
+
   
   m_logger << DEBUG << "Filling Event Info [4]" << SNULogger::endmsg;
   
@@ -320,7 +304,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetRunNumber(run);
   kevent.SetEventNumber(event);
   kevent.SetLumiSection(lumi);
-  
+  kevent.SetRho(Rho);
   if(!IsData){
   
     kevent.SetPUWeight(snu::KEvent::central,double(PUweight)); // JSKIM
@@ -328,8 +312,9 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     kevent.SetPUWeight(snu::KEvent::up,  double(pileUpReweightPlus));
 
   }
+
+
   kevent.SetGenId(genWeight_id1, genWeight_id2);
-  // kevent.SetLHEWeight(lheWeight);   JSKIM
   kevent.SetGenX(genWeight_X1, genWeight_X2);
   kevent.SetGenQ(genWeight_Q);
   if(gen_weight > 0.) kevent.SetWeight(1.);
@@ -337,27 +322,21 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   
   kevent.SetVertexInfo(vertex_X, vertex_Y, vertex_Z,0. );
   
-  /// MET filter cuts/checks
-
-  
-  /// 
-  //  kevent.SetPileUpInteractionsTrue(nTrueInteraction); // JSKIM
-    
+  kevent.SetPileUpInteractionsTrue(nPileUp); 
   kevent.SetNVertices(nPV);
-  kevent.SetNGoodVertices(nPV); // JSKIM
-  
-  //  kevent.SetIsGoodEvent(nGoodPV);
+  kevent.SetIsGoodEvent(Flag_goodVertices);
 
   /// MET filter cuts/checks
   kevent.SetPassEcalDeadCellTriggerPrimitiveFilter(Flag_EcalDeadCellTriggerPrimitiveFilter);
   kevent.SetPassHBHENoiseFilter(Flag_HBHENoiseFilter);
   kevent.SetPassHBHENoiseIsoFilter(Flag_HBHENoiseIsoFilter);
-
-  kevent.SetPassTightHalo2016Filter(Flag_globalTightHalo2016Filter);
+  kevent.SetPassBadEESupercrystalFilter(Flag_eeBadScFilter);
+  kevent.SetPassEEBadCalibFilterTight(Flag_ecalBadCalibFilter);
+  kevent.SetPassSuperHalo2016Filter(Flag_globalSuperTightHalo2016Filter);
   kevent.SetPassBadChargedCandidateFilter(Flag_BadChargedCandidateFilter);
   kevent.SetPassBadPFMuonFilter(Flag_BadPFMuonFilter);
   
-  // JSKIM
+
 
   return kevent;
 }
@@ -374,36 +353,43 @@ std::vector<KPhoton> SKTreeFiller::GetAllPhotons(){
     }
     return photons;
   }
+
+  m_logger << DEBUG << "Filing photon Info " << SNULogger::endmsg;
+
   for (UInt_t iph=0; iph< photon_eta->size(); iph++) {
     if(photon_pt->at(iph) != photon_pt->at(iph)) continue;
     KPhoton ph;
-    
+
+
+    m_logger << DEBUG << "Filing photon Info " << photon_passLooseID->size() << SNULogger::endmsg;
+
     ph.SetPtEtaPhiM(photon_pt->at(iph),photon_eta->at(iph), photon_phi->at(iph),0.); // JSKIM 
 
+    m_logger << DEBUG << "1"  << SNULogger::endmsg;
     ph.SetIsLoose(photon_passLooseID->at(iph));
     ph.SetIsMedium(photon_passMediumID->at(iph));
     ph.SetIsTight(photon_passTightID->at(iph));
-    ph.SetPassMVA(photon_passMVAID_WP80->at(iph));
-    //ph.SetMCMatched(photon_mcMatched->at(iph)); 
-    //ph.SetHasPixSeed(photon_haspixseed->at(iph));
-    //ph.SetPassElVeto(photon_passelectronveto->at(iph));
-
+    m_logger << DEBUG << "2"  << SNULogger::endmsg;
+    ph.SetPassMVA80(photon_passMVAID_WP80->at(iph));
+    ph.SetPassMVA90(photon_passMVAID_WP90->at(iph));
+    ph.SetHasPixSeed(photon_hasPixelSeed->at(iph));
+    m_logger << DEBUG << "3"  << SNULogger::endmsg;
     ph.SetChargedHadIsoNoEA(photon_ChIso->at(iph));
-    //ph.SetpuChargedHadIsoNoEA();  JSKIM
     ph.SetNeutalHadIsoNoEA(photon_NhIso->at(iph));
     ph.SetPhotonIsoNoEA(photon_PhIso->at(iph));
-    //ph.SetRhoIso(); JSKIM
     ph.SetChargedHadIso(photon_ChIsoWithEA->at(iph));
+    m_logger << DEBUG << "4"  << SNULogger::endmsg;
     ph.SetPhotonIso(photon_PhIsoWithEA->at(iph));
     ph.SetNeutalHadIso(photon_NhIsoWithEA->at(iph));
     ph.SetSigmaIetaIeta(photon_Full5x5_SigmaIEtaIEta->at(iph));
-    //ph.SetR9(->at(iph)); JSKIM
+    m_logger << DEBUG << "5"  << SNULogger::endmsg;
     ph.SetHoverE(photon_HoverE->at(iph));
     ph.SetSCEta(photon_scEta->at(iph));
     ph.SetSCPhi(photon_scPhi->at(iph));
-    //ph.SetSCRawE(->at(iph)); JSKIM
-    //ph.SetSCPreShowerE(->at(iph)); JSKIM
     
+    ph.SetPtUncorr(photon_ptUnCorr->at(iph));
+    m_logger << DEBUG << "END"  << SNULogger::endmsg;
+
     photons.push_back(ph);
   }
   std::sort( photons.begin(), photons.end(), isHigherPt );
@@ -425,6 +411,30 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
   m_logger << DEBUG << "Filling electron Info " << electron_eta->size() << SNULogger::endmsg;
   
+  /*
+   vector<double>  *electron_etaWidth;
+   vector<double>  *electron_phiWidth;
+   vector<double>  *electron_dEtaIn;
+   vector<double>  *electron_sigmaIEtaIEta;
+   vector<double>  *electron_fbrem;
+   vector<double>  *electron_eOverP;
+   
+   vector<double>  *electron_r9;
+   vector<double>  *electron_scEnergy;
+   vector<double>  *electron_scPreEnergy;
+   vector<double>  *electron_scRawEnergy;
+   vector<double>  *electron_scEt;
+
+   vector<double>  *electron_E15;
+     vector<double>  *electron_E25;
+   vector<double>  *electron_E55;
+
+  vector<bool>    *electron_passMVAID_noIso_WP80;
+   vector<bool>    *electron_passMVAID_noIso_WP90;
+   vector<bool>    *electron_passMVAID_iso_WP80;
+   vector<bool>    *electron_passMVAID_iso_WP90;*/
+
+
   vector<int> matched_truth;
   for (UInt_t iel=0; iel< electron_eta->size(); iel++) {
     
@@ -435,79 +445,108 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     /// Kinematic Variables
     el.SetPtEtaPhiE(electron_pt->at(iel),electron_eta->at(iel), electron_phi->at(iel),electron_Energy->at(iel));
 
-    el.SetSmearFactor(electron_Energy_Smear_Up->at(iel)/ electron_Energy->at(iel));
-    //el.SetTrigMatch(electron_trigmatch->at(iel)); JSKIM
+    el.SetElIDVariables(
+			      electron_Full5x5_SigmaIEtaIEta->at(iel),
+			      electron_dEtaInSeed->at(iel),
+			      electron_dPhiIn->at(iel),
+			      electron_HoverE->at(iel),
+			      electron_InvEminusInvP->at(iel)
+			      );
+
+
+    //    el.SetGSF(electron_gsfpt->at(iel), electron_gsfeta->at(iel),electron_gsfphi->at(iel),electron_gsfm->at(iel));
+
     el.SetSCEta(electron_scEta->at(iel));
+    el.SetSCPhi(electron_scPhi->at(iel));
    
     el.Setdz( electron_dz->at(iel));
-    el.Setdxy(electron_dxy->at(iel) );
-    if(electron_mva){
-      el.SetMVA(electron_mva->at(iel) );
-      el.SetZZMVA(electron_zzmva->at(iel) );
-    }
-    if(electron_sigdxy){
-      if(electron_sigdxy->size() > 0 )el.Setdxy_sig(electron_sigdxy->at(iel) );
-    }
+
+    el.SetIP2D(electron_dxyVTX->at(iel));
+
+    double dB3D  = electron_3DIPVTX->at(iel);
+    double edB3D = electron_3DIPerrVTX->at(iel);
+    double sip3D = edB3D>0?dB3D/edB3D:0.0;
+
+
+    el.SetIP3D(dB3D);
+    el.SetSIP3D(sip3D);
+
+    
+    el.SetMVAIso(electron_MVAIso->at(iel) );
+    el.SetMVANonIso(electron_MVAIso->at(iel) );
+
+
     el.SetPFChargedHadronIso(0.3, electron_puChIso03->at(iel));
     el.SetPFPhotonIso(0.3,electron_phIso03->at(iel));
     el.SetPFNeutralHadronIso(0.3,electron_nhIso03->at(iel));
-    el.SetPFRelIsoRho(0.3,electron_relIsoRho03->at(iel));
-    el.SetPFRelIsoBeta(0.3,electron_relIsoBeta03->at(iel));
+    el.SetPFRelIsoRho(0.3,electron_RelPFIso_Rho->at(iel));
+    el.SetPFRelIsoBeta(0.3,electron_RelPFIso_dBeta->at(iel));
 
 
 
     m_logger << DEBUG << "Filling electron_minirelIso " << SNULogger::endmsg;
-    if(electron_minirelIso) el.SetPFRelMiniIso(electron_minirelIso->at(iel));
+
+    
+    el.SetPFRelMiniIso(      CalcMiniIso(electron_pt->at(iel),
+					 electron_chMiniIso->at(iel),
+				       electron_nhMiniIso->at(iel),
+				       electron_phMiniIso->at(iel),
+				       electron_puChMiniIso->at(iel),
+				       Rho,
+				       ElectronEA(electron_eta->at(iel))));
+
+
     
     m_logger << DEBUG << "Filling electron Info 2" << SNULogger::endmsg;
     
-    el.SetPFChargedHadronIso(0.4,electron_puChIso04->at(iel));
-    el.SetPFPhotonIso(0.4,electron_phIso04->at(iel));
-    el.SetPFNeutralHadronIso(0.4,electron_nhIso04->at(iel));
-    el.SetPFRelIso(0.4,electron_relIso04->at(iel));
-    
-    el.SetPFAbsIso(0.3,electron_absIso03->at(iel));
-    el.SetPFAbsIso(0.4,electron_absIso04->at(iel));
-
 
     /// set Charge variables
-    el.SetCharge(electron_q->at(iel));
+    el.SetCharge(electron_charge->at(iel));
     el.SetGsfCtfScPixCharge(electron_isGsfCtfScPixChargeConsistent->at(iel));
-    
+    el.SetGsfScPixCharge(electron_isGsfScPixChargeConsistent->at(iel));
+    el.SetGsfCtfCharge(electron_isGsfCtfChargeConsistent->at(iel));
+
+
     m_logger << DEBUG << "Filling electron Info 3" << SNULogger::endmsg;
     /// set conversion variables
     
-    if(electron_shiftedEnDown){
-      el.SetShiftedEUp(electron_shiftedEnUp->at(iel));
-      el.SetShiftedEDown(electron_shiftedEnDown->at(iel));
-    }
-
-    if(electron_missinghits)el.SetMissingHits(electron_missinghits->at(iel));
-    el.SetSNUID(electron_electronID_snu->at(iel));
-    el.SetPassVeto(electron_electronID_veto->at(iel));
-    el.SetPassLoose(electron_electronID_loose->at(iel));
-    el.SetPassMedium(electron_electronID_medium->at(iel));
-    el.SetPassTight(electron_electronID_tight->at(iel));
-    if(electron_electronID_hlt)el.SetPassHLT(electron_electronID_hlt->at(iel));
-    /// HEEP
-    //el.SetPassHEEP(electron_electronID_heep->at(iel));
-
-    // MVA
-    el.SetPassMVATrigMedium(electron_electronID_mva_trig_medium->at(iel));
-    el.SetPassMVATrigTight(electron_electronID_mva_trig_tight->at(iel));
-    el.SetPassMVANoTrigMedium(electron_electronID_mva_medium->at(iel));
-    el.SetPassMVANoTrigTight(electron_electronID_mva_tight->at(iel));
-    if(electron_electronID_mva_zz)el.SetPassMVAZZ(electron_electronID_mva_zz->at(iel));
-
-    el.SetIsPF(electron_isPF->at(iel));
-    if(electron_isTrigMVAValid) el.SetIsTrigMVAValid(electron_isTrigMVAValid->at(iel));
-    //el.SetIsMCMatched(electron_mcMatched->at(iel));
-    el.SetHasMatchedConvPhot(electron_passConversionVeto->at(iel));
     
-    el.SetTrkVx(electron_x->at(iel));
-    el.SetTrkVy(electron_y->at(iel));
-    el.SetTrkVz(electron_z->at(iel));
+
+    el.SetScaleEUp(electron_Energy_Scale_Up->at(iel));;
+    el.SetScaleEDown(electron_Energy_Scale_Down->at(iel));;
+    el.SetSmearEUp(electron_Energy_Smear_Up->at(iel));;
+    el.SetSmearEDown(electron_Energy_Smear_Down->at(iel));;
+
+
+    el.SetEnUncorr(electron_EnergyUnCorr->at(iel));
+    
+    /*vector<double>  *electron_etaWidth;
+    vector<double>  *electron_phiWidth;
+    vector<double>  *electron_dEtaIn;
+    vector<double>  *electron_dEtaInSeed;
+    vector<double>  *electron_dPhiIn;
+    vector<double>  *electron_sigmaIEtaIEta;
+    vector<double>  *electron_Full5x5_SigmaIEtaIEta;
+    vector<double>  *electron_HoverE;
+    vector<double>  *electron_fbrem;
+    vector<double>  *electron_eOverP;
+    vector<double>  *electron_InvEminusInvP;*/
+
+    el.SetMissingHits(electron_mHits->at(iel));
+    el.SetEcalDriven(electron_ecalDriven->at(iel));
+    el.SetPassVeto(electron_passVetoID->at(iel));
+    el.SetPassLoose(electron_passLooseID->at(iel));
+    el.SetPassMedium(electron_passMediumID->at(iel));
+    el.SetPassTight(electron_passTightID->at(iel));
+
+    /// HEEP
+    el.SetPassHEEP(electron_passHEEPID->at(iel));
+
+
+    el.SetHasMatchedConvPhot(electron_passConversionVeto->at(iel));
+
     m_logger << DEBUG << "Filling electron Info 4" << SNULogger::endmsg;    
+
 
     //// Set Is ChargeFlip
     bool isprompt= false;
@@ -521,7 +560,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
     int           eltype=0;
     bool conv_veto=false;
-    if(k_cat_version  > 3){
+    if(k_snu_version  > 0){
       
       if(gen_pt){
 	// Default deltaR setting for matching
@@ -547,7 +586,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	if(fabs(gen_PID->at(it)) ==22){
 	  if(gen_pt->at(it) > 10.){	
 	    if(dr < 0.3){
-	      if(gen_isprompt->at(it) && gen_status->at(it) ==1) {
+	      if(gen_isPrompt->at(it) && gen_status->at(it) ==1) {
 		conv_veto=true;
 		for (UInt_t it_ph=0; it_ph< gen_pt->size(); it_ph++ ){
 		  if(it==it_ph) continue;
@@ -682,7 +721,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    if(n_el_from_el ==5&& (fabs(charge_sum) == 11)) { eltype=3; el.SetIsPhotonConversion(true); }
 	  }
 	  else{
-	    if(pdgid * electron_q->at(iel) > 0 )  {
+	    if(pdgid * electron_charge->at(iel) > 0 )  {
 	      if(n_el_from_el ==3&& (fabs(charge_sum) == 11)) { eltype=3; el.SetIsPhotonConversion(true);}
 	      if(n_el_from_el ==5&& (fabs(charge_sum) == 11)) { eltype=3; el.SetIsPhotonConversion(true);}
 	    }
@@ -690,7 +729,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
 	  /// Check if it is a chargeflip.
 	  /// Either from a conversion or just reconstructed charge is wrong
-	  if(pdgid * electron_q->at(iel) > 0 )    
+	  if(pdgid * electron_charge->at(iel) > 0 )    
 	    { el.SetIsChargeFlip(true); 
 	      if(eltype == 2 || eltype == 3){
 		if(eltype == 2) eltype=4;
@@ -711,15 +750,9 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    if(fabs(gen_PID->at(mindex)) > 50) {isprompt=false; mother_pdgid=gen_PID->at(mindex); mother_index=mindex; from_tau=false;
 	      eltype=7;
 	      
-	      if(gen_isprompt->at(matched_index)){
+	      if(gen_isPrompt->at(matched_index)){
 		cout << "matched FAKE, but isPrompt flag??" << endl;
 		cout << "------------------CF "<< endl;
-		cout << "gen_isprompt = " << gen_isprompt->at(matched_index)  << endl;
-		cout << "gen_isdecayedleptonhadron = " <<gen_isdecayedleptonhadron->at(matched_index)  << endl;
-		cout << "gen_isdirecthadrondecayproduct  = " <<gen_isdirecthadrondecayproduct->at(matched_index)  << endl;
-		cout << "gen_ishardprocess  = " << gen_ishardprocess->at(matched_index)  << endl;
-		cout << "gen_istaudecayproduct =  " << gen_istaudecayproduct->at(matched_index)  << endl;
-		cout << "gen_isprompttaudecayproduct =  " <<  gen_isprompttaudecayproduct->at(matched_index)  << endl;
 	      }
 	      
 	    }
@@ -764,7 +797,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
 	      if(fabs(gen_PID->at(gen_mother_index->at(mother_index))) > 50) {isprompt=false; eltype=12;}
 	      
-	      if(pdgid * electron_q->at(iel) > 0 )     {el.SetIsChargeFlip(true); eltype=13; }
+	      if(pdgid * electron_charge->at(iel) > 0 )     {el.SetIsChargeFlip(true); eltype=13; }
 	      else     el.SetIsChargeFlip(false);
 	    }
 	    
@@ -787,7 +820,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 		  if(n_el_from_eg==5){isthirdel_fromconv=true; }
 		  if(gen_status->at(itx) ==1){
 		    KTruth truthe;
-		    truthe.SetPtEtaPhiE(gen_pt->at(itx), gen_eta->at(itx), gen_phi->at(itx), gen_energy->at(itx));
+		    truthe.SetPtEtaPhiE(gen_pt->at(itx), gen_eta->at(itx), gen_phi->at(itx), gen_E->at(itx));
 		    vel_tmp.push_back(truthe);
 		  }
 		}
@@ -819,19 +852,19 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    
 	    if(n_el_from_eg ==3&&!isthirdel_fromconv)  {el.SetIsPhotonConversion(true); eltype=18;}
 	    if(isthirdel_fromconv&&n_el_from_eg ==3){
-	      if(pdgid * electron_q->at(iel) > 0 )   {
+	      if(pdgid * electron_charge->at(iel) > 0 )   {
 		el.SetIsPhotonConversion(true);
 		eltype=18;
 	      }
 	    }
 	    if(isthirdel_fromconv&&n_el_from_eg ==5){
-              if(pdgid * electron_q->at(iel) > 0 )   {
+              if(pdgid * electron_charge->at(iel) > 0 )   {
                 el.SetIsPhotonConversion(true);
                 eltype=18;
               }
             }
 
-	    if(pdgid * electron_q->at(iel) > 0 )  {
+	    if(pdgid * electron_charge->at(iel) > 0 )  {
 	      el.SetIsChargeFlip(true);
 	      if(eltype==17  || eltype == 18){
 		if(eltype==17 ) eltype=19;
@@ -975,22 +1008,10 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     else{
       
       if(!isprompt){
-	if((gen_isprompt->at(matched_index) ==1 )&& (gen_status->at(matched_index) == 1)){
+	if((gen_isPrompt->at(matched_index) ==1 )&& (gen_status->at(matched_index) == 1)){
 	  
 	  //cout << "gen_istaudecayproduct =  " << gen_istaudecayproduct->at(matched_index)  << endl;
 	  //cout << "gen_isprompttaudecayproduct =  " <<  gen_isprompttaudecayproduct->at(matched_index)  << endl;
-	  if(!(gen_istaudecayproduct->at(matched_index)   || gen_isprompttaudecayproduct->at(matched_index))){
-	    //cout << "matched as prompt yet status flag is not prompt" << endl;
-	    //cout << "matched_index = " << matched_index << endl;
-	    //cout << "reco "<< electron_pt->at(iel)<< " " << electron_eta->at(iel)  << " " << electron_phi->at(iel) << endl;;
-	    //for (UInt_t it=0; it< gen_pt->size(); it++ ){
-	    //	      if(gen_mother_index->at(it) <= 0)continue;
-	    //if(gen_mother_index->at(it) >= int(gen_pt->size()))continue;
-	    //if(gen_pt->at(it) < 0.1) continue;
-	    //cout << it << " " << gen_pt->at(it)  << " " << gen_eta->at(it) << " " << gen_phi->at(it)<< " " << gen_PID->at(it) << "  " << gen_status->at(it) << " " << gen_PID->at(gen_mother_index->at(it)) <<" "  <<  gen_mother_index->at(it) << " " << gen_isprompt->at(it)  <<endl;
-	      
-	    //}
-	  }
 	}
       }
       
@@ -1002,7 +1023,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       el.SetMCMatchedPdgId(mc_pdgid);
       el.SetMotherTruthIndex(mother_index);
       el.SetMCTruthIndex(matched_index);
-      if(gen_status->at(matched_index)==1)el.SetIsPromptFlag(gen_isprompt->at(matched_index));
+      if(gen_status->at(matched_index)==1)el.SetIsPromptFlag(gen_isPrompt->at(matched_index));
       if(conv_veto)el.SetType(40);
 
     }
@@ -1035,24 +1056,6 @@ std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
     }
     return genjets;
   }
-  if(k_cat_version < 3){
-    for (UInt_t ijet=0; ijet< slimmedGenJet_pt->size(); ijet++) {
-      KGenJet jet;
-      jet.SetPtEtaPhiE(slimmedGenJet_pt->at(ijet), slimmedGenJet_eta->at(ijet), slimmedGenJet_phi->at(ijet), slimmedGenJet_energy->at(ijet));
-      genjets.push_back(jet);
-    }
-    return genjets;
-  }
-  
-  for (UInt_t ijet=0; ijet< genjet_pt->size(); ijet++) {
-    KGenJet jet;
-    jet.SetPtEtaPhiE(genjet_pt->at(ijet), genjet_eta->at(ijet), genjet_phi->at(ijet), genjet_energy->at(ijet));
-    jet.SetGenJetEMF(genjet_emf->at(ijet));
-    jet.SetGenJetHADF(genjet_hadf->at(ijet));
-    jet.SetGenJetPDGID(int(genjet_hadf->at(ijet)));
-    
-    genjets.push_back(jet);
-  }
   return genjets;
 }
 
@@ -1067,6 +1070,20 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     }
     return jets;
   }
+
+  m_logger << DEBUG << "Filling Jets "<< SNULogger::endmsg;
+
+
+  // Not added yet
+  /*vector<double>  *jet_charge;
+  vector<double>  *jet_DeepFlavour_b;
+  vector<double>  *jet_DeepFlavour_bb;
+  vector<double>  *jet_DeepFlavour_lepb;
+  vector<double>  *jet_DeepFlavour_c;
+  vector<double>  *jet_DeepFlavour_uds;
+  vector<double>  *jet_DeepFlavour_g;
+  */
+
 
   for (UInt_t ijet=0; ijet< jet_eta->size(); ijet++) {
     KJet jet;
@@ -1084,10 +1101,9 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
       jet*= jet_smearedRes->at(ijet); // JSKIM
       jet.SetIsMCSmeared(true);
     }
-    jet.SetJetPassLooseID(jet_isLoose->at(ijet));
-    jet.SetJetPassTightID(jet_isTight->at(ijet));
-    jet.SetJetPassTightLepVetoID(jet_isTightLepVetoJetID->at(ijet));
-    
+
+    jet.SetJetPassTightID(jet_tightJetID->at(ijet));
+    jet.SetJetPassTightLepVetoID(jet_tightLepVetoJetID->at(ijet));
     jet.SetJetPileupIDMVA(jet_PileupJetId->at(ijet));
 
     if(jet_PileupJetId){ 
@@ -1111,23 +1127,13 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     
     
     /// BTAG variables
-    if(jet_CSVInclV2) jet.SetBTagInfo(snu::KJet::CSVv2, jet_CSVInclV2->at(ijet));
-    if(jet_CMVAV2)    jet.SetBTagInfo(snu::KJet::cMVAv2, jet_CMVAV2->at(ijet));
-    if(jet_JetProbBJet)  jet.SetBTagInfo(snu::KJet::JETPROB, jet_JetProbBJet->at(ijet)); 
-    
-    //if(jet_iCSVCvsL) {
-    //      if(jet_iCSVCvsL->size() > 0)jet.SetCTagInfo(snu::KJet::iCSVCvsL, jet_iCSVCvsL->at(ijet));
-    //    }
-    if(jet_CCvsLT){
-      if(jet_CCvsLT->size() > 0) jet.SetCTagInfo(snu::KJet::CCvsLT, jet_CCvsLT->at(ijet));
-    }
-    if(jet_CCvsBT){
-      if(jet_CCvsBT->size() > 0)jet.SetCTagInfo(snu::KJet::CCvsBT, jet_CCvsBT->at(ijet));
-    }
-    jet.SetVtxMass(jet_vtxMass->at(ijet));
-    jet.SetVtx3DVal(jet_vtx3DVal->at(ijet));
-    jet.SetVtx3DSig(jet_vtx3DSig->at(ijet));
-    jet.SetVtxNTracks(jet_vtxNtracks->at(ijet));
+    jet.SetBTagInfo(snu::KJet::CSVv2, jet_CSVv2->at(ijet));
+    jet.SetBTagInfo(snu::KJet::DeepCSV, jet_DeepCSV->at(ijet));   
+    jet.SetCTagInfo(snu::KJet::CCvsLT,jet_CvsL->at(ijet));
+    jet.SetCTagInfo(snu::KJet::CCvsBT, jet_CvsB->at(ijet));
+    jet.SetCTagInfo(snu::KJet::DeepCCvsLT,jet_DeepCvsL->at(ijet));
+    jet.SetCTagInfo(snu::KJet::DeepCCvsBT, jet_DeepCvsB->at(ijet));
+
     
     // flavour
     jet.SetJetPartonFlavour(jet_partonFlavour->at(ijet));
@@ -1135,22 +1141,30 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     jet.SetJetPartonPdgId(jet_partonPdgId->at(ijet));
     
     jet.SetJetChargedEmEF(jet_chargedEmEnergyFraction->at(ijet));
+    jet.SetJetNeutralEmEF(jet_neutralEmEnergyFraction->at(ijet));
+    jet.SetJetChargedHadEF(jet_chargedHadronEnergyFraction->at(ijet));
+    jet.SetJetNeutralHadEF(jet_neutralHadronEnergyFraction->at(ijet));
+    jet.SetJetChargedMultiplicity(jet_chargedMultiplicity->at(ijet));
+    jet.SetJetNeutralMultiplicity(jet_neutralMultiplicity->at(ijet));
+
+    m_logger << DEBUG << "Filling Jets 2"<< SNULogger::endmsg;
+
+
     /// JEC and uncertainties
     jet.SetJetScaledDownEnergy(jet_shiftedEnDown->at(ijet));
     jet.SetJetScaledUpEnergy(jet_shiftedEnUp->at(ijet));
-    jet.SetSmearedResDown(jet_smearedResDown->at(ijet));
-    jet.SetSmearedResUp(jet_smearedResUp->at(ijet));
-    jet.SetSmearedRes(jet_smearedRes->at(ijet));
-    
-    if(jet_l1jetcorr){
-      jet.SetJetRawPt(jet_rawpt->at(ijet));
-      jet.SetJetRawEnergy(jet_rawenergy->at(ijet));
-      jet.SetL1JetCorr(jet_l1jetcorr->at(ijet));
-      jet.SetL2JetCorr(jet_l2jetcorr->at(ijet));
-      jet.SetL3JetCorr(jet_l3jetcorr->at(ijet));
-      jet.SetL2L3ResJetCorr(jet_l2l3resjetcorr->at(ijet));
-      jet.SetJetArea(jet_area->at(ijet));
+    if(!IsData){
+      jet.SetSmearedResDown(jet_smearedResDown->at(ijet));
+      jet.SetSmearedResUp(jet_smearedResUp->at(ijet));
+      jet.SetSmearedRes(jet_smearedRes->at(ijet));
     }
+    jet.SetL1JetCorr(jet_JECL1FastJet->at(ijet));
+    jet.SetFullJetCorr(jet_JECFull->at(ijet));
+
+    m_logger << DEBUG << "Filling Jets 3"<< SNULogger::endmsg;
+
+    jet.SetJetArea(jet_area->at(ijet));
+    jet.SetJetMass(jet_m->at(ijet));
 
     jets.push_back(jet);
   }// end of jet 
@@ -1168,8 +1182,6 @@ std::vector<KFatJet> SKTreeFiller::GetAllFatJets(){
 
   std::vector<KFatJet> fatjets;
 
-  if(k_cat_version <  7) return fatjets;
-
   if(!SNUinput){
 
     for(std::vector<KFatJet>::iterator kit  = k_inputfatjets->begin(); kit != k_inputfatjets->end(); kit++){
@@ -1178,52 +1190,23 @@ std::vector<KFatJet> SKTreeFiller::GetAllFatJets(){
     return fatjets;
   }
 
+  /*
+  vector<double>  *fatjet_charge;
+  */
+
+
+  m_logger << DEBUG << "PFFatJet" << SNULogger::endmsg;
+
   for (UInt_t ijet=0; ijet< fatjet_eta->size(); ijet++) {
     KFatJet jet;
     if(fatjet_pt->at(ijet) != fatjet_pt->at(ijet)) continue;
     jet.SetPtEtaPhiE(fatjet_pt->at(ijet), fatjet_eta->at(ijet), fatjet_phi->at(ijet), fatjet_energy->at(ijet));
 
-    jet.SetJetPassLooseID(fatjet_isLoose->at(ijet));
-    jet.SetJetPassTightID(fatjet_isTight->at(ijet));
-    jet.SetJetPassTightLepVetoID(fatjet_isTightLepVetoJetID->at(ijet));
-
-    jet.SetJetPileupIDMVA(fatjet_PileupJetId->at(ijet));
-
-    if(fatjet_PileupJetId){
-      if(std::abs(fatjet_eta->at(ijet)) < 2.6){
-        if(fatjet_PileupJetId->at(ijet) > 0.3) jet.SetJetPileupIDLooseWP(true);
-        else jet.SetJetPileupIDLooseWP(false);
-        if(fatjet_PileupJetId->at(ijet) > 0.7) jet.SetJetPileupIDMediumWP(true);
-        else jet.SetJetPileupIDMediumWP(false);
-        if(fatjet_PileupJetId->at(ijet) > 0.9)jet.SetJetPileupIDTightWP(true);
-        else jet.SetJetPileupIDTightWP(false);
-      }
-      else{
-        if(fatjet_PileupJetId->at(ijet) > -0.55) jet.SetJetPileupIDLooseWP(true);
-        else jet.SetJetPileupIDLooseWP(false);
-        if(fatjet_PileupJetId->at(ijet) > -0.3) jet.SetJetPileupIDMediumWP(true);
-        else jet.SetJetPileupIDMediumWP(false);
-        if(fatjet_PileupJetId->at(ijet) > -0.1)jet.SetJetPileupIDTightWP(true);
-        else jet.SetJetPileupIDTightWP(false);
-      }
-    }
+    jet.SetJetPassTightID(fatjet_tightJetID->at(ijet));
+    jet.SetJetPassTightLepVetoID(fatjet_tightLepVetoJetID->at(ijet));
 
 
-    /// BTAG variables                                                                                                                                                                                                                                                                                          
-    if(fatjet_CSVInclV2) jet.SetBTagInfo(snu::KFatJet::CSVv2, fatjet_CSVInclV2->at(ijet));
-    if(fatjet_CMVAV2)    jet.SetBTagInfo(snu::KFatJet::cMVAv2, fatjet_CMVAV2->at(ijet));
-    if(fatjet_JetProbBJet)  jet.SetBTagInfo(snu::KFatJet::JETPROB, fatjet_JetProbBJet->at(ijet));
-
-    if(fatjet_CCvsLT){
-      if(fatjet_CCvsLT->size() > 0) jet.SetCTagInfo(snu::KFatJet::CCvsLT, fatjet_CCvsLT->at(ijet));
-    }
-    if(fatjet_CCvsBT){
-      if(fatjet_CCvsBT->size() > 0)jet.SetCTagInfo(snu::KFatJet::CCvsBT, fatjet_CCvsBT->at(ijet));
-    }
-    jet.SetVtxMass(fatjet_vtxMass->at(ijet));
-    jet.SetVtx3DVal(fatjet_vtx3DVal->at(ijet));
-    jet.SetVtx3DSig(fatjet_vtx3DSig->at(ijet));
-    jet.SetVtxNTracks(fatjet_vtxNtracks->at(ijet));
+    jet.SetBTagInfo(snu::KFatJet::CSVv2, fatjet_CSVv2->at(ijet));
 
     // flavour                                                                                                                                                                                                                                                                                                  
     jet.SetJetPartonFlavour(fatjet_partonFlavour->at(ijet));
@@ -1231,36 +1214,33 @@ std::vector<KFatJet> SKTreeFiller::GetAllFatJets(){
     jet.SetJetPartonPdgId(fatjet_partonPdgId->at(ijet));
 
     jet.SetJetChargedEmEF(fatjet_chargedEmEnergyFraction->at(ijet));
+    jet.SetJetNeutralEmEF(fatjet_neutralEmEnergyFraction->at(ijet));
+    jet.SetJetChargedHadEF(fatjet_chargedHadronEnergyFraction->at(ijet));
+    jet.SetJetNeutralHadEF(fatjet_neutralHadronEnergyFraction->at(ijet));
+    jet.SetJetChargedMultiplicity(fatjet_chargedMultiplicity->at(ijet));
+    jet.SetJetNeutralMultiplicity(fatjet_neutralMultiplicity->at(ijet));
+
 
     jet.SetJetScaledDownEnergy(fatjet_shiftedEnDown->at(ijet));
     jet.SetJetScaledUpEnergy(fatjet_shiftedEnUp->at(ijet));
-    jet.SetSmearedResDown(fatjet_smearedResDown->at(ijet));
-    jet.SetSmearedResUp(fatjet_smearedResUp->at(ijet));
-    jet.SetSmearedRes(fatjet_smearedRes->at(ijet));
 
+    if(!IsData){
+	jet.SetSmearedResDown(fatjet_smearedResDown->at(ijet));
+	jet.SetSmearedResUp(fatjet_smearedResUp->at(ijet));
+	jet.SetSmearedRes(fatjet_smearedRes->at(ijet));
+      }
 
-    jet.SetTau1(fatjet_tau1->at(ijet));
-    jet.SetTau2(fatjet_tau2->at(ijet));
-    jet.SetTau3(fatjet_tau3->at(ijet));
+    jet.SetTau1(fatjet_puppi_tau1->at(ijet));
+    jet.SetTau2(fatjet_puppi_tau2->at(ijet));
+    jet.SetTau3(fatjet_puppi_tau3->at(ijet));
+    jet.SetTau4(fatjet_puppi_tau4->at(ijet));
 
-    jet.SetPrunedMass(fatjet_prunedmass->at(ijet));
-    jet.SetSoftDropMass(fatjet_softdropmass->at(ijet));
+    jet.SetSoftDropMass(fatjet_softdropmass->at(ijet));    
+    jet.SetJetArea(fatjet_area->at(ijet));
 
-    jet.SetPuppiTau1(fatjet_puppi_tau1->at(ijet));
-    jet.SetPuppiTau2(fatjet_puppi_tau2->at(ijet));
-    jet.SetPuppiTau3(fatjet_puppi_tau3->at(ijet));
-    jet.SetPuppiPt(fatjet_puppi_pt->at(ijet));
-    jet.SetPuppiEta(fatjet_puppi_eta->at(ijet));
-    jet.SetPuppiPhi(fatjet_puppi_phi->at(ijet));
-    jet.SetPuppiM(fatjet_puppi_m->at(ijet));
-    if(fatjet_l1jetcorr){
-      jet.SetL1JetCorr(fatjet_l1jetcorr->at(ijet));
-      jet.SetL2JetCorr(fatjet_l2jetcorr->at(ijet));
-      jet.SetL3JetCorr(fatjet_l3jetcorr->at(ijet));
-      jet.SetL2L3ResJetCorr(fatjet_l2l3resjetcorr->at(ijet));
-      jet.SetJetArea(fatjet_area->at(ijet));
-    }
       
+    jet.SetJetMass(fatjet_m->at(ijet));
+
     fatjets.push_back(jet);
   }// end of jet                                                   
   std::sort( fatjets.begin(), fatjets.end(), isHigherPt );
@@ -1274,6 +1254,7 @@ std::vector<KFatJet> SKTreeFiller::GetAllFatJets(){
 std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
   std::vector<KMuon> muons ;
+
   
   if(!SNUinput){
     for(std::vector<KMuon>::iterator kit  = k_inputmuons->begin(); kit != k_inputmuons->end(); kit++){
@@ -1289,72 +1270,77 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     KMuon muon;
     if(muon_pt->at(ilep) != muon_pt->at(ilep)) continue;
     m_logger << DEBUG << "Filling global pt/eta ... " << SNULogger::endmsg;
-   
-    muon.SetTrigMatch(muon_trigmatch->at(ilep));
-      
-    /// GENERAL
+
     
     muon.SetISPF(muon_isPF->at(ilep));
     muon.SetIsGlobal(muon_isGlobal->at(ilep));
-
     muon.SetIsTracker(muon_isTracker->at(ilep));
-    muon.SetIsLoose(muon_isLoose->at(ilep));
     muon.SetIsMedium(muon_isMedium->at(ilep));
     muon.SetIsTight(muon_isTight->at(ilep));
     muon.SetIsSoft(muon_isSoft->at(ilep));
 
-    if(muon_shiftedEup){
-      muon.SetShiftedEUp(muon_shiftedEup->at(ilep));
-      muon.SetShiftedEDown(muon_shiftedEdown->at(ilep));
-    }
     
     
-    muon.SetPtEtaPhiE(muon_pt->at(ilep), muon_eta->at(ilep),muon_phi->at(ilep), muon_energy->at(ilep));
-    if(k_cat_version > 4){
-      muon.SetRochEta(muon_roch_eta->at(ilep));
-      muon.SetRochPhi(muon_roch_phi->at(ilep));
-      muon.SetRochE(muon_roch_energy->at(ilep));
-      muon.SetRochM(muon_roch_m->at(ilep));
-    }
-    else{
-      muon.SetRochPt(muon_pt->at(ilep));
-      muon.SetRochEta(muon_eta->at(ilep));
-      muon.SetRochPhi(muon_phi->at(ilep));
-      muon.SetRochE(muon_energy->at(ilep));
-      muon.SetRochM(muon_m->at(ilep));
-    }
-    muon.SetCharge(muon_q->at(ilep));
+    muon.SetPtEtaPhiM(muon_pt->at(ilep), muon_eta->at(ilep),muon_phi->at(ilep), muon_mass->at(ilep));
+
+    
+    muon.SetRochPt(muon_pt->at(ilep)*muon_roch_sf->at(ilep));
+    muon.SetRochSF(muon_roch_sf->at(ilep));
+    muon.SetRochSFUp(muon_roch_sf_up->at(ilep));
+    
+
+    muon.SetCharge(muon_charge->at(ilep));
      
     m_logger << DEBUG << "Filling ms pt/eta ... " << SNULogger::endmsg;
  
-    muon.SetRelIso(0.3,muon_relIso03->at(ilep));
-    muon.SetRelIso(0.4,muon_relIso04->at(ilep));
-    if(muon_minirelIso)muon.SetRelMiniIso(muon_minirelIso->at(ilep));
 
-    if(k_cat_version  > 7){
-      muon.SetMiniAODPt(muon_pt->at(ilep));
-      muon.SetMiniAODRelIso(0.3,muon_relIso03->at(ilep));
-      muon.SetMiniAODRelIso(0.4,muon_relIso04->at(ilep));
-      muon.SetIsRochesterCorrected(false);
-    }
-    muon.Setdz(muon_dz->at(ilep));
-    muon.Setdxy(muon_dxy->at(ilep));
-    if(muon_sigdxy)muon.Setdxy_sig(muon_sigdxy->at(ilep));
+    muon.SetTrkIso(muon_trkiso->at(ilep));
+    muon.SetHCalIso(muon_hcaliso->at(ilep));
+    muon.SetECalIso(muon_ecaliso->at(ilep));
+
+    muon.SetRelIso(0.3,CalcPFIso(muon_PfChargedHadronIsoR03->at(ilep), muon_PfNeutralHadronIsoR03->at(ilep), muon_PfGammaIsoR03->at(ilep), muon_PFSumPUIsoR03->at(ilep))/muon_pt->at(ilep));
+    muon.SetRelIso(0.4,CalcPFIso(muon_PfChargedHadronIsoR04->at(ilep), muon_PfNeutralHadronIsoR04->at(ilep), muon_PfGammaIsoR04->at(ilep), muon_PFSumPUIsoR04->at(ilep))/muon_pt->at(ilep));
+
+    muon.SetRelMiniIso(      CalcMiniIso(muon_pt->at(ilep),
+					 muon_PfChargedHadronMiniIso->at(ilep), 
+					 muon_PfNeutralHadronMiniIso->at(ilep), 
+					 muon_PfGammaMiniIso->at(ilep), 
+					 muon_PFSumPUMiniIso->at(ilep),
+					 Rho,
+					 EA(muon_eta->at(ilep))));
+    
+
+    muon.SetMiniAODPt(muon_pt->at(ilep));
+    muon.SetMiniAODRelIso(0.3,CalcPFIso(muon_PfChargedHadronIsoR03->at(ilep), muon_PfNeutralHadronIsoR03->at(ilep), muon_PfGammaIsoR03->at(ilep), muon_PFSumPUIsoR03->at(ilep))/muon_pt->at(ilep));
+    muon.SetMiniAODRelIso(0.4,CalcPFIso(muon_PfChargedHadronIsoR04->at(ilep), muon_PfNeutralHadronIsoR04->at(ilep), muon_PfGammaIsoR04->at(ilep), muon_PFSumPUIsoR04->at(ilep))/muon_pt->at(ilep));
+    muon.SetIsRochesterCorrected(false);
+    
+    muon.Setdz(muon_dzVTX->at(ilep));
+    muon.SetIP2D(muon_dxyVTX->at(ilep));
+
+    double dB3D  = muon_3DIPVTX->at(ilep);
+    double edB3D = muon_3DIPerrVTX->at(ilep);
+    double sip3D = edB3D>0?dB3D/edB3D:0.0; 
+
+    muon.SetIP3D(dB3D);    
+    muon.SetSIP3D(sip3D);
+
+
     //// chi2
     muon.SetGlobalchi2( muon_normchi->at(ilep));
         
     /// hits
     muon.SetValidHits( muon_validhits->at(ilep));
-    muon.SetPixelValidHits( muon_validpixhits->at(ilep));
+    muon.SetPixelValidHits( muon_pixelHits->at(ilep));
     muon.SetValidStations( muon_matchedstations->at(ilep));
-    muon.SetLayersWithMeasurement ( muon_trackerlayers->at(ilep));
+    muon.SetLayersWithMeasurement ( muon_trackerLayers->at(ilep));
     
-    muon.SetMCMatched(muon_matched->at(ilep));
+    //muon.SetMCMatched(muon_matched->at(ilep));
 
 
-    muon.SetTrackVx(muon_x->at(ilep));
-    muon.SetTrackVy(muon_y->at(ilep));
-    muon.SetTrackVz(muon_z->at(ilep));
+    muon.SetTrackVx(muon_vx->at(ilep));
+    muon.SetTrackVy(muon_vy->at(ilep));
+    muon.SetTrackVz(muon_vz->at(ilep));
 
     //// Set Is ChargeFlip
     bool isprompt= false;
@@ -1368,7 +1354,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     
     int          mutype=0;
 
-    if(k_cat_version > 3){
+    if(k_snu_version > 0){
 
     if(gen_pt){
       float min_Dr=0.1;
@@ -1452,7 +1438,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  /// Check if it is a chargeflip.
           mutype=1;
 	  
-          if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
+          if(pdgid * muon_charge->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
           else     muon.SetIsChargeFlip(false);
 
 	  int n_mu_from_mother=0;
@@ -1491,7 +1477,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
               isprompt=true; mother_pdgid=gen_PID->at(mindex);  mother_index=mindex; from_tau=true;
               // Check if el from tau  is CF
 	      mutype=6;
-	      if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
+	      if(pdgid * muon_charge->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
               else     muon.SetIsChargeFlip(false);
 
 	      int n_mu_from_mother=0;
@@ -1513,7 +1499,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
             /// using new method for matching: These events are set as prompt
             isprompt=true;mother_pdgid=-99999; mother_index=mindex; from_tau=false;
 	    mutype=8;
-            if(pdgid * muon_q->at(ilep) > 0 )    muon.SetIsChargeFlip(true);
+            if(pdgid * muon_charge->at(ilep) > 0 )    muon.SetIsChargeFlip(true);
             else     muon.SetIsChargeFlip(false);
 	    int n_mu_from_mother=0;
             vector<KTruth> vmu_tmp;
@@ -1527,7 +1513,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 		if(gen_mother_index->at(itx) == gen_mother_index->at(matched_index)) n_mu_from_mother++;
 		if(gen_status->at(itx) ==1){
 		  KTruth truthmu;
-		  truthmu.SetPtEtaPhiE(gen_pt->at(itx), gen_eta->at(itx), gen_phi->at(itx), gen_energy->at(itx));
+		  truthmu.SetPtEtaPhiE(gen_pt->at(itx), gen_eta->at(itx), gen_phi->at(itx), gen_E->at(itx));
 		  vmu_tmp.push_back(truthmu);
 		}
 	      }
@@ -1565,7 +1551,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
         }
       }      /// In case no status 1 muon is found : classify muon fake
       else{
-	if(muon_q->size() ==2){
+	if(muon_charge->size() ==2){
 	  for (UInt_t itxx=0; itxx< gen_pt->size(); itxx++ ){
             if(gen_mother_index->at(itxx) <= 0)continue;
             if(gen_mother_index->at(itxx) >= int(gen_pt->size()))continue;
@@ -1713,7 +1699,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       muon.SetMCMatchedPdgId(mc_pdgid);
       muon.SetMotherTruthIndex(mother_index);
       muon.SetMCTruthIndex(matched_index);
-      if(gen_status->at(matched_index)==1)muon.SetIsPromptFlag(gen_isprompt->at(matched_index));
+      if(gen_status->at(matched_index)==1)muon.SetIsPromptFlag(gen_isPrompt->at(matched_index));
 
     }
     }
@@ -1727,6 +1713,61 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
   return muons;
 }
 
+
+double SKTreeFiller::CalcPFIso(double j_PFCH04, double j_PFNH04, double j_PFPH04, double j_PU04){
+
+  double absiso = j_PFCH04+std::max( 0., j_PFNH04 + j_PFPH04 - 0.5*j_PU04 );
+  
+  return absiso;
+}
+
+
+
+double SKTreeFiller::CalcMiniIso(double pt, double ch, double nh, double ph, double pu, double rho, double EA){
+
+  double r_mini = miniIsoDr(pt);
+
+  double correction = rho * EA * (r_mini/0.3) * (r_mini/0.3);
+  double correctedIso = ch + std::max(0.0, nh + ph - correction);
+  return correctedIso/pt;
+}
+
+
+float SKTreeFiller::miniIsoDr(double pt){
+  float mindr = 0.05;
+  float maxdr = 0.2;
+  float kt_scale = 10.0;
+  return std::max(mindr, std::min(maxdr, float(kt_scale/pt)));
+}
+
+
+double SKTreeFiller::ElectronEA(double eta){
+
+  eta =fabs(eta);
+  if     (eta<1.0000) return 0.1566;
+  else if(eta<1.4790) return 0.1626;
+  else if(eta<2.0000) return 0.1073;
+  else if(eta<2.2000) return 0.0854;
+  else if(eta<2.3000) return 0.1051;
+  else if(eta<2.4000) return 0.1204;
+  else if(eta<5.0000) return 0.1524;
+  else return 0.1524;
+
+}
+double SKTreeFiller::EA(double eta){
+
+
+  eta =fabs(eta);
+  if     (eta<0.8000) return 0.0566;
+  else if(eta<1.3000) return 0.0562;
+  else if(eta<2.0000) return 0.0363;
+  else if(eta<2.2000) return 0.0119;
+  else if(eta<2.4000) return 0.0064;
+  else return 0.0064;
+
+}
+
+
   
 
 std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
@@ -1737,6 +1778,10 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
   if(IsData) return vtruth;
 
   int counter=0;
+
+  //vector<int>     *gen_mother_PID;
+  //vector<double>  *gen_mother_pt;
+
 
   if(!SNUinput){
 
@@ -1753,23 +1798,36 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
     
     if(counter == np)  break;
     KTruth truthp;
-    truthp.SetPtEtaPhiE(double(gen_pt->at(it)), double(gen_eta->at(it)), double(gen_phi->at(it)), double(gen_energy->at(it)));
-    truthp.SetParticlePdgId(gen_mother_PID->at(it));
+    truthp.SetPtEtaPhiE(double(gen_pt->at(it)), double(gen_eta->at(it)), double(gen_phi->at(it)), double(gen_E->at(it)));
+    truthp.SetParticlePdgId(gen_PID->at(it));
     truthp.SetParticleStatus(gen_status->at(it));
     truthp.SetParticleIndexMother(gen_mother_index->at(it));
     
-    if(k_cat_version > 3){
+
+    m_logger << DEBUG << "Filling Truth  1" << SNULogger::endmsg;
+
+    if(k_snu_version > 0){
       // To save space set a single int as the flag. 
       // 
+      m_logger << DEBUG << "Filling Truth  2" << SNULogger::endmsg;
       int truth_flag = 0;
-      if(gen_isprompt->at(it)) truth_flag+=1;
-      if(gen_isdecayedleptonhadron->at(it)) truth_flag+=10;
-      if(gen_istaudecayproduct->at(it)) truth_flag+=100;
-      if(gen_isprompttaudecayproduct->at(it)) truth_flag+=1000;
-      if(gen_isdirecthadrondecayproduct->at(it)) truth_flag+=10000;
-      if(gen_ishardprocess->at(it)) truth_flag+=100000;
-      if(gen_fromhardprocess->at(it)) truth_flag+=1000000;
-      if(gen_fromhardprocess_beforeFSR->at(it)) truth_flag+=10000000;
+      if(gen_isPrompt->at(it))                         truth_flag+=1;
+      if(gen_isPromptFinalState->at(it))               truth_flag+=10;
+      if(gen_isDecayedLeptonHadron->at(it))            truth_flag+=100;
+      if(gen_isTauDecayProduct->at(it))                truth_flag+=1000;
+      m_logger << DEBUG << "Filling Truth  3" << SNULogger::endmsg;
+      if(gen_isPromptTauDecayProduct->at(it))          truth_flag+=10000;
+      if(gen_isDirectPromptTauDecayProductFinalState->at(it)) truth_flag+=100000;
+      if(gen_isHardProcess->at(it))                           truth_flag+=1000000;
+      if(gen_fromHardProcessDecayed->at(it))                  truth_flag+=10000000;
+      m_logger << DEBUG << "Filling Truth  4" << SNULogger::endmsg;
+      if(gen_fromHardProcessBeforeFSR->at(it))                truth_flag+=100000000;
+      if(gen_fromHardProcessFinalState->at(it))               truth_flag+=1000000000;
+      if(gen_isMostlyLikePythia6Status3->at(it))              truth_flag+=10000000000;
+      if(gen_isLastCopy->at(it))                              truth_flag+=100000000000;
+      m_logger << DEBUG << "Filling Truth 51" << SNULogger::endmsg;
+      if(gen_isLastCopyBeforeFSR->at(it))                     truth_flag+=1000000000000;
+      if(gen_isPromptDecayed->at(it))                         truth_flag+=10000000000000;
       truthp.SetStatusFlag(truth_flag);
     }
     

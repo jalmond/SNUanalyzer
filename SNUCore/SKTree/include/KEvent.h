@@ -59,6 +59,9 @@ namespace snu {
     void SetPFMETType1y(double mett1y);
     void SetPFMETType1SumEt(double mett1sumet);
     
+    void SetPFRawMETx(double mettrawx);
+    void SetPFRawMETy(double metrawy);
+
     void SetPFMETType1Unsmearedx(double mett1);
     void SetPFMETType1Unsmearedy(double mett1);
     void SetPFMETType1xyUnsmearedx(double mett1);
@@ -69,13 +72,13 @@ namespace snu {
     /// PDF
     void SetPDFWeights(std::vector<double> pdfw);
     void SetScaleWeights(std::vector<double> pdfw);
+    void SetAlphaSWeights(std::vector<double> pdfw);
     
     /// Process ID
     void SetLumiSection(int ls);
     /// Vertex
     void SetNVertices(int nvert);
-    void SetNGoodVertices(int nvert);
-    void SetIsGoodEvent(int isgood);
+    void SetIsGoodEvent(bool isgood);
     void SetVertexInfo(double vX , double vY, double vZ, double ndof);
     
     /// Event
@@ -91,12 +94,12 @@ namespace snu {
     
     
     /// MET filters
-    void SetPassCSCHaloFilterTight(bool pass);
+    void SetPassEEBadCalibFilterTight(bool pass);
     void SetPassEcalDeadCellTriggerPrimitiveFilter(bool pass);
     void SetPassHBHENoiseFilter(bool pass);
     void SetPassHBHENoiseIsoFilter(bool pass);
     void SetPassBadEESupercrystalFilter(bool pass);
-    void SetPassTightHalo2016Filter(bool pass); 
+    void SetPassSuperHalo2016Filter(bool pass); 
     void SetPassBadChargedCandidateFilter(bool pass);
     void SetPassBadPFMuonFilter(bool pass);
       
@@ -109,7 +112,7 @@ namespace snu {
     void SetLumiMask(json type, int mask);
 
 
-    void SetCatVersion(std::string cat);
+    void SetSNUVersion(std::string cat);
     
     void SetRho(double rho);
 
@@ -137,8 +140,14 @@ namespace snu {
     inline Double_t PFMETUnSmeared() const {return k_PF_MET_JetRes_up;}
     inline Double_t PFMETx() const {return k_PF_METx;}
     inline Double_t PFMETy() const {return k_PF_METy;}
+    inline Double_t PFRawMETx() const {return k_PF_raw_METx;}
+    inline Double_t PFRawMETy() const {return k_PF_raw_METy;}
+
 
     inline Double_t TopReweight() const{return sqrt(k_top_reweight);}
+
+    inline Double_t PFRawMET() const {return sqrt(pow(k_PF_raw_METx,2.) + pow(k_PF_raw_METy,2.));}
+    inline Double_t PFRawMETPhi() const {return TMath::ATan2(k_PF_raw_METy,k_PF_raw_METx);}
 
     inline Double_t PFMETType1() const {return sqrt(pow(k_PF_MET_Type1x,2.) + pow(k_PF_MET_Type1y,2.));}
     inline Double_t PFMETType1x() const {return k_PF_MET_Type1x;}
@@ -159,7 +168,7 @@ namespace snu {
     //// Functions to call in analysis code/selection code
 
     
-    inline std::string CatVersion() const {return k_catversion;}
+    inline std::string SNUVersion() const {return k_snuversion;}
 
     
     /// Lumi
@@ -175,7 +184,6 @@ namespace snu {
     
     // Vertex
     inline Int_t nVertices()  const {return k_nvertices;}
-    inline Int_t nGoodVertices()  const {return k_ngoodvertices;}
 
     inline Int_t LumiMaskSilver() const {return k_lumi_mask_silver;}
     inline Int_t LumiMaskGold() const {return k_lumi_mask_gold;}
@@ -190,12 +198,13 @@ namespace snu {
     
     
     /// MET filters
-    inline Bool_t   PassCSCHaloFilterTight() const {return   k_passCSCHaloFilterTight;}
+
+    inline Bool_t   PassEEBadCalibFilterTight() const {return   k_passEEBadCalibFilterTight;}
     inline Bool_t   PassEcalDeadCellTriggerPrimitiveFilter() const {return   k_passEcalDeadCellTriggerPrimitiveFilter;}
     inline Bool_t   PassHBHENoiseFilter() const {return  k_passHBHENoiseFilter ;}
     inline Bool_t   PassHBHENoiseIsoFilter() const {return  k_passHBHENoiseIsoFilter ;}
     inline Bool_t   PassBadEESupercrystalFilter() const {return  k_passBadEESupercrystalFilter ;}
-    inline Bool_t   PassTightHalo2016Filter() const {return  k_passTightHalo2016Filter; }
+    inline Bool_t   PassSuperHalo2016Filter() const {return  k_passSuperHalo2016Filter; }
     inline Bool_t   PassBadChargedCandidateFilter() const {return k_passBadChargedCandFilter;}
     inline Bool_t   PassBadPFMuonFilter() const {return k_passBadpfMuonFilter;}
 
@@ -236,6 +245,7 @@ namespace snu {
     inline Double_t x2() const {return k_pdf_x2;}
     
     inline std::vector<Double_t> PdfWeights() const {return k_pdf_weights;}
+    inline std::vector<Double_t> AlphaSWeights() const {return k_alphas_weights;}
     inline std::vector<Double_t> ScaleWeights() const {return k_scale_weights;}
     
     virtual void Reset();    
@@ -245,15 +255,13 @@ namespace snu {
   private:
     /// decalre private functions
     
-    // Event variables 
-    Int_t    k_EventNumber, k_RunNumber,k_nvertices,  k_lumisec, k_ngoodvertices,k_pdf_id1, k_pdf_id2;
-
-    std::vector<Double_t> k_pdf_weights, k_scale_weights, k_alpha_weights;
-
-    Double_t k_vertexX,k_vertexY,k_vertexZ, k_vertexNDOF, k_vertexChi2 , k_normchi2,  k_mcweight, k_lheweight, k_pdf_q, k_pdf_x1, k_pdf_x2;
+    Int_t    k_EventNumber, k_RunNumber,k_nvertices,  k_lumisec,k_pdf_id1, k_pdf_id2, k_lumi_mask_silver, k_lumi_mask_gold;
+    std::vector<Double_t> k_pdf_weights, k_alphas_weights,k_scale_weights;
+    Double_t k_vertexX,k_vertexY,k_vertexZ, k_vertexNDOF,  k_mcweight, k_lheweight, k_pdf_q, k_pdf_x1, k_pdf_x2;
 
     Double_t k_PF_MET, k_PF_METphi, k_PF_SumET ;
     Double_t k_PF_METx,k_PF_METy;
+    Double_t k_PF_raw_METx,k_PF_raw_METy;
 
     Double_t k_PF_MET_MuonEn_up,k_PF_MET_MuonEn_down; 
     Double_t k_PF_MET_ElectronEn_up,k_PF_MET_ElectronEn_down; 
@@ -267,16 +275,19 @@ namespace snu {
 
     Bool_t k_isData, k_isgoodevent;
 
-    Bool_t k_passBadEESupercrystalFilter,k_passCSCHaloFilterTight,k_passEcalDeadCellTriggerPrimitiveFilter,  k_passHBHENoiseFilter, k_passHBHENoiseIsoFilter, k_passTightHalo2016Filter, k_passBadChargedCandFilter, k_passBadpfMuonFilter;
+    Bool_t k_passBadEESupercrystalFilter,k_passEEBadCalibFilterTight,k_passEcalDeadCellTriggerPrimitiveFilter,  k_passHBHENoiseFilter, k_passHBHENoiseIsoFilter, k_passSuperHalo2016Filter, k_passBadChargedCandFilter, k_passBadpfMuonFilter;
 
 
-    Double_t  k_PileUpInteractionsTrue;
+    Double_t  k_PileUpInteractionsTrue, k_pu_gold_weight, k_pu_gold_p_weight, k_pu_gold_m_weight, k_pu_gold_xs71000_weight, k_pu_gold_xs71000_p_weight, k_pu_gold_xs71000_m_weight;
+    Double_t k_pu_gold_weightB, k_pu_gold_weightC, k_pu_gold_weightD,k_pu_gold_weightE,k_pu_gold_weightF,k_pu_gold_weightG,k_pu_gold_weightH;
+    Bool_t prop_metrc;
+    Bool_t prop_metjmr;
 
-    std::string k_catversion;
+    std::string k_snuversion;
     Double_t k_rho;
+    Double_t k_top_reweight;
 
-
-    ClassDef(KEvent,34);
+    ClassDef(KEvent,35);
   }; 
   
 }//namespace snu

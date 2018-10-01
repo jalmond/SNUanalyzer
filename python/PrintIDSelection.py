@@ -102,7 +102,7 @@ def PrintOutElectrons(ID, generalpath, userpath):
 
     print "*"*100
     print "\n"
-    os.system("curl https://github.com/vallot/CATTools/blob/"+os.getenv("CATVERSION")+"/CatProducer/python/electronProducer_cfi.py > log")
+    os.system("curl https://github.com/vallot/CATTools/blob/"+os.getenv("SNUVERSION")+"/CatProducer/python/electronProducer_cfi.py > log")
 
     
     print "*"*100

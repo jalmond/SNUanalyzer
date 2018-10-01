@@ -25,7 +25,7 @@ map<TString, Double_t> n_w_eventmap;
 void GetNData(TString version="") {
   
 
-  TString def_version = TString(getenv("CATVERSION"));
+  TString def_version = TString(getenv("SNUVERSION"));
   if(!version.Contains("v7") ) version = def_version;
   
   vector<int> v763; 

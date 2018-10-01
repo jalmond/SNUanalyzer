@@ -65,14 +65,14 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( SNUError ) {
 void ExampleAnalyzer::ExecuteEvents()throw( SNUError ){
 
   /// Apply the gen weight 
-  if(!isData) weight*=MCweight;
+  if(!IsData) weight*=MCweight;
     
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << SNULogger::endmsg;
-  m_logger << DEBUG << "isData = " << isData << SNULogger::endmsg;
+  m_logger << DEBUG << "IsData = " << IsData << SNULogger::endmsg;
    
   FillCutFlow("NoCut", weight);
   
-  if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
+  if(IsData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
   else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
 
 
@@ -125,7 +125,7 @@ void ExampleAnalyzer::ExecuteEvents()throw( SNUError ){
    mcdata_correction->CorrectMuonMomentum(muons,eventbase->GetTruth()); /// CorrectMuonMomentum(muons);  will also work as Funcion in AnalyzerCore just calls mcdata_correction function
    
    double ev_weight = weight;
-   if(!isData){
+   if(!IsData){
      //ev_weight = w * trigger_sf * id_iso_sf *  pu_reweight*trigger_ps;
    }
 

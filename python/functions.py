@@ -135,14 +135,13 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSelection.so");\n'
     config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libPlotting.so");\n'
     config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libHNCommonLeptonFakes.so");\n'
-    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/librochcor");\n'
     config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libBTagSFUtil.so");\n'
     for lib in libraries:
         config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/' + lib + ' + .so");\n'
         
     config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libAnalyzerTools.so");\n'
     config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/lib'+flag+'Analysis.so");\n'
-    config+='   gSystem->Load("'+os.getenv("NALYZER_BATCHLIB_PATH")+tmplibdir+'/libSKTreeMaker.so");\n'
+    config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSKTreeMaker.so");\n'
     config+='   gSystem->Load("'+os.getenv("ANALYZER_BATCHLIB_PATH")+tmplibdir+'/libValidation.so");\n'
     
     config+='   gSystem->Load("libPyROOT.so");\n'

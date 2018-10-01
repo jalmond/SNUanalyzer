@@ -162,13 +162,13 @@ void SKTreeValidation::ExecuteEvents()throw( SNUError ){
   int mcperiod = GetMCPeriod();
 
 
-  if(!isData) weight*=MCweight;
+  if(!IsData) weight*=MCweight;
   //ListTriggersAvailable();
   counter("NoCut",weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));
 
   FillCutFlow("NoCut",  weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));
   if(TString(getenv("CATVERSION")).Contains("v7")){
-    if(isData&& (! eventbase->GetEvent().LumiMask())) return;
+    if(IsData&& (! eventbase->GetEvent().LumiMask())) return;
     counter("LumiMaskCut", weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));
 
     FillCutFlow("LumiMaskCut", weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));
@@ -179,7 +179,7 @@ void SKTreeValidation::ExecuteEvents()throw( SNUError ){
   /// Acts on data to remove bad reconstructed event 
 
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << SNULogger::endmsg;
-  m_logger << DEBUG << "isData = " << isData << SNULogger::endmsg;
+  m_logger << DEBUG << "IsData = " << IsData << SNULogger::endmsg;
    
 
   bool makePUFile=false;
@@ -195,7 +195,7 @@ void SKTreeValidation::ExecuteEvents()throw( SNUError ){
 	  
 	  if(GetDiLepMass(muons) < 120. && GetDiLepMass(muons)  > 60. ){
 	      
-	    if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 60., 60, "N_{vertex}");
+	    if(IsData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 60., 60, "N_{vertex}");
 	    else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 60., 60, "N_{vertex}");
 	  }
 	}
@@ -453,7 +453,7 @@ void SKTreeValidation::MakeMuonValidationPlots(TString muid, float w, float pu_r
 
   float ev_weight(1.);
 
-  if(!isData){
+  if(!IsData){
     trigger_sf =   mcdata_correction->TriggerScaleFactor(electrons,muons, trignames.at(0));
     id_iso_sf =   mcdata_correction->MuonScaleFactor(muid, muons,0);
     id_iso_sf *=  mcdata_correction->MuonISOScaleFactor(muid, muons,0);
@@ -512,7 +512,7 @@ void SKTreeValidation::MakeDiMuonValidationPlots(TString muid, float w, float pu
   //  if(nbjet == 1) w*= 0.8;
   //  if(nbjet == 2) w*= 0.65;
 
-  if(!isData) w =  w*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",TargetLumi);
+  if(!IsData) w =  w*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",TargetLumi);
   
   
    
@@ -542,7 +542,7 @@ void SKTreeValidation::MakeDiMuonValidationPlots(TString muid, float w, float pu
   float ev_weight(1.);
   float puweight(1.);
 
-  if(!isData){
+  if(!IsData){
     //trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
     id_iso_sf =   mcdata_correction->MuonScaleFactor(muid, muons,0);
     id_iso_sf *=  mcdata_correction->MuonISOScaleFactor(muid, muons,0);
@@ -661,7 +661,7 @@ void SKTreeValidation::MakeElMuonValidationPlots(TString muid, float w, float pu
   float trigger_ps(1.);
   float ev_weight(1.);
 
-  if(!isData){
+  if(!IsData){
     //trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
     id_iso_sf =  mcdata_correction->MuonScaleFactor(muid, muons,0);
     id_iso_sf *= mcdata_correction->MuonISOScaleFactor(muid, muons,0);
@@ -743,7 +743,7 @@ void SKTreeValidation::MakeElectronValidationPlots(TString elid, float w, float 
   float reco_weight=1.;
   
   float ev_weight(1.); 
-  if(!isData){
+  if(!IsData){
     //trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
     id_iso_sf=   mcdata_correction->ElectronScaleFactor(elid, electrons,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
     reco_weight = mcdata_correction->ElectronRecoScaleFactor(electrons);
@@ -806,7 +806,7 @@ void SKTreeValidation::MakeDiElectronValidationPlots(TString elid, float w, floa
   float reco_weight=1.;
 
   float ev_weight(1.);
-  if(!isData){
+  if(!IsData){
     //trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0)); /// 
     id_iso_sf=   mcdata_correction->ElectronScaleFactor(elid, electrons,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
     //reco_weight = ElectronRecoScaleFactor(electrons);

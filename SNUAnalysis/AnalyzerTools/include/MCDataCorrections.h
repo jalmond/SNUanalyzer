@@ -22,9 +22,6 @@ class Reweight;
 #include "KTrigger.h"
 #include "KEvent.h"
 
-/// rochester corrections
-#include "rochcor2016/RoccoR.h"
-
 // ROOT 
 #include "TH1F.h"
 #include "TH2F.h"
@@ -118,7 +115,6 @@ class MCDataCorrections{
   std::map<float, std::vector<float>* > deg_etaptmap_leg1;
   std::map<float, std::vector<float>* > deg_etaptmap_leg2;
   Reweight *reweightPU;
-  RoccoR *rc;
 
 };
 #endif

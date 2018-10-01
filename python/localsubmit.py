@@ -17,7 +17,7 @@ parser.add_option("-p", "--period", dest="period", default="A",help="which data 
 parser.add_option("-s", "--stream", dest="stream", default="NULL", help="Which data channel- ee,or mumu?")
 parser.add_option("-j", "--jobs", dest="jobs", default=1, help="Name of Job")
 parser.add_option("-c", "--cycle", dest="cycle", default="Analyzer", help="which cycle")
-parser.add_option("-t", "--tree", dest="tree", default="ntuple/event", help="What is input tree name?")
+parser.add_option("-t", "--tree", dest="tree", default="recoTree/SKFlat", help="What is input tree name?")
 #parser.add_option("-t", "--tree", dest="tree", default="event", help="What is input tree name?")
 parser.add_option("-o", "--logstep", dest="logstep", default=-1, help="How many events betwene log messages")
 parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How much data are you running on/ needed to weight mc?")
@@ -316,9 +316,9 @@ if not cycle == "SKTreeMaker":
                                 print "You are running on FlatSNUntuples. This will be more cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees."
                         
 
-output_mounted="/data2"
+output_mounted="/data7"
 workoutput_mounted="/data2"
-merge_mounted="/data8/DATA"
+merge_mounted="/data7/DATA"
 if len(sample)>1:
     if  sample == "H_v2" or sample == "H_v3":
         workoutput_mounted="/data7/DATA"
@@ -1378,15 +1378,15 @@ else:
         if DEBUG == "True":
             print line
 
-    SKTreeOutput_pre = workoutput_mounted+"/SnuNtuples/" + sample_snuversion
+    SKTreeOutput_pre = "/data7"+"/DATA/SnuNtuples/" + sample_snuversion
     if not os.path.exists(SKTreeOutput_pre):
         os.system("mkdir " + SKTreeOutput_pre)
 
-    SKTreeOutput_pre2 = workoutput_mounted+"/SnuNtuples/" + sample_snuversion + "/SKTrees/"
+    SKTreeOutput_pre2 = "/data7"+"/DATA/SnuNtuples/" + sample_snuversion + "/SKTrees/"
     if not os.path.exists(SKTreeOutput_pre2):
         os.system("mkdir " + SKTreeOutput_pre2)
                     
-    SKTreeOutput = workoutput_mounted+"/SnuNtuples/" + sample_snuversion + "/SKTrees/"        
+    SKTreeOutput = "/data7"+"/DATA/SnuNtuples/" + sample_snuversion + "/SKTrees/"        
     
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":

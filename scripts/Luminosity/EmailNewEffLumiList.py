@@ -1,8 +1,8 @@
 import os
 
-def GetCATAnalyzerMailList():
+def GetSNUAnalyzerMailList():
     maillist=[]
-    path_emailconfig = os.getenv("LQANALYZER_MOD") + "emailconfig.txt" 
+    path_emailconfig = os.getenv("ANALYZER_MOD") + "emailconfig.txt" 
     file_emailconfig = open(path_emailconfig,"r")
     for line in file_emailconfig:
         splitline=line.split()
@@ -19,12 +19,12 @@ def SendEmail(catversion, catuser, message, jobsummary, maillist) :
     for xmail in maillist:
         email_user=email_user+xmail+","
     email_user=email_user[:-1]
-    path_file_email=os.getenv("LQANALYZER_DIR")+"/scripts/email.sh"
+    path_file_email=os.getenv("ANALYZER_DIR")+"/scripts/email.sh"
     file_email=open(path_file_email,"w")
-    file_email.write('cat '+ os.getenv("LQANALYZER_DIR")+'/scripts/email.txt  | mail -s "' + catuser+ ': REPORT: Effective Luminosity file datasets_snu_CAT_mc_'+catversion+'.txt" ' + str(email_user)+'')
+    file_email.write('cat '+ os.getenv("ANALYZER_DIR")+'/scripts/email.txt  | mail -s "' + catuser+ ': REPORT: Effective Luminosity file datasets_snu_SNU_mc_'+catversion+'.txt" ' + str(email_user)+'')
     file_email.close()
 
-    filejobsummary = open(os.getenv("LQANALYZER_DIR")+"/scripts/email.txt","w")
+    filejobsummary = open(os.getenv("ANALYZER_DIR")+"/scripts/email.txt","w")
 
     for x in message:
         filejobsummary.write(x)
@@ -33,8 +33,8 @@ def SendEmail(catversion, catuser, message, jobsummary, maillist) :
         filejobsummary.write(eline)
     filejobsummary.close()
     os.system("source " + path_file_email)
-    os.system("rm " + os.getenv('LQANALYZER_DIR')+"/scripts/email.sh")
-    os.system("rm " + os.getenv('LQANALYZER_DIR')+"/scripts/email.txt")
+    os.system("rm " + os.getenv('ANALYZER_DIR')+"/scripts/email.sh")
+    os.system("rm " + os.getenv('ANALYZER_DIR')+"/scripts/email.txt")
 
 
 
@@ -47,7 +47,7 @@ def EmailNewSampleList(catversion, newsamplelist):
     message = []
    
     if not "v8" in catversion:
-        catversion=os.getenv("CATVERSION")
+        catversion=os.getenv("SNUVERSION")
 
     message.append("ADDITIONAL samples added to effective luminosity file for a new cattuple production["+catversion+"]\n")
     message.append("\n")
@@ -64,7 +64,7 @@ def EmailNewSampleList(catversion, newsamplelist):
             #message.append(x)
     file_samplelist.close()
     Copy_File=[]
-    emaillist=GetCATAnalyzerMailList()
+    emaillist=GetSNUAnalyzerMailList()
     
     SendEmail(catversion, os.getenv("USER"), message, Copy_File, emaillist)
 
@@ -73,7 +73,7 @@ def EmailNewXsecList(catversion, xseclist):
     message = []
 
     if not "v8" in catversion:
-        catversion=os.getenv("CATVERSION")
+        catversion=os.getenv("SNUVERSION")
 
     message.append("UPDATED xsec in effective luminosity file for a new cattuple production["+catversion+"]\n")
     message.append("\n")
@@ -88,7 +88,7 @@ def EmailNewXsecList(catversion, xseclist):
 
     file_xseclist.close()    
 
-    emaillist=GetCATAnalyzerMailList()
+    emaillist=GetSNUAnalyzerMailList()
 
     Copy_File=[]
     SendEmail(catversion, os.getenv("USER"), message, Copy_File, emaillist)
@@ -98,9 +98,9 @@ def EmailNewList(catversion):
     message.append("This is a new file for a new cattuple production\n")
 
     if not "v8" in catversion:
-        catversion=os.getenv("CATVERSION")
+        catversion=os.getenv("SNUVERSION")
 
-    path_newefflumi=os.getenv("LQANALYZER_DATASET_DIR") + "/AnalysisFiles/datasets_snu_CAT_mc_"+catversion +".txt"
+    path_newefflumi=os.getenv("ANALYZER_DATASET_DIR") + "/AnalysisFiles/datasets_snu_SNU_mc_"+catversion +".txt"
 
     file_newefflumi=open(path_newefflumi,"r")
 

@@ -4,7 +4,7 @@ echo "LQCore/Ntuplecore/src/LQController.cc"
 echo "python/localsubmit.py"
 echo "bin/submitSKTree.sh"
 echo "update bin/Branch.txt"
-echo "update bin/CATVERSION.txt"
+echo "update bin/SNUVERSION.txt"
 
 echo ""
 echo "run:"

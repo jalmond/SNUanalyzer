@@ -14,6 +14,8 @@ ClassImp(KPhoton)
 KPhoton::KPhoton() :
   KParticle()
 {
+
+
   k_ph_chhadiso_noEA=-999.; 
   k_ph_puchhadiso_noEA=-999.; 
   k_ph_nhadiso_noEA=-999.; 
@@ -23,19 +25,18 @@ KPhoton::KPhoton() :
   k_ph_photoniso=-999.; 
   k_ph_nhadiso=-999.; 
   k_ph_sigietaieta=-999.; 
-  k_ph_r9=-999.; 
   k_ph_hovere=-999.; 
   k_ph_sceta=-999.; 
   k_ph_scphi=-999.; 
-  k_ph_scrawe=-999.; 
-  k_ph_scpreshower_e=-999.;
+  k_ph_uncorr= -999.;
+  k_ph_r9=-999.;
+  k_ph_scrawe=-999;
   k_ph_isloose=false; 
   k_ph_ismedium=false; 
   k_ph_istight=false; 
-  k_ph_passmva=false; 
-  k_mc_matched=false; 
+  k_ph_passmva80=false; 
+  k_ph_passmva90=false; 
   k_ph_haspixseed=false;
-  k_ph_passelveto=false;
   
 }
 
@@ -54,19 +55,19 @@ KPhoton::KPhoton(const KPhoton& ph) :
   k_ph_photoniso=ph.PhotonIso();
   k_ph_nhadiso=ph.NeutalHadIso();
   k_ph_sigietaieta=ph.SigmaIetaIeta();
-  k_ph_r9=ph.R9();
   k_ph_hovere=ph.HoverE();
   k_ph_sceta=ph.SCEta();
   k_ph_scphi=ph.SCPhi();
-  k_ph_scrawe=ph.SCRawE();
-  k_ph_scpreshower_e= ph.SCPreShowerE();
+  k_ph_uncorr= ph.PtUncorr();
   k_ph_isloose=ph.isLoose();
   k_ph_ismedium=ph.isMedium();
   k_ph_istight=ph.isTight();
-  k_ph_passmva=ph.passMVA();
-  k_mc_matched=ph.mcMatched();
+  k_ph_passmva80=ph.passMVA80();
+  k_ph_passmva90=ph.passMVA90();
   k_ph_haspixseed=ph.hasPixSeed();
-  k_ph_passelveto=ph.passElVeto();
+  k_ph_r9=ph.R9();
+  k_ph_scrawe=ph.SCRawE();
+
 
 }
 
@@ -87,20 +88,18 @@ void KPhoton::Reset()
   k_ph_photoniso=-999.;
   k_ph_nhadiso=-999.;
   k_ph_sigietaieta=-999.;
-  k_ph_r9=-999.;
   k_ph_hovere=-999.;
   k_ph_sceta=-999.;
   k_ph_scphi=-999.;
-  k_ph_scrawe=-999.;
-  k_ph_scpreshower_e=-999.;
+  k_ph_uncorr= -999.;
   k_ph_isloose=false;
   k_ph_ismedium=false;
   k_ph_istight=false;
-  k_ph_passmva=false;
-  k_mc_matched=false;
+  k_ph_passmva80=false;
+  k_ph_passmva90=false;
   k_ph_haspixseed=false;
-  k_ph_passelveto=false;
-
+  k_ph_r9=-999.;
+  k_ph_scrawe=-999.;
 
 }
 
@@ -119,19 +118,19 @@ KPhoton& KPhoton::operator= (const KPhoton& p)
     k_ph_photoniso=p.PhotonIso();
     k_ph_nhadiso=p.NeutalHadIso();
     k_ph_sigietaieta=p.SigmaIetaIeta();
-    k_ph_r9=p.R9();
     k_ph_hovere=p.HoverE();
     k_ph_sceta=p.SCEta();
     k_ph_scphi=p.SCPhi();
-    k_ph_scrawe=p.SCRawE();
-    k_ph_scpreshower_e= p.SCPreShowerE();
+    k_ph_uncorr= p.PtUncorr();
     k_ph_isloose=p.isLoose();
     k_ph_ismedium=p.isMedium();
     k_ph_istight=p.isTight();
-    k_ph_passmva=p.passMVA();
-    k_mc_matched=p.mcMatched();
+    k_ph_passmva80=p.passMVA80();
+    k_ph_passmva90=p.passMVA90();
     k_ph_haspixseed=p.hasPixSeed();
-    k_ph_passelveto=p.passElVeto();
+    k_ph_r9=p.R9();
+    k_ph_scrawe=p.SCRawE();
+
     
   }
   
@@ -149,20 +148,16 @@ void KPhoton::SetIsTight   (bool b){
   k_ph_istight=b;
 }
 
-void KPhoton::SetPassMVA   (bool b){
-  k_ph_passmva=b;
+void KPhoton::SetPassMVA80   (bool b){
+  k_ph_passmva80=b;
+}
+void KPhoton::SetPassMVA90   (bool b){
+  k_ph_passmva90=b;
 }
 
-void KPhoton::SetMCMatched (bool b){
-  k_mc_matched=b;
-}
 
 void KPhoton::SetHasPixSeed(bool b){
   k_ph_haspixseed=b;
-}
-
-void KPhoton::SetPassElVeto(bool b){
-  k_ph_passelveto=b;
 }
 
 
@@ -204,9 +199,6 @@ void KPhoton::SetSigmaIetaIeta(double d){
   k_ph_sigietaieta=d;
 }
 
-void KPhoton::SetR9(double d){
-  k_ph_r9=d;
-}
 
 void KPhoton::SetHoverE(double d){
   k_ph_hovere=d;
@@ -220,11 +212,18 @@ void KPhoton::SetSCPhi(double d){
   k_ph_scphi=d;
 }
 
+
+void KPhoton::SetPtUncorr(double d){
+  k_ph_uncorr=d;
+}
+
+
 void KPhoton::SetSCRawE(double d){
   k_ph_scrawe=d;
 }
 
-void KPhoton::SetSCPreShowerE(double d){
-  k_ph_scpreshower_e=d;
+void KPhoton::SetR9(double d){
+  k_ph_r9=d;
 }
+
 

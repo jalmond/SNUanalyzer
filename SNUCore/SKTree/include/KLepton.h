@@ -28,8 +28,8 @@ public:
 
   inline Flavour LeptonFlavour() const {return k_flavour;}
   inline Double_t dZ() const {return k_dz;}
-  inline Double_t dXY() const {return k_dxy;}
-  inline Double_t dXYSig() const {return k_dxy_sig;}
+  inline Double_t IP2D() const {return k_ip2d;}
+  inline Double_t SIP3D() const {return k_sip3d;}
   inline Double_t RelIso() const {return k_reliso;}
   inline Int_t GetType() const {return k_leptype;}
   inline bool MCIsCF() const {return k_mciscf;}
@@ -47,7 +47,7 @@ public:
 private:
 
   Flavour k_flavour;
-  Double_t k_dz, k_dxy, k_dxy_sig, k_reliso;
+  Double_t k_dz, k_ip2d, k_sip3d, k_reliso;
   Int_t k_leptype;
   bool k_mciscf;
   const snu::KMuon* MuonPtr;

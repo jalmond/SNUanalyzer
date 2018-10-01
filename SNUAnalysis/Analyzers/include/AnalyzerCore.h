@@ -9,9 +9,7 @@ class JetPlots;
 class SignalPlotsEE;
 class SignalPlotsMM;
 class SignalPlotsEM;
-class TriLeptonPlots;
-class HNpairPlotsMM;
-class HNTriLeptonPlots;
+
 class EventBase;
 
 #include "BaseSelection.h"
@@ -339,15 +337,12 @@ class AnalyzerCore : public SNUCycleBase {
   std::vector<TString> triggerlist;
 
   //// Making cleaver hist maps
-  map<TString, TriLeptonPlots*> mapCLhistTriLep;
-  map<TString, HNpairPlotsMM*> mapCLhistHNpairMM;
   map<TString, SignalPlotsEE*> mapCLhistSigEE;
   map<TString, SignalPlotsMM*> mapCLhistSigMM;
   map<TString, SignalPlotsEM*> mapCLhistSigEM;
   map<TString, ElectronPlots*> mapCLhistEl;
   map<TString, MuonPlots*> mapCLhistMu;
   map<TString, JetPlots*> mapCLhistJet;
-  map<TString, HNTriLeptonPlots*> mapCLhistHNTriLep;
   
   float WeightByTrigger(TString triggername, float tlumi);
   float WeightByTrigger(vector<TString> triggername, float tlumi);  
@@ -400,6 +395,7 @@ class AnalyzerCore : public SNUCycleBase {
   void FillCLHist(histtype type, TString hist, vector<snu::KMuon> muons , double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KElectron> electrons , double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KJet> jets , double weight);
+
   std::map<TString,BTagSFUtil*> SetupBTagger(std::vector<TString> taggers, std::vector<TString> wps);
 
 

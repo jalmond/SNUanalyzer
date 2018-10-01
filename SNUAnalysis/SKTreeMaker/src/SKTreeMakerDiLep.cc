@@ -45,8 +45,8 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( SNUError ){
   TString analysis_trigger_eg="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
   TString analysis_trigger_muon="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
   TString analysis_trigger_tkmuon="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v";
-  if(isData && _singleEG && PassTrigger(analysis_trigger_eg)) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
-  if(isData && _singleMuon && (PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon) )) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
+  if(IsData && _singleEG && PassTrigger(analysis_trigger_eg)) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
+  if(IsData && _singleMuon && (PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon) )) throw SNUError( "REMOVE TRIGGERED EVENTS for OR",  SNUError::SkipEvent );
 
   //######   MUON SELECTION ###############
   Message("Selecting Muons", DEBUG);
@@ -109,8 +109,8 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( SNUError ){
   }
   if(skim_muons.size() > 0){
     float mupt=skim_muons.at(0).Pt();
-    if(skim_muons.at(0).RochPt() < skim_muons.at(0).Pt()) mupt=skim_muons.at(0).RochPt();
-    if(skim_muons.at(0).RochPt() < 0.) mupt=skim_muons.at(0).Pt();
+    if(skim_muons.at(0).RochSF() < skim_muons.at(0).Pt()) mupt=skim_muons.at(0).Pt()*skim_muons.at(0).RochSF();
+    if(skim_muons.at(0).RochSF() < 0.) mupt=skim_muons.at(0).Pt();
 
     if(mupt > 14.)  pass15gev= true;
   }

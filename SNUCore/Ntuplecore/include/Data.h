@@ -90,8 +90,8 @@ public :
    void SetSNUNtupleInputType(bool lq);
    void SetVersion(int ver);
 
-   std::string GetCatVersion(bool runSNU);
-   void SetCatVersion(std::string cv);
+   std::string GetSNUVersion(bool runSNU);
+   void SetSNUVersion(std::string cv);
    void SetTargetLumi(float tlumi);
 
    void SetSNUNtupleInputType(int dataflag);
@@ -99,7 +99,7 @@ public :
 
    bool SNUinput;
    Long64_t nentries;
-   int k_cat_version;
+   int k_snu_version;
    // Declaration of leaf types
 
    /// If needed (using SKTree input)
@@ -117,7 +117,7 @@ public :
    
    std::vector<TBranch*> m_inputbranches;
 
-   std::string CatVersion;
+   std::string SNUVersion;
    float TargetLumi;
    std::vector<TString>  k_flags;
 
@@ -132,7 +132,7 @@ public :
    Double_t        Rho;
    Int_t           nPV;
    Bool_t          Flag_goodVertices;
-   Bool_t          Flag_globalTightHalo2016Filter;
+   Bool_t          Flag_globalSuperTightHalo2016Filter;
    Bool_t          Flag_HBHENoiseFilter;
    Bool_t          Flag_HBHENoiseIsoFilter;
    Bool_t          Flag_EcalDeadCellTriggerPrimitiveFilter;
@@ -159,7 +159,6 @@ public :
    std::vector<int>     *jet_hadronFlavour;
    std::vector<double>  *jet_CSVv2;
    std::vector<double>  *jet_DeepCSV;
-   std::vector<double>  *jet_DeepFlavour;
    std::vector<double>  *jet_CvsL;
    std::vector<double>  *jet_CvsB;
    std::vector<double>  *jet_DeepFlavour_b;
@@ -184,6 +183,12 @@ public :
    std::vector<double>  *jet_PileupJetId;
    std::vector<double>  *jet_shiftedEnUp;
    std::vector<double>  *jet_shiftedEnDown;
+   std::vector<double>  *jet_smearedRes;
+   std::vector<double>  *jet_smearedResUp;
+   std::vector<double>  *jet_smearedResDown;
+   std::vector<double>  *jet_JECL1FastJet;
+   std::vector<double>  *jet_JECFull;
+
    std::vector<double>  *fatjet_pt;
    std::vector<double>  *fatjet_eta;
    std::vector<double>  *fatjet_phi;
@@ -203,6 +208,7 @@ public :
    std::vector<double>  *fatjet_puppi_tau3;
    std::vector<double>  *fatjet_puppi_tau4;
    std::vector<double>  *fatjet_softdropmass;
+
    std::vector<double>  *fatjet_chargedHadronEnergyFraction;
    std::vector<double>  *fatjet_neutralHadronEnergyFraction;
    std::vector<double>  *fatjet_neutralEmEnergyFraction;
@@ -211,6 +217,10 @@ public :
    std::vector<int>     *fatjet_neutralMultiplicity;
    std::vector<double>  *fatjet_shiftedEnUp;
    std::vector<double>  *fatjet_shiftedEnDown;
+   std::vector<double>  *fatjet_smearedRes;
+   std::vector<double>  *fatjet_smearedResUp;
+   std::vector<double>  *fatjet_smearedResDown;
+
    std::vector<double>  *electron_MVAIso;
    std::vector<double>  *electron_MVANoIso;
    std::vector<double>  *electron_Energy;
@@ -223,16 +233,10 @@ public :
    std::vector<double>  *electron_pt_Scale_Down;
    std::vector<double>  *electron_pt_Smear_Up;
    std::vector<double>  *electron_pt_Smear_Down;
-   std::vector<double>  *electron_Px;
-   std::vector<double>  *electron_Py;
-   std::vector<double>  *electron_Pz;
    std::vector<double>  *electron_eta;
    std::vector<double>  *electron_phi;
    std::vector<int>     *electron_charge;
    std::vector<double>  *electron_gsfpt;
-   std::vector<double>  *electron_gsfPx;
-   std::vector<double>  *electron_gsfPy;
-   std::vector<double>  *electron_gsfPz;
    std::vector<double>  *electron_gsfEta;
    std::vector<double>  *electron_gsfPhi;
    std::vector<int>     *electron_gsfCharge;
@@ -248,6 +252,7 @@ public :
    std::vector<double>  *electron_HoverE;
    std::vector<double>  *electron_fbrem;
    std::vector<double>  *electron_eOverP;
+   std::vector<double>  *electron_InvEminusInvP;
 
    std::vector<double>  *electron_dxyVTX;
    std::vector<double>  *electron_dxyerrVTX;
@@ -279,6 +284,7 @@ public :
    std::vector<double>  *electron_E15;
    std::vector<double>  *electron_E25;
    std::vector<double>  *electron_E55;
+
    std::vector<double>  *electron_RelPFIso_dBeta;
    std::vector<double>  *electron_RelPFIso_Rho;
    std::vector<bool>    *electron_passVetoID;
@@ -399,6 +405,11 @@ public :
    std::vector<double>  *muon_TuneP_phi;
    std::vector<double>  *muon_roch_sf;
    std::vector<double>  *muon_roch_sf_up;
+   std::vector<double>  *muon_PfChargedHadronMiniIso;
+   std::vector<double>  *muon_PfNeutralHadronMiniIso;
+   std::vector<double>  *muon_PfGammaMiniIso;
+   std::vector<double>  *muon_PFSumPUMiniIso;
+
    std::vector<double>  *PDFWeights_Scale;
    std::vector<double>  *PDFWeights_Error;
    std::vector<double>  *PDFWeights_AlphaS;
@@ -511,9 +522,8 @@ public :
    TBranch        *b_Rho;   //!                                                                                                                                                                             
    TBranch        *b_PUweight;   //!
    TBranch        *b_nPV;   //!
-   TBranch        *b_nPV;   //!                                                                                                                                                                             
    TBranch        *b_Flag_goodVertices;   //!                                                                                                                                                               
-   TBranch        *b_Flag_globalTightHalo2016Filter;   //!                                                                                                                                                  
+   TBranch        *b_Flag_globalSuperTightHalo2016Filter;   //!                                                                                                                                                  
    TBranch        *b_Flag_HBHENoiseFilter;   //!                                                                                                                                                            
    TBranch        *b_Flag_HBHENoiseIsoFilter;   //!                                                                                                                                                         
    TBranch        *b_Flag_EcalDeadCellTriggerPrimitiveFilter;   //!                                                                                                                                         
@@ -565,6 +575,12 @@ public :
    TBranch        *b_jet_PileupJetId;   //!
    TBranch        *b_jet_shiftedEnUp;   //!
    TBranch        *b_jet_shiftedEnDown;   //!
+   TBranch        *b_jet_smearedRes;   //!                                                                                                                                                                  
+   TBranch        *b_jet_smearedResUp;   //!                                                                                                                                                                
+   TBranch        *b_jet_smearedResDown;   //!                                                                                                                                                              
+   TBranch        *b_jet_JECL1FastJet;   //!                                                                                                                                                                
+   TBranch        *b_jet_JECFull;   //!                                                                                                                                                                     
+
    TBranch        *b_fatjet_pt;   //!
    TBranch        *b_fatjet_eta;   //!
    TBranch        *b_fatjet_phi;   //!
@@ -591,6 +607,10 @@ public :
    TBranch        *b_fatjet_neutralMultiplicity;   //!
    TBranch        *b_fatjet_shiftedEnUp;   //!
    TBranch        *b_fatjet_shiftedEnDown;   //!
+   TBranch        *b_fatjet_smearedRes;   //!                                                                                                                                                               
+   TBranch        *b_fatjet_smearedResUp;   //!                                                                                                                                                             
+   TBranch        *b_fatjet_smearedResDown;   //!                                                                                                                                                           
+
    TBranch        *b_electron_MVAIso;   //!
    TBranch        *b_electron_MVANoIso;   //!
    TBranch        *b_electron_Energy;   //!
@@ -628,6 +648,7 @@ public :
    TBranch        *b_electron_HoverE;   //!
    TBranch        *b_electron_fbrem;   //!
    TBranch        *b_electron_eOverP;   //!
+   TBranch        *b_electron_InvEminusInvP; //!
    TBranch        *b_electron_dxyVTX;   //!                                                                                                                                                                 
    TBranch        *b_electron_dxyerrVTX;   //!                                                                                                                                                              
    TBranch        *b_electron_dzVTX;   //!                                                                                                                                                                  
@@ -643,7 +664,6 @@ public :
    TBranch        *b_electron_chIso03;   //!
    TBranch        *b_electron_nhIso03;   //!
    TBranch        *b_electron_phIso03;   //!
-   TBranch        *b_electron_relIsoCom03;   //!                                                                                                                                                                                                                                
    TBranch        *b_electron_puChIso03;   //!                                                                                                                                                                                                                                 
  
    TBranch        *b_electron_passConversionVeto;   //!
@@ -679,10 +699,12 @@ public :
    TBranch        *b_electron_PyUnCorr;   //!
    TBranch        *b_electron_PzUnCorr;   //!
    TBranch        *b_electron_EnergyUnCorr;   //!
+   TBranch        *b_electron_chMiniIso;   //!                                                                                                                                                              
+   TBranch        *b_electron_nhMiniIso;   //!                                                                                                                                                              
+   TBranch        *b_electron_phMiniIso;   //!                                                                                                                                                              
+   TBranch        *b_electron_puChMiniIso;   //!                                                                                                                                                            
+
    TBranch        *b_electron_scEnergyUnCorr;   //!
-   TBranch        *b_electron_scEtaUnCorr;   //!
-   TBranch        *b_electron_scPhiUnCorr;   //!
-   TBranch        *b_electron_scEtUnCorr;   //!
    TBranch        *b_muon_PfChargedHadronIsoR04;   //!
    TBranch        *b_muon_PfNeutralHadronIsoR04;   //!
    TBranch        *b_muon_PfGammaIsoR04;   //!
@@ -790,6 +812,11 @@ public :
    TBranch        *b_muon_TuneP_phi;   //!
    TBranch        *b_muon_roch_sf;   //!
    TBranch        *b_muon_roch_sf_up;   //!
+   TBranch        *b_muon_PfChargedHadronMiniIso;   //!                                                                                                                                                     
+   TBranch        *b_muon_PfNeutralHadronMiniIso;   //!                                                                                                                                                     
+   TBranch        *b_muon_PfGammaMiniIso;   //!                                                                                                                                                             
+   TBranch        *b_muon_PFSumPUMiniIso;   //!                                                                                                                                                             
+
    TBranch        *b_PDFWeights_Scale;   //!
    TBranch        *b_PDFWeights_Error;   //!
    TBranch        *b_PDFWeights_AlphaS;   //!
@@ -859,7 +886,6 @@ public :
    TBranch        *b_pileUpReweightMuonPhys;   //!
    TBranch        *b_pileUpReweightPlusMuonPhys;   //!
    TBranch        *b_pileUpReweightMinusMuonPhys;   //!
-   TBranch        *b_pfMET_pt;   //!
    TBranch        *b_pfMET_phi;   //!
    TBranch        *b_pfMET_Px;   //!
    TBranch        *b_pfMET_Py;   //!

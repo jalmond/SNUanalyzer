@@ -6,11 +6,11 @@ function usage
 
     echo "usage: sktree [-a analyzer] [-S samples] [-i input_file ]"
     echo "              [-s skim] [-list file_array] [-p data_period] [-q queue]"
-    echo "              [-d debug_mode] [-c catversion] [-o outputdir] [-qlist] "
+    echo "              [-d debug_mode] [-c snuversion] [-o outputdir] [-qlist] "
     echo "              [-events number of events] [-nskip events_to_skip] [-ac allversion] [-b run_in_bkg]"
     echo "              [-fake runfake ] [-flip runflip] [-attachhist drawhist]"     
     echo "              [-h (more/debug)][-l <args> ][-g <args>] [-A <args>]"
-    echo "              [-D <catversion>] [-miniaod input_file ] [-xsec input_file] [-efflumi input_file] [-userflag flag]"
+    echo "              [-D <snuversion>] [-miniaod input_file ] [-xsec input_file] [-efflumi input_file] [-userflag flag]"
     echo "              [-tagdiff <tagname>  -sktreelog  -printID IDNAME -updateselection <object>]   "
     echo "              [-filename xxx]"
 }
@@ -46,7 +46,7 @@ function rungroupedlist
 	  fi
 	  
       fi
-    done < ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${CATVERSION}.sh
+    done < ${ANALYZER_DIR}/SNURun/txt/list_all_mc_${SNUVERSION}.sh
     
     echo ""
     echo "Arrays made by user"
@@ -67,7 +67,7 @@ function rungroupedlist
 	      echo ""
           fi
       fi
-    done < ${LQANALYZER_DIR}/LQRun/txt/list_user_mc.sh
+    done < ${ANALYZER_DIR}/SNURun/txt/list_user_mc.sh
 
 }
 
@@ -91,8 +91,8 @@ getinfo_string=""
 #      slined="/data2/DATA/cattoflat/Data/"
 #      if [[ $job_skim == *"No"* ]];
 #          then
-#          echo "LQanalyzer::sktree :: ERROR :: There are no NoCut skims for "$idlist
-#          echo  "LQanalyzer::sktree :: HELP :: Change skim"
+#          echo "SNUanalyzer::sktree :: ERROR :: There are no NoCut skims for "$idlist
+#          echo  "SNUanalyzer::sktree :: HELP :: Change skim"
 #          exit 1
 #      fi
 #      if [[ $job_skim == *"Lepton"* ]];
@@ -148,47 +148,47 @@ function getinfo_dataset
     
     if [[ $submit_file_tag == *$search_tag* ]];
         then
-        tmp_submit_file_tag=$submit_catvlist
-        tmp_submit_catvlist=$submit_file_tag
-        submit_catvlist=$tmp_submit_catvlist
+        tmp_submit_file_tag=$submit_snuvlist
+        tmp_submit_snuvlist=$submit_file_tag
+        submit_snuvlist=$tmp_submit_snuvlist
         submit_file_tag=$tmp_submit_file_tag
     fi
-    if [[ $submit_catvlist != *$search_tag* ]];
+    if [[ $submit_snuvlist != *$search_tag* ]];
         then
-        if [[ $submit_catvlist != "" ]];
+        if [[ $submit_snuvlist != "" ]];
             then
-            tmp_submit_file_tag=$submit_catvlist
-            tmp_submit_catvlist=$submit_file_tag
-            submit_catvlist=$tmp_submit_catvlist
+            tmp_submit_file_tag=$submit_snuvlist
+            tmp_submit_snuvlist=$submit_file_tag
+            submit_snuvlist=$tmp_submit_snuvlist
             submit_file_tag=$tmp_submit_file_tag
         fi
     fi
 
-    allowed_catversion=false
-    for iac in  ${list_of_catversions[@]};
+    allowed_snuversion=false
+    for iac in  ${list_of_snuversions[@]};
       do
-      if [[ $iac == $submit_catvlist ]];
+      if [[ $iac == $submit_snuvlist ]];
           then
-          allowed_catversion=true
+          allowed_snuversion=true
       fi
     done
-    if [[ $submit_catvlist != "" ]];
+    if [[ $submit_snuvlist != "" ]];
         then
-        if [[ $allowed_catversion == "false" ]];
+        if [[ $allowed_snuversion == "false" ]];
             then
-            echo "LQanalyzer::sktree :: ERROR :: Catversion "$submit_catvlist" is not allowed"
+            echo "SNUanalyzer::sktree :: ERROR :: Snuversion "$submit_snuvlist" is not allowed"
 	    exit 1
-	elif [[ $submit_catvlist == *"v7-4"*  ]];
+	elif [[ $submit_snuvlist == *"v7-4"*  ]];
             then
-            echo "LQanalyzer::sktree :: ERROR :: 'sktree -D' only works for v7-6-2 and newer"
+            echo "SNUanalyzer::sktree :: ERROR :: 'sktree -D' only works for v7-6-2 and newer"
             exit 1
 
         fi
     fi
 
-    if [[ $submit_catvlist  == "" ]];
+    if [[ $submit_snuvlist  == "" ]];
         then
-        submit_catvlist=${CATVERSION}
+        submit_snuvlist=${SNUVERSION}
     fi
     if [[ $submit_file_tag == "" ]];
 	then
@@ -226,7 +226,7 @@ function getinfo_dataset
 	  fi
       fi
       
-    done < ${TXTPATH}"CAT_mc_"${submit_catvlist}".txt"
+    done < ${TXTPATH}"SNU_mc_"${submit_snuvlist}".txt"
 
 }
 
@@ -234,39 +234,39 @@ function getinfo_dataset
 
 function getalldatasetinfo
 {
-    allowed_catversion=false
-    for iac in  ${list_of_catversions[@]};
+    allowed_snuversion=false
+    for iac in  ${list_of_snuversions[@]};
       do
-      if [[ $iac == $submit_catvlist ]];
+      if [[ $iac == $submit_snuvlist ]];
           then
-          allowed_catversion=true
+          allowed_snuversion=true
       fi
     done
-    if [[ $submit_catvlist != "" ]];
+    if [[ $submit_snuvlist != "" ]];
         then
-        if [[ $allowed_catversion == "false" ]];
+        if [[ $allowed_snuversion == "false" ]];
             then
-            echo "LQanalyzer::sktree :: ERROR :: Catversion "$submit_catvlist" is not allowed"
+            echo "SNUanalyzer::sktree :: ERROR :: Snuversion "$submit_snuvlist" is not allowed"
             exit 1
-	elif [[ $submit_catvlist == *"v7-4"*  ]];
+	elif [[ $submit_snuvlist == *"v7-4"*  ]];
             then
-            echo "LQanalyzer::sktree :: ERROR :: 'sktree -D' only works for v7-6-2 and newer"
+            echo "SNUanalyzer::sktree :: ERROR :: 'sktree -D' only works for v7-6-2 and newer"
             exit
         fi
     fi
     
-    if [[ $submit_catvlist  == "" ]];
+    if [[ $submit_snuvlist  == "" ]];
         then
-        submit_catvlist=${CATVERSION}
+        submit_snuvlist=${SNUVERSION}
     fi
     echo "######################################################################################"
-    echo "LQAnalyzer::sktree :: INFO :: Looking up information for "$submit_catvlist 
+    echo "SNUAnalyzer::sktree :: INFO :: Looking up information for "$submit_snuvlist 
     echo "######################################################################################"
     echo ""
-    echo "https://github.com/vallot/CATTools/blob/"$submit_catvlist"/CatProducer/python/catDefinitions_cfi.py"
+    echo "https://github.com/vallot/SNUTools/blob/"$submit_snuvlist"/SnuProducer/python/snuDefinitions_cfi.py"
     echo ""
 
-    curl https://github.com/vallot/CATTools/blob/"$submit_catvlist"/CatProducer/python/catDefinitions_cfi.py >> gitfile.txt
+    curl https://github.com/vallot/SNUTools/blob/"$submit_snuvlist"/SnuProducer/python/snuDefinitions_cfi.py >> gitfile.txt
     echo "######################################################################################"
 
 
@@ -329,22 +329,22 @@ function getdatasetname
 function getdatasetxsec
 {
     getinfo_tag=4
-    getinfo_string=$FLATCAT_MC
+    getinfo_string=$FLATSNU_MC
     getinfo_dataset
 }
 function getdatasetefflumi
 {
     getinfo_tag=5
-    getinfo_string=$FLATCAT_MC
+    getinfo_string=$FLATSNU_MC
 
     getinfo_dataset
 }
 
 function print_tag_diff
 {
-    if [[ ${submit_cat_tag} == *$search_tag* ]];then
+    if [[ ${submit_snu_tag} == *$search_tag* ]];then
 	
-	if [[ ${submit_cat_tag2} == *$search_tag* ]];then
+	if [[ ${submit_snu_tag2} == *$search_tag* ]];then
 	    print_tag_diff_twotags 
 	else
 	    print_tag_diff_vs_currenttag	    
@@ -355,9 +355,9 @@ function print_tag_diff
 
 function print_tag_diff7
 {
-    if [[ ${submit_cat_tag} == *"v7"* ]];then
+    if [[ ${submit_snu_tag} == *"v7"* ]];then
 
-        if [[ ${submit_cat_tag2} == *"v7"* ]];then
+        if [[ ${submit_snu_tag2} == *"v7"* ]];then
             print_tag_diff_twotags7
         else
             print_tag_diff_vs_currenttag
@@ -374,7 +374,7 @@ function print_tag_diff_twotags
     foundtag=False
     while read line
       do
-      if [[ $line == *"$submit_cat_tag2"* ]];
+      if [[ $line == *"$submit_snu_tag2"* ]];
 	  then
 	  sline=$(echo $line | head -n1 | awk '{print $1}')
 	  NEWTAGS+=(${sline})
@@ -383,13 +383,13 @@ function print_tag_diff_twotags
 	  if [[ $foundtag == "False" ]]; then
 	      continue
 	  else
-	      if [[ $line == $submit_cat_tag ]]; then
+	      if [[ $line == $submit_snu_tag ]]; then
 		  break
 	      fi
 	      NEWTAGS+=(${line})
 	  fi
       fi
-    done < ${CATTAGDIR}/LatestTag94X.txt
+    done < ${SNUTAGDIR}/LatestTag94X.txt
 
     for ntag in  ${NEWTAGS[@]};
       do
@@ -400,7 +400,7 @@ function print_tag_diff_twotags
       while read line
 	do
 	echo $line
-      done <  ${CATTAGDIR}/TagDiff_${ntag}.txt
+      done <  ${SNUTAGDIR}/TagDiff_${ntag}.txt
     done
     
 }
@@ -412,7 +412,7 @@ function print_tag_diff_twotags7
     foundtag=False
     while read line
       do
-      if [[ $line == *"$submit_cat_tag2"* ]];
+      if [[ $line == *"$submit_snu_tag2"* ]];
           then
           sline=$(echo $line | head -n1 | awk '{print $1}')
           NEWTAGS+=(${sline})
@@ -421,13 +421,13 @@ function print_tag_diff_twotags7
           if [[ $foundtag == "False" ]]; then
               continue
           else
-              if [[ $line == $submit_cat_tag ]]; then
+              if [[ $line == $submit_snu_tag ]]; then
                   break
               fi
               NEWTAGS+=(${line})
           fi
       fi
-    done < ${CATTAGDIR}/LatestTag.txt
+    done < ${SNUTAGDIR}/LatestTag.txt
 
     for ntag in  ${NEWTAGS[@]};
       do
@@ -438,7 +438,7 @@ function print_tag_diff_twotags7
       while read line
         do
         echo $line
-      done <  ${CATTAGDIR}/TagDiff_${ntag}.txt
+      done <  ${SNUTAGDIR}/TagDiff_${ntag}.txt
     done
 
 }
@@ -446,7 +446,7 @@ function print_tag_diff_twotags7
 
 function update_selection
 {
-    python ${LQANALYZER_DIR}/python/UpdateSelection.py -s $object
+    python ${ANALYZER_DIR}/python/UpdateSelection.py -s $object
 }
 function printid
 {
@@ -456,9 +456,9 @@ function printid
     else
 	if [[ $idname2 == "" ]];
 	then
-	    python ${LQANALYZER_DIR}/python/PrintIDSelection.py --id1 $idname 
+	    python ${ANALYZER_DIR}/python/PrintIDSelection.py --id1 $idname 
 	else
-	    python ${LQANALYZER_DIR}/python/PrintIDSelection.py --id1 $idname --id2 $idname2
+	    python ${ANALYZER_DIR}/python/PrintIDSelection.py --id1 $idname --id2 $idname2
 	fi
     fi
     
@@ -467,20 +467,20 @@ function printid
 
 function print_sktreemaker_logfile
 {
-    if [[ -f /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/${submit_analyzer_name}_${submit_catvlist}.log ]]; then
+    if [[ -f /data1/SNUAnalyzer_rootfiles_for_analysis/SNUSKTreeMaker/${submit_analyzer_name}_${submit_snuvlist}.log ]]; then
 	while read line
 	  do
 	  echo $line
-	done < /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/${submit_analyzer_name}_${submit_catvlist}.log 
+	done < /data1/SNUAnalyzer_rootfiles_for_analysis/SNUSKTreeMaker/${submit_analyzer_name}_${submit_snuvlist}.log 
     else
 	echo "Invalid input:"
-	echo "sktree -sktreelog <analyzername> <catversion> (i.ie, sktree -sktreelog SKTreeMakerDiLep v7-6-4)"
+	echo "sktree -sktreelog <analyzername> <snuversion> (i.ie, sktree -sktreelog SKTreeMakerDiLep v7-6-4)"
     fi
 
 }
 function print_tag_diff_vs_currenttag
 {
-    tag_diff_file=$CATTAGDIR/TagDiff_${submit_cat_tag}.txt
+    tag_diff_file=$SNUTAGDIR/TagDiff_${submit_snu_tag}.txt
     
     latest_tag=""
     while read line
@@ -490,9 +490,9 @@ function print_tag_diff_vs_currenttag
 	  sline=$(echo $line | head -n1 | awk '{print $1}')
 	  latest_tag=$sline
       fi
-    done < $CATTAGDIR/LatestTag80X.txt
+    done < $SNUTAGDIR/LatestTag80X.txt
     
-    if [[ $latest_tag == $CATTAG ]];then
+    if [[ $latest_tag == $SNUTAG ]];then
 	
 	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 	echo "Input tag is latest tag"
@@ -500,7 +500,7 @@ function print_tag_diff_vs_currenttag
     else
 	
 	
-	echo "Summary of difference between current tag and "$submit_cat_tag
+	echo "Summary of difference between current tag and "$submit_snu_tag
 	declare -a NEWTAGS=()
 	while read line
 	  do
@@ -509,12 +509,12 @@ function print_tag_diff_vs_currenttag
 	  sline=$(echo $line | head -n1 | awk '{print $1}')
 	  NEWTAGS+=(${sline})
       else
-	  if [[ $line == $CATTAG ]]; then
+	  if [[ $line == $SNUTAG ]]; then
 	      break
 	  fi
 	  NEWTAGS+=(${line})
       fi
-	done < $CATTAGDIR/LatestTag801.txt
+	done < $SNUTAGDIR/LatestTag801.txt
 	
 	for ntag in  ${NEWTAGS[@]};
 	  do
@@ -525,7 +525,7 @@ function print_tag_diff_vs_currenttag
 	  while read line
 	    do
 	    echo $line
-	  done < $CATTAGDIR/TagDiff_${ntag}.txt
+	  done < $SNUTAGDIR/TagDiff_${ntag}.txt
 	done
     fi
 }
@@ -535,53 +535,53 @@ function listavailable
     
     if [[ $submit_searchlist == *$search_tag* ]];
         then
-        tmp_submit_searchlist=$submit_catvlist
-        tmp_submit_catvlist=$submit_searchlist
-        submit_catvlist=$tmp_submit_catvlist
+        tmp_submit_searchlist=$submit_snuvlist
+        tmp_submit_snuvlist=$submit_searchlist
+        submit_snuvlist=$tmp_submit_snuvlist
         submit_searchlist=$tmp_submit_searchlist
     fi
-    if [[ $submit_catvlist != *$search_tag* ]];
+    if [[ $submit_snuvlist != *$search_tag* ]];
 	then
-	if [[ $submit_catvlist != "" ]];
+	if [[ $submit_snuvlist != "" ]];
 	    then
-	    tmp_submit_searchlist=$submit_catvlist
-	    tmp_submit_catvlist=$submit_searchlist
-	    submit_catvlist=$tmp_submit_catvlist
+	    tmp_submit_searchlist=$submit_snuvlist
+	    tmp_submit_snuvlist=$submit_searchlist
+	    submit_snuvlist=$tmp_submit_snuvlist
 	    submit_searchlist=$tmp_submit_searchlist
 	fi
     fi
     
-    allowed_catversion=false
-    for iac in  ${list_of_catversions[@]};
+    allowed_snuversion=false
+    for iac in  ${list_of_snuversions[@]};
       do
-      if [[ $iac == $submit_catvlist ]];
+      if [[ $iac == $submit_snuvlist ]];
           then
-          allowed_catversion=true
+          allowed_snuversion=true
       fi
     done
-    if [[ $submit_catvlist != "" ]];
+    if [[ $submit_snuvlist != "" ]];
 	then
-        if [[ $allowed_catversion == "false" ]];
+        if [[ $allowed_snuversion == "false" ]];
             then
-            echo "LQanalyzer::sktree :: ERROR :: Catversion "$submit_catvlist" is not allowed"
+            echo "SNUanalyzer::sktree :: ERROR :: Snuversion "$submit_snuvlist" is not allowed"
             exit 1
         fi
     fi
     
-    specified_catversion=true
-    if [[ $submit_catvlist  == "" ]];
+    specified_snuversion=true
+    if [[ $submit_snuvlist  == "" ]];
         then
-        submit_catvlist=${CATVERSION}
-        specified_catversion=false
+        submit_snuvlist=${SNUVERSION}
+        specified_snuversion=false
     fi
     
     echo ""
-    echo "List of available samples at SNU. With catversion " ${submit_catvlist}
+    echo "List of available samples at SNU. With snuversion " ${submit_snuvlist}
     echo ""
     echo "Samplename  --> datasetname"  
     while read line
       do
-      if [[ $line == *$FLATCAT_MC* ]];
+      if [[ $line == *$FLATSNU_MC* ]];
 	  then
 	  if [[ $submit_searchlist == "" ]];
 	      then
@@ -599,12 +599,12 @@ function listavailable
 	       fi
 	   fi
       fi
-    done < ${TXTPATH}"CAT_mc_"${submit_catvlist}".txt"
+    done < ${TXTPATH}"SNU_mc_"${submit_snuvlist}".txt"
 
     echo ""
     echo ""
     echo ""
-    echo "List of samples not available in latest available catversion are:"
+    echo "List of samples not available in latest available snuversion are:"
     echo ""
     echo "Missing: since miniAOD not available"
 
@@ -626,12 +626,12 @@ function listavailable
 	      fi
 	  fi
       fi
-    done < ${TXTPATH}"CAT_mc_"${submit_catvlist}".txt"
+    done < ${TXTPATH}"SNU_mc_"${submit_snuvlist}".txt"
 
     echo ""
     echo ""
     echo ""
-    echo "Catuples available at kisti: Can create flatcatuples->sktrees on request: type 'sktree -r datasetname' "
+    echo "Snuuples available at kisti: Can create flatsnuuples->sktrees on request: type 'sktree -r datasetname' "
 
     while read line
       do
@@ -650,21 +650,21 @@ function listavailable
 	    fi
 	fi
     fi
-    done < ${TXTPATH}"CAT_mc_"${submit_catvlist}".txt"
+    done < ${TXTPATH}"SNU_mc_"${submit_snuvlist}".txt"
 
     echo ""
     echo ""
-    if [[ $specified_catversion == "true" ]];
+    if [[ $specified_snuversion == "true" ]];
 	then
 	echo "To check availability of SKTrees"
-	echo "For No skim run 'sktree -L SKTree_NoSkim " ${submit_searchlist} ${submit_catvlist} "'" 
-	echo "For Lepton skim run 'sktree -L SKTree_LeptonSkim " ${submit_searchlist} ${submit_catvlist} "'" 
-	echo "For DiLepton skim run 'sktree -L SKTree_DiLepSkim " ${submit_searchlist} ${submit_catvlist} "'" 
-	echo "For TriLepton skim run 'sktree -L SKTree_TriLepSkim " ${submit_searchlist} ${submit_catvlist} "'" 
-	echo "For SSLepton skim run 'sktree -L SKTree_SSLepSkim " ${submit_searchlist} ${submit_catvlist} "'" 
+	echo "For No skim run 'sktree -L SKTree_NoSkim " ${submit_searchlist} ${submit_snuvlist} "'" 
+	echo "For Lepton skim run 'sktree -L SKTree_LeptonSkim " ${submit_searchlist} ${submit_snuvlist} "'" 
+	echo "For DiLepton skim run 'sktree -L SKTree_DiLepSkim " ${submit_searchlist} ${submit_snuvlist} "'" 
+	echo "For TriLepton skim run 'sktree -L SKTree_TriLepSkim " ${submit_searchlist} ${submit_snuvlist} "'" 
+	echo "For SSLepton skim run 'sktree -L SKTree_SSLepSkim " ${submit_searchlist} ${submit_snuvlist} "'" 
 	
     fi
-    if [[ $specified_catversion != "true" ]];
+    if [[ $specified_snuversion != "true" ]];
         then
 	echo "To check availability of SKTrees"
 	echo "For No skim run 'sktree -L SKTree_NoSkim " ${submit_searchlist} "'"
@@ -680,10 +680,10 @@ function listavailable
 
 
 
-function sendrequestcat
+function sendrequestsnu
 {
-    source mail_cat.sh $request_sample
-    cat email.txt | mail -s "CATTuple request" jalmond@cern.ch
+    source mail_snu.sh $request_sample
+    snu email.txt | mail -s "SNUTuple request" jalmond@cern.ch
     rm email.txt
 }
 
@@ -700,7 +700,7 @@ function listqueue
 	else
 	    echo $line
 	fi
-    done < /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/queuelist.txt
+    done < /data1/SNUAnalyzer_rootfiles_for_analysis/SnutupleConfig/QUEUE/queuelist.txt
 
 
 }
@@ -709,7 +709,7 @@ function listqueue
 function sendrequest
 {
     source mail.sh $request_sample
-    cat email.txt | mail -s "SKTree request" jalmond@cern.ch
+    snu email.txt | mail -s "SKTree request" jalmond@cern.ch
     rm email.txt
 }
 
@@ -718,44 +718,44 @@ function runlist
     
     if [[ $submit_searchlist == *$search_tag* ]];
 	then
-	tmp_submit_searchlist=$submit_catvlist
-	tmp_submit_catvlist=$submit_searchlist
-	submit_catvlist=$tmp_submit_catvlist
+	tmp_submit_searchlist=$submit_snuvlist
+	tmp_submit_snuvlist=$submit_searchlist
+	submit_snuvlist=$tmp_submit_snuvlist
 	submit_searchlist=$tmp_submit_searchlist
     fi
-    if [[ $submit_catvlist != *$search_tag* ]];
+    if [[ $submit_snuvlist != *$search_tag* ]];
 	then
-        if [[ $submit_catvlist != "" ]];
+        if [[ $submit_snuvlist != "" ]];
             then
-            tmp_submit_searchlist=$submit_catvlist
-            tmp_submit_catvlist=$submit_searchlist
-            submit_catvlist=$tmp_submit_catvlist
+            tmp_submit_searchlist=$submit_snuvlist
+            tmp_submit_snuvlist=$submit_searchlist
+            submit_snuvlist=$tmp_submit_snuvlist
             submit_searchlist=$tmp_submit_searchlist
         fi
     fi
     
-    allowed_catversion=false
-    for iac in  ${list_of_catversions[@]};
+    allowed_snuversion=false
+    for iac in  ${list_of_snuversions[@]};
       do
-      if [[ $iac == $submit_catvlist ]];
+      if [[ $iac == $submit_snuvlist ]];
 	  then
-	  allowed_catversion=true
+	  allowed_snuversion=true
       fi
     done
-    if [[ $submit_catvlist != "" ]];
+    if [[ $submit_snuvlist != "" ]];
 	then
-	if [[ $allowed_catversion == "false" ]];
+	if [[ $allowed_snuversion == "false" ]];
 	    then
-            echo "LQanalyzer::sktree :: ERROR :: Catversion "$submit_catvlist" is not allowed"
+            echo "SNUanalyzer::sktree :: ERROR :: Snuversion "$submit_snuvlist" is not allowed"
 	    exit 1
 	fi
     fi
 
-    specified_catversion=true
-    if [[ $submit_catvlist  == "" ]];
+    specified_snuversion=true
+    if [[ $submit_snuvlist  == "" ]];
 	then
-	submit_catvlist=${CATVERSION}
-	specified_catversion=false
+	submit_snuvlist=${SNUVERSION}
+	specified_snuversion=false
     fi
     
     check_path=""
@@ -763,18 +763,18 @@ function runlist
     if [[ $submit_skim  == "" ]];
         then
 	echo "sktree -L <skim>"
-	echo "Need to set skim: Options are FLATCAT/SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim/SKTree_TriLepSkim"
-	echo "Can also specify catversion AND/OR search filter list (after skim)"
-	echo "example 1) sktree -L FLATCAT"
-	echo "example 2) sktree -L FLATCAT v7-6-3"
+	echo "Need to set skim: Options are FLATSNU/SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim/SKTree_TriLepSkim"
+	echo "Can also specify snuversion AND/OR search filter list (after skim)"
+	echo "example 1) sktree -L FLATSNU"
+	echo "example 2) sktree -L FLATSNU v7-6-3"
 	echo "example 3) sktree -L SKTree_LeptonSkim QCD v7-6-2"
 	echo "example 4) sktree -L SKTree_DiLepSkim v7-6-3 DY"
 	exit 1
     fi
 
-    if [[ $submit_skim  == "FLATCAT" ]];
+    if [[ $submit_skim  == "FLATSNU" ]];
     then
-        check_path=$FLATCAT_MC
+        check_path=$FLATSNU_MC
     fi
     
     isNoCut=false
@@ -804,19 +804,6 @@ function runlist
         then
 	isDiLep=true
     fi
-    if [[ $submit_skim  == "SKTree_HNDiLepSkim" ]];
-        then
-	isHNDiLep=true
-    fi
-    if [[ $submit_skim  == "SKTree_HNFakeSkim" ]];
-    then
-        isHNFake=true
-    fi
-    if [[ $submit_skim  == "SKTree_HNFatJetSkim" ]];
-    then
-        isHNFatJet=true
-    fi
-
     if [[ $submit_skim  == "SKTree_TriLepSkim" ]];
         then
         isTriLep=true
@@ -831,56 +818,56 @@ function runlist
     fi
     if [[ $isNoCut  == "true" ]];
 	then
-        check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MCNoCut/"
+        check_path=$SKTREE_MC${submit_snuvlist}"/SKTrees/MCNoCut/"
     fi
     if [[ $isLepton  == "true" ]];
 	then
-	check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MC/"
-	if [[ ${submit_catvlist} == *"v7-4-4"* ]];
+	check_path=$SKTREE_MC${submit_snuvlist}"/SKTrees/MC/"
+	if [[ ${submit_snuvlist} == *"v7-4-4"* ]];
             then
-            check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/Sep15/MC/"
+            check_path=$SKTREE_MC${submit_snuvlist}"/SKTrees/Sep15/MC/"
         fi
     fi
     if [[ $isDiLep  == "true" ]];
 	then
-	check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MCDiLep"
-	if [[ ${submit_catvlist} == *"v7-4-4"* ]];
+	check_path=$SKTREE_MC${submit_snuvlist}"/SKTrees/MCDiLep"
+	if [[ ${submit_snuvlist} == *"v7-4-4"* ]];
 	    then
-	    check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/Sep15/MCDiLep"
+	    check_path=$SKTREE_MC${submit_snuvlist}"/SKTrees/Sep15/MCDiLep"
 	fi
     fi
     if [[ $isHNDiLep  == "true" ]];
      then
-        check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MCHNDiLep"
-        if [[ ${submit_catvlist} == *"v7-4-4"* ]];
+        check_path=$SKTREE_MC${submit_snuvlist}"/SKTrees/MCHNDiLep"
+        if [[ ${submit_snuvlist} == *"v7-4-4"* ]];
             then
-            check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/Sep15/MCHNDiLep"
+            check_path=$SKTREE_MC${submit_snuvlist}"/SKTrees/Sep15/MCHNDiLep"
         fi
     fi
     if [[ $isHNFake  == "true" ]];
      then
-        check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MCHNFake"
+        check_path=$SKTREE_MC${submit_snuvlist}"/SKTrees/MCHNFake"
 
     fi
 
     if [[ $isHNFatJet  == "true" ]];
      then
-        check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MCHNFatJet"
+        check_path=$SKTREE_MC${submit_snuvlist}"/SKTrees/MCHNFatJet"
 
     fi
 
     if [[ $isTriLep  == "true" ]];
         then
-        check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MCTriLep"
-        if [[ ${submit_catvlist} == *"v7-4-4"* ]];
+        check_path=$SKTREE_MC${submit_snuvlist}"/SKTrees/MCTriLep"
+        if [[ ${submit_snuvlist} == *"v7-4-4"* ]];
             then
             check_path=""
         fi
     fi
     if [[ $isSSLep  == "true" ]];
 	then
-	check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MCSS"
-        if [[ ${submit_catvlist} == *"v7-4-4"* ]];
+	check_path=$SKTREE_MC${submit_snuvlist}"/SKTrees/MCSS"
+        if [[ ${submit_snuvlist} == *"v7-4-4"* ]];
             then
             check_path=""
         fi
@@ -890,12 +877,12 @@ function runlist
 	then
 	echo "Invalid option for ntuple version: "
 	echo "sktree -L <skim>"
-        echo "Need to set ntuple version: Options are FLATCAT/SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim/SKTree_SSLepSkim"
+        echo "Need to set ntuple version: Options are FLATSNU/SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim/SKTree_SSLepSkim"
 	exit 1
     fi
     
 
-    echo "List of samplenames for skim " $submit_skim " available in cattuple version " $submit_catvlist " are:"
+    echo "List of samplenames for skim " $submit_skim " available in snutuple version " $submit_snuvlist " are:"
     
     declare -a LISTOFSAMPLES=()
     declare -a UNPROCESSED=()
@@ -1008,14 +995,14 @@ function runlist
 	  fi
       fi
       
-    done < ${TXTPATH}"CAT_mc_"${submit_catvlist}".txt"
+    done < ${TXTPATH}"SNU_mc_"${submit_snuvlist}".txt"
     
     echo ""
     
-    missing_comment="LQanalyzer::sktree :: HELP :: If the sample you are looking for is not in the list above run 'sktree -A "$submit_catvlist"'"$'\n'
-    missing_comment+="LQanalyzer::sktree :: HELP :: If 'sktree -A' shows sample is missing then we need to wait for the miniAOD to be produced\n"
-    missing_comment+="LQanalyzer::sktree :: HELP :: If 'sktree -A' shows sample is available at kisti then run 'sktree -r DATASETNAME' to request this sample\n"
-    missing_comment+="LQanalyzer::sktree :: HELP :: If 'sktree -A' shows sample is not there then no catuple exists: run 'sktree -rcat DATASETNAME' to request this catuple"
+    missing_comment="SNUanalyzer::sktree :: HELP :: If the sample you are looking for is not in the list above run 'sktree -A "$submit_snuvlist"'"$'\n'
+    missing_comment+="SNUanalyzer::sktree :: HELP :: If 'sktree -A' shows sample is missing then we need to wait for the miniAOD to be produced\n"
+    missing_comment+="SNUanalyzer::sktree :: HELP :: If 'sktree -A' shows sample is available at kisti then run 'sktree -r DATASETNAME' to request this sample\n"
+    missing_comment+="SNUanalyzer::sktree :: HELP :: If 'sktree -A' shows sample is not there then no snuuple exists: run 'sktree -rsnu DATASETNAME' to request this snuuple"
 
     if [[ $isNoCut  == "true" ]];
         then
@@ -1023,7 +1010,7 @@ function runlist
 	counter=${#UNPROCESSED[@]}
         if [[ $counter -ne 0 ]];
             then
-	    echo "Samples that have local flat catuples but no NoCutskim are:"
+	    echo "Samples that have local flat snuuples but no NoCutskim are:"
 	else  echo -e  $missing_comment
 	fi
 	for il in  ${UNPROCESSED[@]};
@@ -1033,7 +1020,7 @@ function runlist
 	echo ""
 	if [[ $counter -ne 0 ]];
 	    then
-	    echo "If you want any of these sktrees run 'sktree -a SKTreeMakerNoCut -i <samplename> -c "$submit_catvlist"'"
+	    echo "If you want any of these sktrees run 'sktree -a SKTreeMakerNoCut -i <samplename> -c "$submit_snuvlist"'"
 	fi
     fi
     if [[ $isLepton  == "true" ]];
@@ -1041,7 +1028,7 @@ function runlist
 	counter=${#UNPROCESSED[@]}
 	    if [[ $counter -ne 0 ]];
 		then
-		echo "Samples that have local flat catuples but no lepton skim are:"
+		echo "Samples that have local flat snuuples but no lepton skim are:"
 	    else    echo -e "$missing_comment"
 	    fi
         for il in  ${UNPROCESSED[@]};
@@ -1051,7 +1038,7 @@ function runlist
 	echo ""
 	if [[ $counter -ne 0 ]];
 	    then
-	    echo "If you want this sktree run 'sktree -a SKTreeMaker -i <samplename>  -c "$submit_catvlist"'"
+	    echo "If you want this sktree run 'sktree -a SKTreeMaker -i <samplename>  -c "$submit_snuvlist"'"
 	    echo ""
 	fi
     fi
@@ -1061,7 +1048,7 @@ function runlist
 	counter=${#UNPROCESSED[@]}
 	    if [[ $counter -ne 0 ]];
 		then
-		echo "Samples that have local flat catuples but no dilepton skim are:"
+		echo "Samples that have local flat snuuples but no dilepton skim are:"
 	    else   echo -e $missing_comment
 
 	    fi
@@ -1073,77 +1060,10 @@ function runlist
 	    echo ""
 	    if [[ $counter -ne 0 ]];
 		then
-		echo "If you want this sktree run 'sktree -a SKTreeMakerDiLep -i <samplename> -c "$submit_catvlist"'"
+		echo "If you want this sktree run 'sktree -a SKTreeMakerDiLep -i <samplename> -c "$submit_snuvlist"'"
 		echo ""
 	    fi
     fi
-    if [[ $isHNDiLep  == "true" ]];
-        then
-        counter=${#UNPROCESSED[@]}
-            if [[ $counter -ne 0 ]];
-                then
-                echo "Samples that have local flat catuples but no dilepton skim are:"
-            else   echo -e $missing_comment
-
-            fi
-            for il in  ${UNPROCESSED[@]};
-              do
-              echo samplename = $il
-
-            done
-            echo ""
-            if [[ $counter -ne 0 ]];
-                then
-                echo "If you want this sktree run 'sktree -a SKTreeMakerDiLep -i <samplename> -c "$submit_catvlist"'"
-                echo ""
-            fi
-    fi
-    
-    if [[ $isHNFake  == "true" ]];
-        then
-        counter=${#UNPROCESSED[@]}
-            if [[ $counter -ne 0 ]];
-                then
-                echo "Samples that have local flat catuples but no dilepton skim are:"
-            else   echo -e $missing_comment
-
-            fi
-            for il in  ${UNPROCESSED[@]};
-              do
-              echo samplename = $il
-
-            done
-            echo ""
-            if [[ $counter -ne 0 ]];
-                then
-                echo "If you want this sktree run 'sktree -a SKTreeMakerDiLep -i <samplename> -c "$submit_catvlist"'"
-                echo ""
-            fi
-    fi
-
-
-    if [[ $isHNFatJet  == "true" ]];
-        then
-        counter=${#UNPROCESSED[@]}
-            if [[ $counter -ne 0 ]];
-                then
-                echo "Samples that have local flat catuples but no dilepton skim are:"
-            else   echo -e $missing_comment
-
-            fi
-            for il in  ${UNPROCESSED[@]};
-              do
-              echo samplename = $il
-
-            done
-            echo ""
-            if [[ $counter -ne 0 ]];
-                then
-                echo "If you want this sktree run 'sktree -a SKTreeMakerDiLep -i <samplename> -c "$submit_catvlist"'"
-                echo ""
-            fi
-    fi
-
 
     
     if [[ $isTriLep  == "true" ]];
@@ -1151,7 +1071,7 @@ function runlist
         counter=${#UNPROCESSED[@]}
             if [[ $counter -ne 0 ]];
                 then
-                echo "Samples that have local flat catuples but no trilepton skim are:"
+                echo "Samples that have local flat snuuples but no trilepton skim are:"
             else   echo -e $missing_comment
 
             fi
@@ -1163,7 +1083,7 @@ function runlist
             echo ""
             if [[ $counter -ne 0 ]];
                 then
-                echo "If you want this sktree run 'sktree -a SKTreeMakerTriLep -i <samplename> -c "$submit_catvlist"'"
+                echo "If you want this sktree run 'sktree -a SKTreeMakerTriLep -i <samplename> -c "$submit_snuvlist"'"
                 echo ""
             fi
     fi
@@ -1173,7 +1093,7 @@ function runlist
         counter=${#UNPROCESSED[@]}
             if [[ $counter -ne 0 ]];
                 then
-                echo "Samples that have local flat catuples but no sslepton skim are:"
+                echo "Samples that have local flat snuuples but no sslepton skim are:"
             else   echo -e $missing_comment
 
             fi
@@ -1185,28 +1105,28 @@ function runlist
             echo ""
             if [[ $counter -ne 0 ]];
 		then
-                echo "If you want this sktree run 'sktree -a SKTreeMakerssLep -i <samplename> -c "$submit_catvlist"'"
+                echo "If you want this sktree run 'sktree -a SKTreeMakerssLep -i <samplename> -c "$submit_snuvlist"'"
 		echo ""
             fi
     fi
 
     
-    if [[ $specified_catversion == "false" ]];
+    if [[ $specified_snuversion == "false" ]];
 	then
-	#Get number of catversions
-	for ic in  ${list_of_catversions[@]};
+	#Get number of snuversions
+	for ic in  ${list_of_snuversions[@]};
 	  do
 
-	  if [[ $ic == $CATVERSION ]];
+	  if [[ $ic == $SNUVERSION ]];
 	      then continue;
 	  fi
 	  if [[ $ic == *"v7-4"* ]];
 	      then
-	      echo "For catversion "  $ic " the naming changed. Run 'sktree -L " $submit_skim " " $ic "'"
+	      echo "For snuversion "  $ic " the naming changed. Run 'sktree -L " $submit_skim " " $ic "'"
 	      continue;
           fi
 
-	  echo "Following samples are available in Catversion: " ${ic} " but not in: " $CATVERSION
+	  echo "Following samples are available in Snuversion: " ${ic} " but not in: " $SNUVERSION
 
 	  if [[ $submit_skim  == "SKTree_NoSkim" ]];
 	      then
@@ -1220,20 +1140,6 @@ function runlist
 	      then
 	      check_path=$SKTREE_MC${ic}"/SKTrees/MCDiLep"
 	  fi
-	  if [[ $submit_skim  == "SKTree_HNDiLepSkim" ]];
-              then
-              check_path=$SKTREE_MC${ic}"/SKTrees/MCHNDiLep"
-          fi
-	  if [[ $submit_skim  == "SKTree_HNFakeSkim" ]];
-              then
-              check_path=$SKTREE_MC${ic}"/SKTrees/MCHNFake"
-          fi
-	  if [[ $submit_skim  == "SKTree_HNFatJetSkim" ]];
-          then
-	      check_path=$SKTREE_MC${ic}"/SKTrees/MCHNFatJet"
-          fi
-
-
 	  if [[ $submit_skim  == "SKTree_TriLepSkim" ]];
               then
               check_path=$SKTREE_MC${ic}"/SKTrees/MCTriLep"
@@ -1252,16 +1158,16 @@ function runlist
 
 		if [[ $submit_searchlist == "" ]];
 		    then
-		    isDuplicate=false
+		    isDuplisnue=false
 		    for il in  ${LISTOFSAMPLES[@]};
 		      do
 
 		      if [[ $sline == *${il}* ]];
 			  then
-			  isDuplicate=true
+			  isDuplisnue=true
 		      fi
 		    done
-		    if [[ $isDuplicate == "false" ]];
+		    if [[ $isDuplisnue == "false" ]];
 			then
 			prefix="SK"
 			suffix="_dilep"
@@ -1310,17 +1216,17 @@ function runlist
 		fi
 		if [[ $submit_searchlist != "" ]];
 		    then
-		    isDuplicate=false
+		    isDuplisnue=false
 		    if [[ $sline == *${submit_searchlist}* ]];
 			then
 			for il in  ${LISTOFSAMPLES[@]};
 			  do
 			  if [[ $sline == *${il}* ]];
 			      then
-			      isDuplicate=true
+			      isDuplisnue=true
 			  fi
 			done
-			if [[ $isDuplicate == "false" ]];
+			if [[ $isDuplisnue == "false" ]];
 			    then
 			    prefix="SK"
 			    suffix="_dilep"
@@ -1370,7 +1276,7 @@ function runlist
 		    fi
 		fi
 	    fi
-	  done < ${TXTPATH}"CAT_mc_"${ic}".txt"
+	  done < ${TXTPATH}"SNU_mc_"${ic}".txt"
 
 	done
       fi
@@ -1412,7 +1318,7 @@ while [ "$1" != "" ]; do
 				;;
         -SIG | --submitall)     shift
                                 RUNSIG="true"
-				TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_sig_"
+				TXTPATH=${ANALYZER_RUN_PATH}"/txt/datasets_snu_sig_"
 				;;
 #	-sktree | --usesktrees )shift
 #                                submit_skinput="$1"
@@ -1435,9 +1341,9 @@ while [ "$1" != "" ]; do
 	                        sendrequest
 				exit 1
 				;;
-        -rcat| --requestCAT )   shift
+        -rsnu| --requestSNU )   shift
                                 request_sample=$1
-                                sendrequestcat
+                                sendrequestsnu
                                 exit 1
                                 ;;        
 	-S | --SampleTag  )     shift
@@ -1452,24 +1358,24 @@ while [ "$1" != "" ]; do
 	                        exit 1
                                 ;;
 
-	-c | --CatVersion)      shift
+	-c | --SnuVersion)      shift
 				submit_version_tag="$1"
 				changed_submit_version_tag=true
 				;;
-        -ac | --AllCatVersion)  shift
-                                check_all_catversions=$1
+        -ac | --AllSnuVersion)  shift
+                                check_all_snuversions=$1
                                 ;;
 	-l | --file_tag_list)   shift
-				submit_skim="FLATCAT"
+				submit_skim="FLATSNU"
 				submit_searchlist=$1
-				submit_catvlist=$2
+				submit_snuvlist=$2
 	                        runlist
 				exit 1
 				;;
         -L | --sktree_tag_list) shift
                                 submit_skim=$1
                                 submit_searchlist=$2
-				submit_catvlist=$3
+				submit_snuvlist=$3
                                 runlist
                                 exit 1
                                 ;;
@@ -1477,8 +1383,8 @@ while [ "$1" != "" ]; do
                                 submit_draw=$1
                                 ;;
 
-        -A | --AvailableCatuples) shift
-	                        submit_catvlist=$1
+        -A | --AvailableSnuuples) shift
+	                        submit_snuvlist=$1
 				submit_searchlist=$2
 				listavailable
                                 exit 1
@@ -1488,21 +1394,21 @@ while [ "$1" != "" ]; do
                                 ;;
 
         -tagdiff)		shift
-	                        submit_cat_tag=$1
-				submit_cat_tag2=$2
+	                        submit_snu_tag=$1
+				submit_snu_tag2=$2
 				print_tag_diff
 				exit 1
 				;;
         -tagdiff7)              shift
-                                submit_cat_tag=$1
-                                submit_cat_tag2=$2
+                                submit_snu_tag=$1
+                                submit_snu_tag2=$2
                                 print_tag_diff7
                                 exit 1
                                 ;;
 
         -sktreelog)             shift
 				submit_analyzer_name=$1
-				submit_catvlist=$2
+				submit_snuvlist=$2
 				print_sktreemaker_logfile
 				exit 1
                                 ;;
@@ -1522,7 +1428,7 @@ while [ "$1" != "" ]; do
 	                        job_tmp_filename=$1
 				;;
 	-D | --GetProductionInfo)  shift
-                                submit_catvlist=$1
+                                submit_snuvlist=$1
                                 getalldatasetinfo
                                 exit 1
                                 ;;
@@ -1533,7 +1439,7 @@ while [ "$1" != "" ]; do
 
 	-miniaod | --GetDataSetName)  shift
                             	submit_file_tag=$1
-				submit_catvlist=$2
+				submit_snuvlist=$2
 				getdatasetname
 				exit 1
 				;;
@@ -1546,13 +1452,13 @@ while [ "$1" != "" ]; do
 
         -xsec | --GetDataSetXsec)  shift
                                 submit_file_tag=$1
-                                submit_catvlist=$2
+                                submit_snuvlist=$2
                                 getdatasetxsec
                                 exit 1
 				;;
         -efflumi | --GetDataSetLumi)  shift
                                 submit_file_tag=$1
-                                submit_catvlist=$2
+                                submit_snuvlist=$2
                                 getdatasetefflumi
                                 exit 1
 				;;
@@ -1613,19 +1519,19 @@ while [ "$1" != "" ]; do
 				    echo "       |   MuonEG/SingeMuon/SinglePhoton/SingleElectron       |                     | 'MC' runs every MC sample           |"
 				    echo "       |                                                      |                     |                                     |"
 				    echo "-s     |SKTree_NoSkim/SKTree_LeptonSkim/SKTree_Di[Tri]LepSkim | default='Lepton'    | Sets skim to use:                   | "
-				    echo "       |  FLATCAT sets input to flatcatuple not sktee         |                     | NoCuts/Lepton/DiLeptonstill work    | "
+				    echo "       |  FLATSNU sets input to flatsnuuple not sktee         |                     | NoCuts/Lepton/DiLeptonstill work    | "
 				    echo "       |                                                      |                     |                                     |"
 				    echo "-n     |   #number of subjobs  (any number < 15)              | default=15          | default is 5 is -sktree=False       | "
 				    echo "       |                                                      |                     |                                     |"
-				    echo "-i     |   (i.e., DY10to50_MCatNLO) run 'sktree -L' for more  | default = ''        | For running single MC samples:      | "
+				    echo "-i     |   (i.e., DY10to50_MSnuNLO) run 'sktree -L' for more  | default = ''        | For running single MC samples:      | "
 				    echo "       |                                                      |                     |                                     |"
 				    echo "-list  |   (i.e., diboson_pythia) run 'sktree -g' for more    | default = ''        | For running on list of MC samples.  | "
 				    echo "       |                                                      |                     |                                     |"
-				    echo "-c     |   catversion of inputfile                            | default = ${CATVERSION}    | (only needed if not running         |"
+				    echo "-c     |   snuversion of inputfile                            | default = ${SNUVERSION}    | (only needed if not running         |"
 				    echo "       |                                                      |                     | default/latest)                     | " 
-                                    echo "-ac    |   true/false                                         | default = 'false'   | Check all catversions for input     | "
+                                    echo "-ac    |   true/false                                         | default = 'false'   | Check all snuversions for input     | "
                                     echo "       |                                                      |                     | Rare: only set true if a sample is  |" 
-                                    echo "       |                                                      |                     | not available in  ${CATVERSION}            |"
+                                    echo "       |                                                      |                     | not available in  ${SNUVERSION}            |"
                                     echo "       |                                                      |                     |                                     |" 
 				    echo "-d     |   debug mode : INFO/DEBUG/WARNING                    | default = INFO      |                                     | "
 				    echo "       |                                                      |                     |                                     |"
@@ -1656,10 +1562,10 @@ while [ "$1" != "" ]; do
 				    echo "###########################Other command#####################################################################################"
 				    echo "Tag      |   Options                                          | DEFAULT PARAMETER   | COMMENT                             | "
 				    echo "__________________________________________________________________________________________________________________________|"
-				    echo "-l       | (can give search/catversion as an option )         | default = ''        | returns a list of available         | "
-				    echo "         | i.e.  sktree -l QCD  OR  sktree -l DY v7-6-3       |                     | datasets in each catversion         |"
-				    echo "-L       | can give search/skim/catversion as on option)      | default = ''        | returns a list of available         | "
-				    echo "         | use like 'sktree -L DiLep QCD                      |                     | sktrees  in each catversion         |" 
+				    echo "-l       | (can give search/snuversion as an option )         | default = ''        | returns a list of available         | "
+				    echo "         | i.e.  sktree -l QCD  OR  sktree -l DY v7-6-3       |                     | datasets in each snuversion         |"
+				    echo "-L       | can give search/skim/snuversion as on option)      | default = ''        | returns a list of available         | "
+				    echo "         | use like 'sktree -L DiLep QCD                      |                     | sktrees  in each snuversion         |" 
 				    echo "         |                                                    |                     |                                     |"
 				    echo "-g       |                                                    | default = ''        | returns a list of available input   |"
 				    echo "         |                                                    |                     | arrays to input with:               |"
@@ -1671,24 +1577,24 @@ while [ "$1" != "" ]; do
 				    echo "-sktreelog| class name : vatversion                           | default = ''        | print log of sktreemaker            |"
 				    echo "         |                                                    |                     | Only available from v7-6-4          |"
 
-				    echo "-D       | any allowed  CATVERSION                            | default = $CATVERSION    | returns Info on Catuple production.|"
+				    echo "-D       | any allowed  SNUVERSION                            | default = $SNUVERSION    | returns Info on Snuuple production.|"
 				    echo "-G       | any allowed  Analyzer                              | default = ''        | returns drfault outputdir.|"
 				    echo "-printID | any allowed  ID name  (i.e., MUON_POG_TIGHT)       | default = ''        | returns Info on object id.|"
 				    echo "-userflag| Get user flag   flag1,flag2                        | default = ''        |  pass in string                     |"
 				    
 				    
-				    echo "-miniaod | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns datasetname.                |"
+				    echo "-miniaod | file_tag (i.e., DY10to50_MSnuNLO)                  | default = ''        | returns datasetname.                |"
 				    echo "         |                                                    |                     | Only available from v7-6-3          |"  
-                                    echo "-xsec    | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns dataset xsec                |"
+                                    echo "-xsec    | file_tag (i.e., DY10to50_MSnuNLO)                  | default = ''        | returns dataset xsec                |"
                                     echo "         |                                                    |                     | Only available from v7-6-3          |"
-                                    echo "-efflumi | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns dataset lumi.               |"
+                                    echo "-efflumi | file_tag (i.e., DY10to50_MSnuNLO)                  | default = ''        | returns dataset lumi.               |"
                                     echo "         |                                                    |                     | Only available from v7-6-3          |"
 
 				    echo "-r       | sktree -A to see possible samples                  | default = ''        | sends email request to make sktree  |"
 				    echo "         |                                                    |                     | that is not current available at snu|"
 				    echo "         |                                                    |                     |                                     |"
 				    echo "-updateselection | any allowed objectname                           | default = ""  | updates selection file and sends email.|"
-				    echo "-A       | can speficy catversion and search                  | default = ${CATVERSION}    | lists missing samples due to no     |"
+				    echo "-A       | can speficy snuversion and search                  | default = ${SNUVERSION}    | lists missing samples due to no     |"
 				    echo "         |                                                    |                     | MiniAOD and available samples       |"
 				    echo "         |                                                    |                     | that can be processed               |"        
 				    echo " -attachhist        | set True or False                                            |                     | that can be processed               |"        
@@ -1715,53 +1621,53 @@ declare -a ALL=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron"
 if [[ $job_data_lumi == "ALL" ]];
     then
 
-    if [[ $CATVERSION == "v8-0-7" ]];then
+    if [[ $SNUVERSION == "v8-0-7" ]];then
         declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
     fi
-    if [[ $CATVERSION == "v8-0-6" ]];then
+    if [[ $SNUVERSION == "v8-0-6" ]];then
         declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
     fi
 
-    if [[ $CATVERSION == "v8-0-4" ]];then
+    if [[ $SNUVERSION == "v8-0-4" ]];then
         declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
     fi
-    if [[ $CATVERSION == "v8-0-3" ]];then
+    if [[ $SNUVERSION == "v8-0-3" ]];then
 	declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
     fi
-    if [[ $CATVERSION == "v8-0-2" ]];then
+    if [[ $SNUVERSION == "v8-0-2" ]];then
         declare -a data_periods=("B" "C" "D" "E" "F" "G")
     fi
 
-    if [[ $CATVERSION == "v8-0-1" ]];then
+    if [[ $SNUVERSION == "v8-0-1" ]];then
         declare -a data_periods=("B" "C" "D" "E")
     fi
-    if [[ $CATVERSION == "v7-6-6" ]];then
+    if [[ $SNUVERSION == "v7-6-6" ]];then
         declare -a data_periods=("C" "D")
     fi
 
 fi
 
-if [[ $job_data_lumi == $catdatatag  ]];
+if [[ $job_data_lumi == $snudatatag  ]];
 then
-    if [[ $CATVERSION == "v8-0-7" ]];then
+    if [[ $SNUVERSION == "v8-0-7" ]];then
         declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
     fi
-    if [[ $CATVERSION == "v8-0-6" ]];then
+    if [[ $SNUVERSION == "v8-0-6" ]];then
          declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
     fi
-    if [[ $CATVERSION == "v8-0-4" ]];then
+    if [[ $SNUVERSION == "v8-0-4" ]];then
         declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
     fi
-    if [[ $CATVERSION == "v8-0-3" ]];then
+    if [[ $SNUVERSION == "v8-0-3" ]];then
         declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
     fi
-    if [[ $CATVERSION == "v8-0-2" ]];then
+    if [[ $SNUVERSION == "v8-0-2" ]];then
         declare -a data_periods=("B" "C" "D" "E" "F" "G")
     fi
-    if [[ $CATVERSION == "v8-0-1" ]];then
+    if [[ $SNUVERSION == "v8-0-1" ]];then
         declare -a data_periods=("B" "C" "D" "E")
     fi
-    if [[ $CATVERSION == "v7-6-6" ]];then
+    if [[ $SNUVERSION == "v7-6-6" ]];then
         declare -a data_periods=("C" "D")
     fi
 fi
@@ -1769,97 +1675,97 @@ fi
 if [[ $job_data_lumi == "CtoD" ]];
     then
     declare -a data_periods=("C" "D")
-    export catdatatag="CtoD"
+    export snudatatag="CtoD"
 fi
 if [[ $job_data_lumi == "BtoE" ]];
     then
     declare -a data_periods=("B" "C" "D" "E")
-    export catdatatag="BtoE"
+    export snudatatag="BtoE"
 fi
 
 
-export CATAnalyzerPeriod="None"
+export SNUAnalyzerPeriod="None"
 
 if [[ $job_data_lumi == "B" ]];
     then
     declare -a data_periods=("B")
-    export CATAnalyzerPeriod="B"
-    export catdatatag="B"
+    export SNUAnalyzerPeriod="B"
+    export snudatatag="B"
 	
 fi
 
 if [[ $job_data_lumi == "C" ]];
     then
     declare -a data_periods=("C")
-    export CATAnalyzerPeriod="C"
-    export catdatatag="C"
+    export SNUAnalyzerPeriod="C"
+    export snudatatag="C"
 fi
 if [[ $job_data_lumi == "D" ]];
     then
     declare -a data_periods=("D")   
-    export CATAnalyzerPeriod="D"                                                                                        
-    export catdatatag="D"
+    export SNUAnalyzerPeriod="D"                                                                                        
+    export snudatatag="D"
 
 fi 
 if [[ $job_data_lumi == "E" ]];
     then
     declare -a data_periods=("E")
-    export CATAnalyzerPeriod="E"                                                                                        
-    export catdatatag="E"
+    export SNUAnalyzerPeriod="E"                                                                                        
+    export snudatatag="E"
     
 fi
 if [[ $job_data_lumi == "F" ]];
     then
     declare -a data_periods=("F")
-    export CATAnalyzerPeriod="F"                                                                                        
-    export catdatatag="F"
+    export SNUAnalyzerPeriod="F"                                                                                        
+    export snudatatag="F"
 
 fi
 if [[ $job_data_lumi == "G" ]];
     then
     declare -a data_periods=("G")
-    export CATAnalyzerPeriod="G"
-    export catdatatag="G"
+    export SNUAnalyzerPeriod="G"
+    export snudatatag="G"
 	
 fi
 if [[ $job_data_lumi == "H" ]];
     then
     declare -a data_periods=("H_v2" "H_v3")
-    export CATAnalyzerPeriod="H"
-    export catdatatag="H"
+    export SNUAnalyzerPeriod="H"
+    export snudatatag="H"
 	
 fi
 if [[ $job_data_lumi == "H_v3" ]];
     then
     declare -a data_periods=( "H_v3")
-    export CATAnalyzerPeriod="H"
-    export catdatatag="H"
+    export SNUAnalyzerPeriod="H"
+    export snudatatag="H"
 
 fi
 
 if [[ $job_data_lumi == "H_v2" ]];
     then
     declare -a data_periods=("H_v2")
-    export CATAnalyzerPeriod="H"
-    export catdatatag="H"
+    export SNUAnalyzerPeriod="H"
+    export snudatatag="H"
 fi
 
 if [[ $job_data_lumi == "GH" ]];
     then
     declare -a data_periods=("G" "H_v2" "H_v3")
-    export CATAnalyzerPeriod="GH"
-    export catdatatag="GH"
+    export SNUAnalyzerPeriod="GH"
+    export snudatatag="GH"
 	
 fi
 
-ARG1=catdataperiods
+ARG1=snudataperiods
 eval getlist_cv=(\${$ARG1[@]})
 for dataperiod in  ${getlist_cv[@]};
 do
     if [[ $job_data_lumi == $dataperiod ]];
     then
     declare -a data_periods=($dataperiod)
-    export CATAnalyzerPeriod=$dataperiod
+    export SNUAnalyzerPeriod=$dataperiod
     fi
 done
 
@@ -1902,24 +1808,6 @@ if [[ $submit_sampletag  == "DATADILEP" ]];
     runDATA=true
 fi
 
-declare -a  DATAHNDILEP=("DoubleMuon" "DoubleEG" "SingleElectron" "SingleMuon")
-if [[ $submit_sampletag  == "DATAHNDILEP" ]];
-    then
-    runDATA=true
-fi
-
-
-declare -a  DATAHNFAKE=("DoubleMuon" "DoubleEG" "SingleElectron" "SingleMuon")
-if [[ $submit_sampletag  == "DATAHNFAKE" ]];
-    then
-    runDATA=true
-fi
-
-declare -a  DATAHNFATJET=("DoubleMuon" "DoubleEG" "SingleElectron" "SingleMuon")
-if [[ $submit_sampletag  == "DATAHNFATJET" ]];
-    then
-    runDATA=true
-fi
 
 
 declare -a DoubleEG=("DoubleEG")
@@ -1997,18 +1885,15 @@ declare -a FULLLISTOFSAMPLES=()
 declare -a FULLLISTOFSAMPLESNOCUT=()
 declare -a FULLLISTOFSAMPLESLEPTON=()
 declare -a FULLLISTOFSAMPLESDILEP=()
-declare -a FULLLISTOFSAMPLESHNDILEP=()
-declare -a FULLLISTOFSAMPLESHNFAKE=()
-declare -a FULLLISTOFSAMPLESHNFATJET=()
 declare -a FULLLISTOFSAMPLESTRILEP=()
 declare -a FULLLISTOFSAMPLESTSSLEP=()
 
 
-if [[ $check_all_catversions != "true" ]];
+if [[ $check_all_snuversions != "true" ]];
     then
-    if [[ $check_all_catversions != "false" ]];
+    if [[ $check_all_snuversions != "false" ]];
 	then
-	if [[ $check_all_catversions == "" ]];
+	if [[ $check_all_snuversions == "" ]];
 	    then
 	    echo "No input for -ac command: this should be '-ac true', since false is default"
 	    exit 1
@@ -2038,7 +1923,7 @@ if [[ $changed_skim != "true" ]];
 	then
         if [[ $submit_skinput == "false" ]];
             then
-            job_skim=FLATCAT
+            job_skim=FLATSNU
         fi
     fi
 fi
@@ -2046,18 +1931,10 @@ fi
 #### Since SKTreeMaker codes have skims set as default: Never need to change we set this here
 if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
     then
-    job_skim=FLATCAT
+    job_skim=FLATSNU
     if [[ $submit_analyzer_name == "SKTreeMakerDiLep" ]];
 	then
 	job_skim=SKTree_LeptonSkim
-    fi
-    if [[ $submit_analyzer_name == "SKTreeMakerHNDiLep" ]];
-     then
-        job_skim=SKTree_DiLepSkim
-    fi
-    if [[ $submit_analyzer_name == "SKTreeMakerFakeHN" ]];
-     then
-        job_skim=SKTree_LeptonSkim
     fi
     if [[ $submit_analyzer_name == "SKTreeMakerTriLep" ]];
         then
@@ -2076,11 +1953,11 @@ fi
 if [[ $MakeFullLists == "true" ]];
     then
     
-    ##### LOOP OVER ALL CATVERSIONS (ONLY STORE SAMPLES THAT EXIST AND NOT IN NEWER VERSIONS)
-    for iclist in  ${list_of_catversions[@]};
+    ##### LOOP OVER ALL SNUVERSIONS (ONLY STORE SAMPLES THAT EXIST AND NOT IN NEWER VERSIONS)
+    for iclist in  ${list_of_snuversions[@]};
       do
-      #### IF CHECK ALL CATVERSION  = FALSE WE LOOK AT ONLY $CATVERSION
-      if [[ $check_all_catversions != "true" ]];
+      #### IF CHECK ALL SNUVERSION  = FALSE WE LOOK AT ONLY $SNUVERSION
+      if [[ $check_all_snuversions != "true" ]];
 	  then
 	  if [[ $iclist != ${submit_version_tag} ]];
 	      then
@@ -2094,23 +1971,23 @@ if [[ $MakeFullLists == "true" ]];
       while read line
 	do
 	
-	if [[ $job_skim == "FLATCAT" ]];
+	if [[ $job_skim == "FLATSNU" ]];
 	    then
 	    
-	    if [[ $line == *$FLATCAT_MC* ]];
+	    if [[ $line == *$FLATSNU_MC* ]];
 		then
 		sline=$(echo $line | head -n1 | awk '{print $1}')
 		sline2=$(echo $line | head -n1 | awk '{print $6}')
 		
-		isDuplicate=false
+		isDuplisnue=false
 		for il in  ${FULLLISTOFSAMPLES[@]};
 		  do
 		  if [[ $sline == $il ]];
 		      then
-		      isDuplicate=true
+		      isDuplisnue=true
 		  fi
 		done
-		if [[ $isDuplicate == "false" ]];
+		if [[ $isDuplisnue == "false" ]];
 		    then
 		    
 		    if [[ -d "${sline2}" ]]; then
@@ -2141,16 +2018,16 @@ if [[ $MakeFullLists == "true" ]];
 		fi
 		
 		
-		isDuplicate=false
+		isDuplisnue=false
 		for il in  ${FULLLISTOFSAMPLESNOCUT[@]};
 		  do
 		  
 		  if [[ $sline == $il ]];
 		      then
-		      isDuplicate=true
+		      isDuplisnue=true
 		  fi
 		done
-		if [[ $isDuplicate == "false" ]];
+		if [[ $isDuplisnue == "false" ]];
 		    then
 		    if [[ -d "${sline2}" ]]; then
 			if test "$(ls -A "$sline2")"; then
@@ -2181,15 +2058,15 @@ if [[ $MakeFullLists == "true" ]];
 		    sline=${sline:2}
 		fi
 		
-		isDuplicate=false
+		isDuplisnue=false
 		for il in  ${FULLLISTOFSAMPLESLEPTON[@]};
 		  do
 		  if [[ $sline == $il ]];
 		      then
-		      isDuplicate=true
+		      isDuplisnue=true
 		  fi
 		done
-		if [[ $isDuplicate == "false" ]];
+		if [[ $isDuplisnue == "false" ]];
 		    then
 		    if [[ -d "${sline2}" ]]; then
 			if test "$(ls -A "$sline2")"; then
@@ -2224,15 +2101,15 @@ if [[ $MakeFullLists == "true" ]];
 		    sline=${sline%$suffix}
 		fi
 		
-		isDuplicate=false
+		isDuplisnue=false
 		for il in  ${FULLLISTOFSAMPLESDILEP[@]};
 		do
 		  if [[ $sline == $il ]];
 		      then
-		      isDuplicate=true
+		      isDuplisnue=true
 		  fi
 		done
-		if [[ $isDuplicate == "false" ]];
+		if [[ $isDuplisnue == "false" ]];
 		    then
 		    if [[ -d "${sline2}" ]]; then
 			if test "$(ls -A "$sline2")"; then
@@ -2242,132 +2119,6 @@ if [[ $MakeFullLists == "true" ]];
 		fi
 	    fi
 	fi    
-        if [[ $job_skim == "SKTree_HNDiLepSkim" ]];
-            then
-            checkline=$SKTREE_MC${iclist}"/SKTrees/MCHNDiLep"
-            if [[ ${iclist} == *"v7-4-4"* ]];
-                then
-                checkline=$SKTREE_MC${iclist}"/SKTrees/Sep15/MCDiLep"
-            fi
-
-
-            if [[ $line == *$checkline* ]];
-                then
-                sline=$(echo $line | head -n1 | awk '{print $1}')
-                sline2=$(echo $line | head -n1 | awk '{print $6}')
-
-                prefix="SK"
-                suffixhn="_hndilep"
-                if [[ $sline == *${prefix}* ]];
-                    then
-                    sline=${sline:2}
-                fi
-                if [[ $sline == *${suffixhn}* ]];
-                    then
-                    sline=${sline%$suffixhn}
-                fi
-
-                isDuplicate=false
-                for il in  ${FULLLISTOFSAMPLESHNDILEP[@]};
-                do
-                  if [[ $sline == $il ]];
-                      then
-                      isDuplicate=true
-                  fi
-                done
-                if [[ $isDuplicate == "false" ]];
-                    then
-                    if [[ -d "${sline2}" ]]; then
-                        if test "$(ls -A "$sline2")"; then
-                            FULLLISTOFSAMPLESHNDILEP+=(${sline})
-                        fi
-                    fi
-                fi
-            fi
-        fi
-	
-	if [[ $job_skim == "SKTree_HNFakeSkim" ]];
-        then
-            checkline=$SKTREE_MC${iclist}"/SKTrees/MCHNFake/"
-
-
-
-            if [[ $line == *$checkline* ]];
-                then
-                sline=$(echo $line | head -n1 | awk '{print $1}')
-                sline2=$(echo $line | head -n1 | awk '{print $6}')
-
-                prefix="SK"
-                suffixhnfake="_hnfake"
-                if [[ $sline == *${prefix}* ]];
-                    then
-                    sline=${sline:2}
-                fi
-                if [[ $sline == *${suffixhnfake}* ]];
-                    then
-                    sline=${sline%$suffixhnfake}
-                fi
-
-                isDuplicate=false
-                for il in  ${FULLLISTOFSAMPLESHNFAKE[@]};
-                do
-                  if [[ $sline == $il ]];
-                      then
-                      isDuplicate=true
-                  fi
-                done
-                if [[ $isDuplicate == "false" ]];
-                    then
-                    if [[ -d "${sline2}" ]]; then
-                        if test "$(ls -A "$sline2")"; then
-                            FULLLISTOFSAMPLESHNFAKE+=(${sline})
-                        fi
-                    fi
-                fi
-            fi
-        fi
-
-        if [[ $job_skim == "SKTree_HNFatJetSkim" ]];
-        then
-            checkline=$SKTREE_MC${iclist}"/SKTrees/MCHNFatJet/"
-
-
-
-            if [[ $line == *$checkline* ]];
-                then
-                sline=$(echo $line | head -n1 | awk '{print $1}')
-                sline2=$(echo $line | head -n1 | awk '{print $6}')
-
-                prefix="SK"
-                suffixhnfatjet="_hnfatjet"
-                if [[ $sline == *${prefix}* ]];
-                    then
-                    sline=${sline:2}
-                fi
-                if [[ $sline == *${suffixhnfatjet}* ]];
-                    then
-                    sline=${sline%$suffixhnfatjet}
-                fi
-
-                isDuplicate=false
-                for il in  ${FULLLISTOFSAMPLESHNFATJET[@]};
-                do
-                  if [[ $sline == $il ]];
-                      then
-                      isDuplicate=true
-                  fi
-                done
-                if [[ $isDuplicate == "false" ]];
-                    then
-                    if [[ -d "${sline2}" ]]; then
-                        if test "$(ls -A "$sline2")"; then
-                            FULLLISTOFSAMPLESHNFATJET+=(${sline})
-                        fi
-                    fi
-                fi
-            fi
-        fi
-
 	if [[ $job_skim == "SKTree_TriLepSkim" ]];
 	    then
 	    checkline=$SKTREE_MC${iclist}"/SKTrees/MCTriLep"
@@ -2393,15 +2144,15 @@ if [[ $MakeFullLists == "true" ]];
 		    sline=${sline%$suffix}
 		fi
 		
-		isDuplicate=false
+		isDuplisnue=false
 		for il in  ${FULLLISTOFSAMPLESTRILEP[@]};
 		  do
 		  if [[ $sline == $il ]];
 			  then
-		      isDuplicate=true
+		      isDuplisnue=true
 		  fi
 		done
-		if [[ $isDuplicate == "false" ]];
+		if [[ $isDuplisnue == "false" ]];
 		    then
 		    if [[ -d "${sline2}" ]]; then
 			if test "$(ls -A "$sline2")"; then
@@ -2436,15 +2187,15 @@ if [[ $MakeFullLists == "true" ]];
                     sline=${sline%$suffix}
                 fi
 
-                isDuplicate=false
+                isDuplisnue=false
                 for il in  ${FULLLISTOFSAMPLESSS[@]};
                   do
                   if [[ $sline == $il ]];
                           then
-                      isDuplicate=true
+                      isDuplisnue=true
                   fi
                 done
-                if [[ $isDuplicate == "false" ]];
+                if [[ $isDuplisnue == "false" ]];
                     then
                     if [[ -d "${sline2}" ]]; then
                         if test "$(ls -A "$sline2")"; then
@@ -2455,7 +2206,7 @@ if [[ $MakeFullLists == "true" ]];
             fi
         fi
 
-      done < ${TXTPATH}"CAT_mc_"${iclist}".txt"
+      done < ${TXTPATH}"SNU_mc_"${iclist}".txt"
     done
     
 fi

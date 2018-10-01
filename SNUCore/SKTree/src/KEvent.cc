@@ -17,10 +17,10 @@ KEvent::KEvent() :
   k_RunNumber(0),
   k_nvertices(-999),
   k_lumisec(-999),
-  k_ngoodvertices(-999),
   k_pdf_id1(-999),
   k_pdf_id2(-999),
   k_pdf_weights(),
+  k_alphas_weights(),
   k_scale_weights(),
   k_vertexX(-999.),
   k_vertexY(-999.),
@@ -35,6 +35,8 @@ KEvent::KEvent() :
   k_PF_MET(-999.), 
   k_PF_METx(-999.), 
   k_PF_METy(-999.), 
+  k_PF_raw_METx(-999.),
+  k_PF_raw_METy(-999.),
   k_PF_METphi(-999.),
   k_PF_SumET(-999.), 
   k_PF_MET_MuonEn_up(-999.),
@@ -67,11 +69,11 @@ KEvent::KEvent() :
   k_isgoodevent(false),
 
   k_passBadEESupercrystalFilter(false),
-  k_passCSCHaloFilterTight(false),
+  k_passEEBadCalibFilterTight(false),
   k_passEcalDeadCellTriggerPrimitiveFilter(false),
   k_passHBHENoiseFilter(false),
   k_passHBHENoiseIsoFilter(false),
-  k_passTightHalo2016Filter(false),
+  k_passSuperHalo2016Filter(false),
   k_passBadChargedCandFilter(false),
   k_passBadpfMuonFilter(false),
   k_lumi_mask_silver(-999),
@@ -91,7 +93,7 @@ KEvent::KEvent() :
   k_pu_gold_weightF(-999.),
   k_pu_gold_weightG(-999.),
   k_pu_gold_weightH(-999.),
-  k_catversion(""),
+  k_snuversion(""),
   k_rho(-999.),
   prop_metrc(false),
   prop_metjmr(false),
@@ -109,10 +111,10 @@ KEvent::KEvent(const KEvent& ev) :
   k_RunNumber(ev.k_RunNumber),
   k_nvertices(ev.k_nvertices),
   k_lumisec(ev.k_lumisec),
-  k_ngoodvertices(ev.k_ngoodvertices),
   k_pdf_id1(ev.k_pdf_id1),
   k_pdf_id2(ev.k_pdf_id2),
   k_pdf_weights(ev.k_pdf_weights),
+  k_alphas_weights(ev.k_alphas_weights),
   k_scale_weights(ev.k_scale_weights),
 
   k_vertexX(ev.k_vertexX),
@@ -128,6 +130,8 @@ KEvent::KEvent(const KEvent& ev) :
   k_PF_MET(ev.k_PF_MET),
   k_PF_METx(ev.k_PF_METx),
   k_PF_METy(ev.k_PF_METy),
+  k_PF_raw_METx(ev.k_PF_raw_METx),
+  k_PF_raw_METy(ev.k_PF_raw_METy),
   k_PF_METphi(ev.k_PF_METphi),
   k_PF_SumET(ev.k_PF_SumET),
   k_PF_MET_MuonEn_up(ev.k_PF_MET_MuonEn_up),
@@ -159,11 +163,11 @@ KEvent::KEvent(const KEvent& ev) :
   k_isData(ev.k_isData),
   k_isgoodevent(ev.k_isgoodevent),
   k_passBadEESupercrystalFilter(ev.k_passBadEESupercrystalFilter),
-  k_passCSCHaloFilterTight(ev.k_passCSCHaloFilterTight),
+  k_passEEBadCalibFilterTight(ev.k_passEEBadCalibFilterTight),
   k_passEcalDeadCellTriggerPrimitiveFilter(ev.k_passEcalDeadCellTriggerPrimitiveFilter),
   k_passHBHENoiseFilter(ev.k_passHBHENoiseFilter),
   k_passHBHENoiseIsoFilter(ev.k_passHBHENoiseIsoFilter),
-  k_passTightHalo2016Filter(ev.k_passTightHalo2016Filter),
+  k_passSuperHalo2016Filter(ev.k_passSuperHalo2016Filter),
   k_passBadChargedCandFilter(ev.k_passBadChargedCandFilter),
   k_passBadpfMuonFilter(ev.k_passBadpfMuonFilter),
 
@@ -186,7 +190,7 @@ KEvent::KEvent(const KEvent& ev) :
   k_pu_gold_weightG(ev.k_pu_gold_weightG),
   k_pu_gold_weightH(ev.k_pu_gold_weightH),
 
-  k_catversion(ev.k_catversion),
+  k_snuversion(ev.k_snuversion),
   prop_metrc(ev.prop_metrc),
   prop_metjmr(ev.prop_metjmr)
 
@@ -205,7 +209,6 @@ void KEvent::Reset()
   k_RunNumber= -999;
   k_nvertices= -999;
   k_lumisec=-999; 
-  k_ngoodvertices= -999;
   k_pdf_id1=-999;
   k_pdf_id2=-999;
   k_vertexX= -999.;
@@ -218,11 +221,14 @@ void KEvent::Reset()
   k_pdf_x1= -999.;
   k_pdf_x2=-999.;
   k_pdf_weights.clear();
+  k_alphas_weights.clear();
   
   k_scale_weights.clear();
   k_PF_MET= -999.;
   k_PF_METx= -999.;
   k_PF_METy= -999.;
+  k_PF_raw_METx= -999.;
+  k_PF_raw_METy= -999.;
   k_PF_SumET= -999.;
   k_PF_METphi= -999.;
   k_PF_MET_MuonEn_up = -999.;
@@ -255,11 +261,11 @@ void KEvent::Reset()
   k_isData= false;
   k_isgoodevent = false;
   k_passBadEESupercrystalFilter= false;
-  k_passCSCHaloFilterTight= false;
+  k_passEEBadCalibFilterTight= false;
   k_passEcalDeadCellTriggerPrimitiveFilter= false;
   k_passHBHENoiseFilter= false;
   k_passHBHENoiseIsoFilter= false;
-  k_passTightHalo2016Filter= false;
+  k_passSuperHalo2016Filter= false;
   k_passBadChargedCandFilter=false;
   k_passBadpfMuonFilter=false;
   
@@ -282,7 +288,7 @@ void KEvent::Reset()
   k_pu_gold_weightG = -999;
   k_pu_gold_weightH = -999;
 
-  k_catversion="";
+  k_snuversion="";
   k_rho= -999.;
 
   prop_metrc=false;
@@ -300,10 +306,10 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_RunNumber=p.RunNumber();
       k_nvertices= p.nVertices();
       k_lumisec= p.LumiSection();
-      k_ngoodvertices = p.nGoodVertices();
       k_pdf_id1 = p.Id1();
       k_pdf_id2 = p.Id2();
       k_pdf_weights = p.PdfWeights();
+      k_alphas_weights = p.AlphaSWeights();
       k_scale_weights = p.ScaleWeights();
       
       k_vertexX=p.VertexX();
@@ -321,6 +327,8 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_PF_MET= p.MET();
       k_PF_METx= p.PFMETx();
       k_PF_METy= p.PFMETy();
+      k_PF_raw_METx= p.PFRawMETx();
+      k_PF_raw_METy= p.PFRawMETy();
       k_PF_METphi= p.METPhi();
       k_PF_SumET = p.SumET();
       k_PF_MET_MuonEn_up = p.PFMETShifted(MuonEn,up);
@@ -352,11 +360,11 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_isgoodevent= p.HasGoodPrimaryVertex();
 
       k_passBadEESupercrystalFilter = p.PassBadEESupercrystalFilter();
-      k_passCSCHaloFilterTight = p.PassCSCHaloFilterTight();
+      k_passEEBadCalibFilterTight = p.PassEEBadCalibFilterTight();
       k_passEcalDeadCellTriggerPrimitiveFilter = p.PassEcalDeadCellTriggerPrimitiveFilter();
       k_passHBHENoiseFilter = p.PassHBHENoiseFilter();
       k_passHBHENoiseIsoFilter= p.PassHBHENoiseIsoFilter();
-      k_passTightHalo2016Filter= p.PassTightHalo2016Filter();
+      k_passSuperHalo2016Filter= p.PassSuperHalo2016Filter();
       k_passBadChargedCandFilter= p.PassBadChargedCandidateFilter();
       k_passBadpfMuonFilter=p.PassBadPFMuonFilter();
 
@@ -381,7 +389,7 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_pu_gold_weightG = p.PeriodPileUpWeight(6);
       k_pu_gold_weightH = p.PeriodPileUpWeight(7);
 
-      k_catversion = p.CatVersion();
+      k_snuversion = p.SNUVersion();
       k_rho= p.Rho();
 	
       prop_metrc = p.PropagatedRochesterToMET();
@@ -393,8 +401,8 @@ KEvent& KEvent::operator= (const KEvent& p)
 }
 
 //// SET CLASS VARIBALES
-void KEvent::SetCatVersion(std::string cat){
-  k_catversion = cat;
+void KEvent::SetSNUVersion(std::string cat){
+  k_snuversion = cat;
 }
 
 void KEvent::SetRho(double rho){
@@ -412,8 +420,8 @@ void KEvent::SetPropagatedJMRToMET(bool hasprop){
 }
 
 
-void KEvent::SetPassCSCHaloFilterTight(bool pass){
-  k_passCSCHaloFilterTight = pass;
+void KEvent::SetPassEEBadCalibFilterTight(bool pass){
+  k_passEEBadCalibFilterTight = pass;
 }
 
 void KEvent::SetPassBadEESupercrystalFilter(bool pass){
@@ -431,8 +439,8 @@ void KEvent::SetPassHBHENoiseIsoFilter(bool pass){
   k_passHBHENoiseIsoFilter= pass;
 }
 
-void KEvent::SetPassTightHalo2016Filter(bool pass){
-  k_passTightHalo2016Filter= pass;
+void KEvent::SetPassSuperHalo2016Filter(bool pass){
+  k_passSuperHalo2016Filter= pass;
 }
 
 void KEvent::SetPassBadChargedCandidateFilter(bool pass){
@@ -531,6 +539,13 @@ void KEvent::SetPFMETy(double mety){
   k_PF_METy= mety;
 }
 
+void KEvent::SetPFRawMETx( double metx){
+  k_PF_raw_METx= metx;
+}
+
+void KEvent::SetPFRawMETy(double mety){
+  k_PF_raw_METy= mety;
+}
 
 
 
@@ -610,14 +625,13 @@ void KEvent::SetLumiSection(int ls){
 
 
 
-void KEvent::SetIsGoodEvent(int nvert){
-  if(nvert > 0) k_isgoodevent = true;
-  else k_isgoodevent = false;
+void KEvent::SetIsGoodEvent(bool goodvert){
+  k_isgoodevent = goodvert;
 }
 
 
 Double_t KEvent::PileUpWeight(syst_dir sys){
-  if(TString(k_catversion).Contains("v7-4-")) return -999;
+  if(TString(k_snuversion).Contains("v7-4-")) return -999;
   return PileUpWeight_Gold(sys);
 
 }
@@ -626,10 +640,10 @@ Double_t KEvent::AltPileUpWeight(syst_dir sys){
   return AltPileUpWeight_Gold(sys);
 }
 
-///New forCAT v7-4-5 (MET systematics in one function)
+
 Double_t KEvent::PFMETShifted ( met_syst type, syst_dir dir) const{
   
-  if(TString(k_catversion).Contains("v7-4-4")) return k_PF_MET;
+  if(TString(k_snuversion).Contains("v7-4-4")) return k_PF_MET;
   if(dir == up){
     if(type==None) return k_PF_MET;
     else if(type==MuonEn) return k_PF_MET_MuonEn_up;
@@ -653,7 +667,7 @@ Double_t KEvent::PFMETShifted ( met_syst type, syst_dir dir) const{
 }
 
 Double_t KEvent::PFSumETShifted(met_syst type,syst_dir dir) const{
-  if(TString(k_catversion).Contains("v7-4-4")) return k_PF_SumET;
+  if(TString(k_snuversion).Contains("v7-4-4")) return k_PF_SumET;
  
   if(dir == up){
     if(type==None) return k_PF_SumET;
@@ -696,12 +710,6 @@ Double_t KEvent::SumET() const{
 
 
 
-/// Settizang Vertex Variables
-void KEvent::SetNGoodVertices(int nvert){
-  k_ngoodvertices = nvert;
-}
-
-
 void KEvent::SetVertexInfo(double vX, double vY, double vZ, double NDOF){
   k_vertexX = vX;
   k_vertexY = vY;
@@ -717,6 +725,11 @@ void KEvent::SetGenId(int id1, int id2){
 void KEvent::SetPDFWeights(std::vector<double> pdfweights){
   k_pdf_weights = pdfweights;
 }
+
+void KEvent::SetAlphaSWeights(std::vector<double> alphasweights){
+  k_alphas_weights = alphasweights;
+}
+
 
 void KEvent::SetScaleWeights(std::vector<double> scaleweights){
   k_scale_weights= scaleweights;
